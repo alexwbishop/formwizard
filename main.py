@@ -16,35 +16,68 @@ conformed_signature = "/s/" + signer_name
 
 # Now you have all the form data in variables, ready to be inserted into the PDF in the next step.
 
+# load reportlab features
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
-# Create a blank PDF
-c = canvas.Canvas("filled_form.pdf", pagesize=letter)
+# load pyPDF2 features
+from PyPDF2 import PdfReader, PdfWriter
+
+# Read the original PDF
+pdf_reader = PdfReader("LLCAmendCOA.pdf")
+
+# Create a new PdfWriter object
+pdf_writer = PdfWriter()
+
+# Create the overlay PDF (containing customer data)
+c = canvas.Canvas("LLCAmendCOA-Overlay.pdf", pagesize=letter)  # Changed pagesize to 'letter'
 width, height = letter
 
 # Add entity name
-c.drawString(100, height - 100, f"Entity Name: {entity_name}")
+c.drawString(100, height - 225, f"{entity_name}")
 
 # Add agent street address
-c.drawString(100, height - 150, f"Agent Street Address: {agent_street_address}")
+c.drawString(150, height - 263, f"{agent_street_address}")
 
 # Add agent city
-c.drawString(100, height - 200, f"Agent City: {agent_city}")
+c.drawString(350, height - 280, f"{agent_city}")
 
 # Add agent zip
-c.drawString(100, height - 250, f"Agent Zip: {agent_zip}")
+c.drawString(140, height - 295, f"{agent_zip}")
 
 # Add name of agent
-c.drawString(100, height - 300, f"Name of Agent: {name_of_agent}")
+c.drawString(100, height - 320, f"{name_of_agent}")
 
 # Add signer's name and title
-c.drawString(100, height - 350, f"Signer: {signer_name}, {signer_title}")
+c.drawString(320, height - 460, f"{signer_name}, {signer_title}")
 
 # Add conformed signature
-c.drawString(100, height - 400, f"Conformed Signature: {conformed_signature}")
+c.drawString(320, height - 520, f"{conformed_signature}")
 
 # Save PDF
 c.save()
+
+# Add pages from the original PDF to the writer object
+for page_num in range(len(pdf_reader.pages)):
+    page = pdf_reader.pages[page_num]
+
+    # Read the overlay PDF
+    overlay_reader = PdfReader("LLCAmendCOA-Overlay.pdf")
+    overlay_page = overlay_reader.pages[0]
+
+    # Merge the overlay page onto the original page
+    page.merge_page(overlay_page)
+
+    # Add the merged page to the writer object
+    pdf_writer.add_page(page)
+
+# Write the changes to a new PDF
+with open("LLCAmendCOA-Completed.pdf", "wb") as f_out:
+    pdf_writer.write(f_out)
+
+# Show success message
+print("PDF for " + entity_name + " Successfully Filled.")
+
+# Done!
