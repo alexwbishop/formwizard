@@ -1,84 +1,81 @@
-
 # FormWizard by Alex Bishop - incyde@riseup.net
 # Version 1.0.0.2
-# Purpose: 1) Data Extraction: Write a small script to prompt for the required fields to be inserted into any Delaware form.
-#          2) PDF Manipulation: Write a script to take the extracted data and insert it into the PDF form at the correct coordinates.
-#          3) PDF Saving: Saves each completed PDF into the root folder with the format: STATE- Entity Name - Dom/Foreign FormType i.e. "DE- LLC Dom Formation"
+# Purpose: Automate the process of filling out Delaware Change of Agent forms (Corp, LLC, LP), Domestic and Foreign.
 
-# Prompt user for required information
-entity_name = input("Enter the entity name: ")
-agent_street_address = input("Enter the agent's street address: ")
-agent_city = input("Enter the agent's city: ")
-agent_zip = input("Enter the agent's zip code: ")
-name_of_agent = input("Enter the name of the agent: ")
-signer_name = input("Enter the signer's name: ")
-signer_title = input("Enter the signer's title: ")
-conformed_signature = "/s/" + signer_name
-
-# Now you have all the form data in variables, ready to be inserted into the PDF in the next step.
-
-# load reportlab features
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.lib import colors
-from reportlab.lib.units import inch
+# Import stuff
+import json
 from reportlab.pdfgen import canvas
+import PyPDF2
 
-# load pyPDF2 features
-from PyPDF2 import PdfReader, PdfWriter
+# Function to get PDF dimensions
+def get_pdf_dimensions(pdf_path):
+    pdf_reader = PyPDF2.PdfFileReader(open(pdf_path, 'rb'))
+    page = pdf_reader.getPage(0)
+    media_box = page.mediaBox
+    return media_box.getWidth(), media_box.getHeight()
 
-# Read the original PDF
-pdf_reader = PdfReader("LLCAmendCOA.pdf")
+# Function to populate form fields
+def populate_form(form_template_path, output_pdf_path, field_coordinates, field_values):
+    _, height = get_pdf_dimensions(form_template_path)
+    c = canvas.Canvas(output_pdf_path)
+    c.setFont("Helvetica", 12)
 
-# Create a new PdfWriter object
-pdf_writer = PdfWriter()
+    for field, coordinates in field_coordinates.items():
+        x = coordinates['x']
+        y = height - coordinates['y']
+        value = field_values.get(field, '')
+        c.drawString(x, y, str(value))
 
-# Create the overlay PDF (containing customer data)
-c = canvas.Canvas("LLCAmendCOA-Overlay.pdf", pagesize=letter)  # Changed pagesize to 'letter'
-width, height = letter
+    c.save()
 
-# Add entity name
-c.drawString(100, height - 225, f"{entity_name}")
+# Load JSON configuration
+with open('field_coordinates.json', 'r') as f:
+    form_config = json.load(f)
 
-# Add agent street address
-c.drawString(150, height - 263, f"{agent_street_address}")
+# PHASE 1 = Basic command line prompt usage:
 
-# Add agent city
-c.drawString(350, height - 280, f"{agent_city}")
+# Function to get user input for form type and details
+def get_user_input():
+    print("Select the entity type:")
+    entity_type = input("1: LLC\n2: Corp\n3: LP\n")
+    
+    print("Select Domestic or Foreign:")
+    dom_for = input("1: Domestic\n2: Foreign\n")
+    
+    print("Confirm the agent:")
+    agent_choice = input("1: CT (The Corporation Trust Company)\n2: NRAI (National Registered Agents, Inc.)\n")
+    
+    # Map user input to actual values
+    entity_map = {'1': 'LLC', '2': 'Corp', '3': 'LP'}
+    dom_for_map = {'1': 'Dom', '2': 'For'}
+    agent_map = {'1': 'The Corporation Trust Company', '2': 'National Registered Agents, Inc.'}
+    
+    entity_type = entity_map.get(entity_type, 'LLC')
+    dom_for = dom_for_map.get(dom_for, 'Dom')
+    agent_name = agent_map.get(agent_choice, 'The Corporation Trust Company')
+    
+    return entity_type, dom_for, agent_name
 
-# Add agent zip
-c.drawString(140, height - 295, f"{agent_zip}")
+# Get user input
+entity_type, dom_for, agent_name = get_user_input()
 
-# Add name of agent
-c.drawString(100, height - 320, f"{name_of_agent}")
+# Construct form key based on user input (e.g., 'DE-LLC-Dom-COA')
+form_key = f"DE-{entity_type}-{dom_for}-COA"
 
-# Add signer's name and title
-c.drawString(320, height - 460, f"{signer_name}, {signer_title}")
+# Prompt user for remaining information
+entity_name = input("Enter the entity name: ")
+sig_conformed = input("Enter the conformed signature: ")
+signer_name = input("Enter the signer's name: ")
 
-# Add conformed signature
-c.drawString(320, height - 520, f"{conformed_signature}")
+# Update form_data with user input
+form_data = {
+    'entity_name': entity_name,
+    'agent_name': agent_name,
+    'sig_conformed': sig_conformed,
+    'signer_name': signer_name
+}
 
-# Save PDF
-c.save()
+# Run the populate function on the form
+populate_form(f'StateForms/DE/{form_key}.pdf', f'StateForms/DE/output_{form_key}.pdf', form_config.get(form_key, {}), form_data)
 
-# Add pages from the original PDF to the writer object
-for page_num in range(len(pdf_reader.pages)):
-    page = pdf_reader.pages[page_num]
-
-    # Read the overlay PDF
-    overlay_reader = PdfReader("LLCAmendCOA-Overlay.pdf")
-    overlay_page = overlay_reader.pages[0]
-
-    # Merge the overlay page onto the original page
-    page.merge_page(overlay_page)
-
-    # Add the merged page to the writer object
-    pdf_writer.add_page(page)
-
-# Write the changes to a new PDF
-with open("LLCAmendCOA-Completed.pdf", "wb") as f_out:
-    pdf_writer.write(f_out)
-
-# Show success message
-print("PDF for " + entity_name + " Successfully Filled.")
-
-# Done!
+# Done! For now...
