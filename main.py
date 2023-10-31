@@ -1,8 +1,9 @@
 
 # FormWizard by Alex Bishop - incyde@riseup.net
-# Version 0.0.0.1
-# Purpose: 1) Data Extraction: Write a small script to prompt for the required fields to be inserted into a DE domestic Change of Agent form.
+# Version 1.0.0.2
+# Purpose: 1) Data Extraction: Write a small script to prompt for the required fields to be inserted into any Delaware form.
 #          2) PDF Manipulation: Write a script to take the extracted data and insert it into the PDF form at the correct coordinates.
+#          3) PDF Saving: Saves each completed PDF into the root folder with the format: STATE- Entity Name - Dom/Foreign FormType i.e. "DE- LLC Dom Formation"
 
 # Prompt user for required information
 entity_name = input("Enter the entity name: ")
