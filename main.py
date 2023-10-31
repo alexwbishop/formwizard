@@ -2,11 +2,18 @@
 # Version 1.0.0.2
 # Purpose: Automate the process of filling out Delaware Change of Agent forms (Corp, LLC, LP), Domestic and Foreign.
 
-# Import stuff
-from base_form import BaseForm
-import json
+## Import stuff
+# Imports
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
-import PyPDF2
+from PyPDF2 import PdfReader, PdfWriter
+import os
+
+## Define all functions
+# Function to check if a file exists
+def file_exists(filepath):
+    return os.path.isfile(filepath)
 
 # Function to get PDF dimensions
 def get_pdf_dimensions(pdf_path):
@@ -29,6 +36,15 @@ def populate_form(form_template_path, output_pdf_path, field_coordinates, field_
 
     c.save()
 
+# Assume base_filepath is an instance of BaseForm
+#SCARLET: Is this redundant? jurisdiction = base_filepath_instance.jurisdiction
+#SCARLET: Is this redundant? entity_type = base_filepath_instance.entity_type
+#SCARLET: Is this redundant? residency = base_filepath_instance.residency
+#SCARLET: Is this redundant? filing_type = base_filepath_instance.filing_type
+
+# Construct the PDF file path dynamically
+form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
+
 # Function to merge text PDF onto blank form
 from PyPDF2 import PdfReader, PdfWriter
 
@@ -48,6 +64,12 @@ def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
         pdf_writer.write(f)
 
 
+
+# Check if PDF files exist
+if not file_exists("form_template_path"):
+    print("Error: The template PDF file {pdf_file_path} is missing.")
+    exit(1)
+    
 # Load JSON configuration
 with open('field_coordinates.json', 'r') as f:
     form_config = json.load(f)
@@ -58,7 +80,7 @@ with open('field_coordinates.json', 'r') as f:
 user_name = input("Hello! Are you Alex? (Y/N): ")
 if user_name.lower() == 'y':
     password = input("Please enter your password: ")
-    if password == 'daliarules':
+    if password == 'scarletrules':
         print("Welcome, Alex!")
     else:
         print("Incorrect password. Exiting.")
@@ -75,9 +97,11 @@ if num_forms > 10:
 
 # Ask if we are to use CT or NRAI as Agent
     agent_name = input(f"Confirm the agent to be designated: ")
+    
 # Collect Signer's Name
     signer_first_name = input("Enter the signer's first name: ")
     signer_last_name = input("Enter the signer's last name: ")
+    
  # Confirm Signer's Name
 print(f"Signer's full name is {signer_first_name} {signer_last_name}. Is this correct? (Y/N): ")
 confirmation = input()
@@ -94,6 +118,10 @@ for i in range(num_forms):
     entity_type = input(f"Confirm the entity type for {entity_name} (LLC/Corp/LP): ")
     dom_for = input(f"Is {entity_name} Domestic or Foreign to Delaware? (Y/N): ")
 
+# Validate inputs (example for ZIP code)
+while not agent_zip.isdigit() or len(agent_zip) != 5:
+        agent_zip = input("Enter a valid ZIP code: ")
+    
     print(f"Entity info entered: {entity_name} - {entity_type} ({dom_for}). Is this correct? (Y/N): ")
         confirmation = input()
         if confirmation.lower() == 'y':
@@ -138,16 +166,18 @@ form_data = {
 }
 
 # Run the populate function on the form
-populate_form(f'StateForms/DE/{form_key}.pdf', f'StateForms/DE/output_{form_key}.pdf', form_config.get(form_key, {}), form_data)
+populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', f'StateForms/{jurisdiction}/output_{form_key}.pdf', form_config.get(form_key, {}), form_data)
 
 # Temporary text PDF path
 temp_text_pdf_path = f'completed_forms/temp/temp_text_{form_key}.pdf'
 
 # Populate form with text
-populate_form(f'StateForms/DE/{form_key}.pdf', temp_text_pdf_path, form_config.get(form_key, {}), form_data)
+populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, form_config.get(form_key, {}), form_data)
 
 # Merge the original form and text PDF
-merge_pdfs(f'StateForms/DE/{form_key}.pdf', temp_text_pdf_path, f'completed_forms/{entity_name}_-_{form_key}_Filled.pdf')
+merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'completed_forms/{jurisdiction}-{entity_name}_-_{form_key}_Filled.pdf')
 
+# Show success message
+print(f"PDF for {entity_name} Successfully Filled.")
 
 # Done! For now...
