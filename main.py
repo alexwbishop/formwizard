@@ -9,10 +9,10 @@ import PyPDF2
 
 # Function to get PDF dimensions
 def get_pdf_dimensions(pdf_path):
-    pdf_reader = PyPDF2.PdfFileReader(open(pdf_path, 'rb'))
-    page = pdf_reader.getPage(0)
-    media_box = page.mediaBox
-    return media_box.getWidth(), media_box.getHeight()
+    pdf_reader = PyPDF2.PdfReader(open(pdf_path, 'rb'))
+    page = pdf_reader.pages[0]
+    media_box = page.mediabox
+    return media_box.width(), media_box.height()
 
 # Function to populate form fields
 def populate_form(form_template_path, output_pdf_path, field_coordinates, field_values):
