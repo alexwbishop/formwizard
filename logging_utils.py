@@ -21,3 +21,11 @@ logging.info(f"List of entities/forms to be filled in this session: ")
 for i, form in enumerate(forms):
     logging.info(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
 
+# date & time validation
+def validate_timestamp
+from datetime import datetime
+try:
+    current_time = datetime.now()
+    logging.info(f"Current time: {current_time}")
+except Exception as e:
+    logging.error(f"An error occurred: {e}")
