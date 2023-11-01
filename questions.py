@@ -26,7 +26,15 @@ from PyPDF2 import PdfReader, PdfWriter
 from classes.BaseForm.base_form import BaseForm
 from classes.Jurisdiction.jurisdiction import Jurisdiction
 
-# functions moved in from main.py
+# functions moved in from main.py #
+
+# Collect signer's name
+def get_signer_name():
+    signer_first = input("Enter the signer's first name: ")
+    signer_mid = input("Enter the signer's middle name or initial, if any: ")
+    signer_last = input("Enter the signer's last name: ")
+    return f"{signer_first} {signer_mid} {signer_last}"
+
 
 # Confirm filing type (currently COA only)
 while True:
