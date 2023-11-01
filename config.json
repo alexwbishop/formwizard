@@ -19,4 +19,10 @@
     "National Registered Agents, Inc.",
     "The Corporation Trust Company"
   ]
+  "DEFAULTS": {
+    "domestic_state": "DE",
+    "form_status": "Blank",
+    "other_defaults": "value_here"
+  }
+  
 }
