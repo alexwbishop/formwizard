@@ -1,4 +1,5 @@
 # logging_utils.py
+# Logging configurations and datetime functionalities
 
 # Imports
 import re
@@ -16,4 +17,7 @@ from classes.BaseForm.base_form import BaseForm
 from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 # functions
+
+# logging enabled
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='formwizard.log')
 
