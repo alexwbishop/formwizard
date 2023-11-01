@@ -51,6 +51,13 @@ except Exception as e:
     logging.error(f"An error occurred:", {e}")
     # Here you could also log the error or take corrective measures
 
+# Function to collect signer's name
+def get_signer_name():
+    signer_first = input("Enter the signer's first name: ")
+    signer_mid = input("Enter the signer's middle name or initial, if any: ")
+    signer_last = input("Enter the signer's last name: ")
+    return f"{signer_first} {signer_mid} {signer_last}"
+
 # Validation Function for Confirmation Checks
 def get_confirmation(prompt: str, error_msg: str = "Invalid input. Please try again.") -> bool:
     while True:
@@ -231,9 +238,13 @@ signer_name = f"{signer_first} {signer_mid} {signer_last}"
 sig_conformed = f"/s/{signer_name}"
 
 # Confirm Signer's Name
-if not get_confirmation(f"Signer's full name is {signer_name}. Is this correct? (Y/N): "):
-    logging.warning("Please restart the session with the correct signer's name.")
-    exit()
+while True:
+    signer_name = get_signer_name()
+    if get_confirmation(f"Signer's full name is {signer_name}. Is this correct? (Y/N): "):
+        logging.info(f"Signer's name confirmed as {signer_name}")
+        break
+    else:
+        logging.warning("Signer's name not confirmed. Asking for re-entry.")
 
 # Initialize list to store form instances
 forms = []
