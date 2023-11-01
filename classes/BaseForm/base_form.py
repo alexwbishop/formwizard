@@ -9,7 +9,7 @@ from datetime import datetime
 
 # define common form fields
 class BaseForm:
-    def __init__(self, form_status, attachments, line_number, order_number, entity_name, jurisdiction_instance, domestic_state, agent_name, agent_street1, agent_street2, agent_city, agent_state, agent_zip, agent_county, session_id, session_timestamp, signer_name, signer_first, signer_mid, signer_last, signer_title, signer_title_ext, sig_conformed, sig_typed, signed_on_date, state_id, business_purpose, phys_street1, phys_street2, phys_city, phys_state, phys_zip, phys_county, mail_street1, mail_street2, mail_city, mail_state, mail_zip, mail_county, domestic_street1, domestic_street2, domestic_city, domestic_zip, domestic_county, user_id):
+    def __init__(self, form_status=None, attachments=None, line_number=None, signer_midinit=None, order_number=None, entity_name=None, jurisdiction_instance=None, domestic_state=None, agent_name=None, agent_street1=None, agent_street2=None, agent_city=None, agent_state=None, agent_zip=None, agent_county=None, session_id=None, session_timestamp=None, signer_name=None, signer_first=None, signer_mid=None, signer_last=None, signer_title=None, signer_title_ext=None, sig_conformed=None, sig_typed=None, signed_on_date=None, state_id=None, business_purpose=None, phys_street1=None, phys_street2=None, phys_city=None, phys_state=None, phys_zip=None, phys_county=None, mail_street1=None, mail_street2=None, mail_city=None, mail_state=None, mail_zip=None, mail_county=None, domestic_street1=None, domestic_street2=None, domestic_city=None, domestic_zip=None, domestic_county=None, user_id=None):
         # entity name
         self.entity_name = entity_name
 
@@ -41,8 +41,20 @@ class BaseForm:
         # agent_county
         self.agent_county = agent_county
 
-        # signer_name
+        # signer_first
+        self.signer_first = signer_first
+
+        # signer_mid
+        self.signer_mid = signer_mid
+
+        # signer_last
+        self.signer_last = signer_last
+
+        # signer_name (concatenated)
         self.signer_name = signer_name
+
+        # signer_midinit ## make this dynamically the first initial of signer_mid
+        self.signer_midinit = signer_midinit
 
         # signer_title
         self.signer_title = signer_title

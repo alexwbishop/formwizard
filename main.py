@@ -43,8 +43,8 @@ def populate_form(form_template_path, output_pdf_path, field_coordinates, field_
 # Function to merge text PDF onto blank form
 from PyPDF2 import PdfReader, PdfWriter
 
-# Initialize an empty BaseForm instance to begin storing the inputted data
-form_instance = BaseForm()
+# Initialize an empty BaseForm instance to begin storing the inputted data with some default settings
+form_instance = BaseForm(filing_type="Change of Agent", domestic_state="DE", form_status="Blank", agent_name="C T Corporation System", session_id="FW-Test-001", session_timestamp=datetime.now(), signed_on_date=datetime.now())
 
 def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     pdf_reader_form = PdfReader(open(form_pdf_path, 'rb'))
@@ -65,27 +65,30 @@ def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
 with open('field_coordinates.json', 'r') as f:
     form_config = json.load(f)
 
-# PHASE 1 = Basic command line prompt usage:
+## PHASE 1 = Basic command line prompt usage:
 
 # Greet and Confirm that User is Alex
-user_id = input("Hello! Are you Alex? (Y/N): ")
-# Develop this further to ask for the WK username and validate correct format before asking for password. Once validated, store the WK username as user_id variable.
-if user_id.lower() == 'y':
-    password = input("Please enter your password: ")
-    if password == 'scarletrules':
-        print("Welcome, Alex!")
-# add deeper password security here
+while True:
+    user_id = input("Greetings. Please enter your WK username (e.g., 'alexander.bishop'): ")
+    # You can add more validation logic here to check the format of the username.
+    # For example, you can check if it contains a dot (.) to match the format.
+    if '.' in user_id:
+        break  # Exit the loop if the format is correct
     else:
-        print("Incorrect password. Exiting.")
-        exit()
+        print("Invalid format. Please enter a username in the correct format.")
+
+# Ask for password
+password = input("Please enter your password: ")
+
+# Check if the username and password are correct
+if user_id == 'alexander.bishop' and password == 'scarletrules':
+    print("Welcome, Alex!")
 else:
-    print("You are not authorized to use this program. Exiting.")
-    exit()
+    print("Access denied. Please check your username and password.")
     
-# Store the user_id into a new form-prep session
+# Create a session_id for the form prep session and assign the user_id to it
 form_instance.user_id = user_id
-session_id = 1
-form_instance.session_id = session_id
+form_instance.session_id = 1 # make this more dynamically-generated for each form-prep session (aka each successful run of program)
 form_instance.session_timestamp = datetime.now()
 
 # Confirm filing type
@@ -196,6 +199,8 @@ if confirmation.lower() != 'y':
 agent_zip = input("Enter the agent's ZIP code: ")
 while not agent_zip.isdigit() or len(agent_zip) != 5:
     agent_zip = input("Enter a valid ZIP code: ")
+
+## PHASE 2 = DOCUMENT PREPARATION
 
 # Update form_data with user input
 form_data = {

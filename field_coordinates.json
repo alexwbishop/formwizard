@@ -42,8 +42,6 @@
       "sig_conformed": {"x": 320, "y": 460},
       "signer_name": {"x": 320, "y": 520}
     },
-
-    
     "CA-Corp-All-COA": {
 	"entity_name": {"x": 55, "y": 285},
 	"state_id": {"x": 388, "y": 285},
@@ -100,9 +98,9 @@
 	"company_email": {"x": 380, "y": 650},
 	"signed_on_date": {"x": 55, "y": 722},
 	"signer_name": {"x": 135, "y": 722},
-	"signer_title": {"x": 356, "y": 722},
-		},
-"CA-LLC-All-COA": {
+	"signer_title": {"x": 356, "y": 722}
+	},
+	"CA-LLC-All-COA": {
 	"entity_name": {"x": 45, "y": 245},
 	"state_id": {"x": 46, "y": 333},
 	"domestic_state": {"x": 315, "y": 339},
@@ -145,9 +143,9 @@
 	"company_email": {"x": 380, "y": 625},
 	"signed_on_date": {"x": 40, "y": 720},
 	"signer_name": {"x": 131, "y": 720},
-	"signer_title": {"x": 360, "y": 720},
-	  },
-"CA-LP-Domestic-COA": {
+	"signer_title": {"x": 360, "y": 720}
+	},
+	"CA-LP-Domestic-COA": {
 	"entity_name": {"x": 305, "y": 205},
 	"state_id": {"x": 70, "y": 205},
 	"new_entity_name": {"x": 105, "y": 230},
@@ -173,8 +171,8 @@
 	"newaddr_zip": {"x": 513, "y": 438},
 	"signer_name": {"x": 296, "y": 645},
 	"signed_on_date": {"x": 495, "y": 645}
-  },
-"CA-LP-Foreign-COA": {
+ 	 },
+	"CA-LP-Foreign-COA": {
 	"entity_name": {"x": 220, "y": 210},
 	"state_id": {"x": 35, "y": 210},
 	"amended_name": {"x": 45, "y": 300},
