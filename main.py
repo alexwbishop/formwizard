@@ -10,7 +10,7 @@ import os
 import PyPDF2
 import uuid
 import logging
-
+from questions import CAQuestion, DEQuestion
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
@@ -19,6 +19,13 @@ from classes.BaseForm.base_form import BaseForm
 from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 ## Define all functions
+
+# questioning by state
+if state == "CA":
+    question_obj = CAQuestion()
+elif state == "DE":
+    question_obj = DEQuestion()
+question_obj.all_questions()
 
 # logging enabled
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='formwizard.log')
