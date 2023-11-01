@@ -1,0 +1,22 @@
+{
+  "VALID_STATES": {
+    "DE": "Delaware",
+    "CA": "California"
+  },
+  "ENTITY_TYPES": ["LLC", "Corp", "LP"],
+  "FILING_TYPES": ["Change of Agent", "COA"],
+  ALL_STATES = [
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+    "DC"
+]
+  "MAX_FORM_QUANTITY": 10,
+  "VALID_AGENT_NAMES": [
+    "C T Corporation System",
+    "National Registered Agents, Inc.",
+    "The Corporation Trust Company"
+  ]
+}
