@@ -3,94 +3,41 @@
     "DE": "Delaware",
     "CA": "California"
   },
-
+  "VALIDATION_RULES": {
+  "agent_zip": "^[0-9]{5}(?:-[0-9]{4})?$",
+  "state_id": "^[a-zA-Z0-9]{1,50}$",
+  "CA_business_purpose": "^.{1,50}$"
+}
   "USER_ID": ["alexander.bishop", "guest"],
-  
   "ENTITY_TYPES": ["LLC", "Corp", "LP"],
-
   "RESIDENCY": ["Domestic", "Foreign"],
-  
   "FILING_TYPES": ["COA"],
-
   "SIGNATURE_METHOD_TO_USE": ["E-Sign", "Conformed", "Typed In", "PDF Scan", "Hard Copy"],
-
-  "SIGNER_MUST_BE_ON_RECORD": ["True", "False", "NA"],
-    
-  "REQUIRES_NOTARIZATION": ["True", "False", "NA"],
-
-  "POA_ALLOWED": ["True", "False", "NA"],
-
-  "UTILIZING_POA": ["True", "False", "NA"],
-    
-  "TAX_CLEARANCE_NEEDED": ["True", "False", "NA"],
-  
-  "ATTACHMENTS_APPLY": ["True", "False", "NA"],
-
+  "BOOLEAN_OPTIONS": ["True", "False", "NA"],
   "ATTACHMENTS_DOCS_NEEDED": ["Certificate of Good Standing/Existence", "Certified Copy from Domestic", "Cert Re from Domestic", "Officer/Director List", "Tax Clearance Certificate", "NA"],
-  
-  "ALL_STATES": {
-    "AL": "Alabama",
-    "AK": "Alaska",
-    "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
-    "DC"
-  },
-
-  "ALL_MONTHS": {
-    "January": "Jan", "01",
-    "February": "Feb", "02",
-    
-  },
-
-  "VALID_YEAR_RANGE": {
-    1900 - 2023
-  },
-
-  "VALID_ZIP: {
-    5-digits?
-  },
-    
+  "ALL_STATES": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"],
+  "ALL_MONTHS": ["January", "February"],
+  "VALID_YEAR_RANGE": [1900, 2023],
   "MAX_FORM_QUANTITY": 10,
-
-  "VALID_AGENTS": [
-    "CT",
-    "NRAI",
-    "Custom Entry"
-  ]
-  
+  "VALID_AGENTS": ["CT", "NRAI", "Custom Entry"],
   "VALID_AGENT_NAMES": {
-   "CT": "C T Corporation System", "The Corporation Trust Company",
-   "NRAI": "National Registered Agents, Inc."
+    "CT": ["C T Corporation System", "The Corporation Trust Company"],
+    "NRAI": ["National Registered Agents, Inc."]
   },
-  
-  ]
-  "FORM COMPLETION STATUS": [
-    "Blank",
-    "Incomplete",
-    "Complete & Unsigned"
-    "Complete & Signed"
-    "Error"
-    "Exported"
-  ],
-
-   "CT_REGISTERED_AGENT_NAMES": [
+  "FORM_COMPLETION_STATUS": ["Blank", "Incomplete", "Complete & Unsigned", "Complete & Signed", "Error", "Exported"],
+  "CT_REGISTERED_AGENT_NAMES": {
     "CA": "C T Corporation System",
     "DE": "The Corporation Trust Company"
-  ],
-  
-  "REGISTERED_AGENT_ADDRESSES": {
-    "DE": "Corporation Trust Center", "1209 Orange Street", "Wilmington", "19801", "New Castle",
-    "CA": "330 N Brand Blvd, "STE 700", "Glendale", "91203", "Sacramento"
   },
-  
+  "REGISTERED_AGENT_ADDRESSES": {
+    "DE": ["Corporation Trust Center", "1209 Orange Street", "Wilmington", "19801", "New Castle"],
+    "CA": ["330 N Brand Blvd", "STE 700", "Glendale", "91203", "Sacramento"]
+  },
   "DEFAULTS": {
     "domestic_state": "DE",
     "jurisdiction": "DE",
     "form_status": "Blank",
     "other_defaults": "value_here"
   }
-  
 }
+
