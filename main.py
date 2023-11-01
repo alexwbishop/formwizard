@@ -88,6 +88,14 @@ session_id = 1
 form_instance.session_id = session_id
 form_instance.session_timestamp = datetime.now()
 
+# Confirm filing type
+input("FormWizard only supports form completion for DE and CA Change of Agents at this time. Please confirm (Y/N): ")
+confirmation = input()
+if confirmation.lower() != 'y':
+    print("Please check back later for more filing types to be supported in the future.")
+    exit()
+filing_type = "Change of Agent"
+
 # Ask for number of forms to complete
 num_forms = int(input("How many forms would you like to prepare for this session? (Up to 10): "))
 if num_forms > 10:
@@ -102,6 +110,7 @@ if num_forms > 10:
     signer_mid = input("Enter the signer's middle name or initial, if any: ")
     signer_last = input("Enter the signer's last name: ")
     signer_name = f"{signer_first} {signer_mid} {signer_last}"
+    sig_conformed = f"/s/{signer_name}"
 
  # Confirm Signer's Name
 print(f"Signer's full name is {signer_name}. Is this correct? (Y/N): ")
@@ -118,8 +127,8 @@ form_instance.agent_name = agent_name
 form_instance.signer_first = signer_first
 form_instance.signer_mid = signer_mid
 form_instance.signer_last = signer_last
-form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
-form_instance.sig_conformed = f"/s/{signer_name}"
+form_instance.signer_name = signer_name
+form_instance.sig_conformed = sig_conformed
 form_instance.sig_typed = signer_first
 form_instance.filing_type = filing_type
 
@@ -149,7 +158,7 @@ if confirmation.lower() == 'y':
     form_instance.signer_mid=signer_mid
     form_instance.signer_last=signer_last
     form_instance.signer_name=f"{signer_first} {signer_mid} {signer_last}"
-    form_instance.sig_conformed=f"/s/{signer_first}"
+
 
 # Construct the PDF file path dynamically
 form_template_path = f"StateForms/{form_instance.jurisdiction}/{form_instance.jurisdiction}-{form_instance.entity_type}-{form_instance.residency}-{form_instance.filing_type}.pdf"
@@ -196,6 +205,9 @@ form_data = {
     'signer_name': signer_name
 # Need to add functionality to load the registered agent address in from a separate library, based on selecting CT or NRAI as the agent_name
 }
+
+# define the form key for labeling PDF files being processed, e.g. DE-Corp-For-COA
+form_key = f"{jurisdiction}-{entity_type}-{residency}-{filing_type}"
 
 # Run the populate function on the form
 populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', f'StateForms/{jurisdiction}/output_{form_key}.pdf', form_config.get(form_key, {}), form_data)
