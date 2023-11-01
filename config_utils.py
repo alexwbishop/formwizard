@@ -18,3 +18,13 @@ from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 # functions
 
+# JSON configuration function
+def load_json_config(file_path):
+    try:
+        with open(file_path, 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        logging.error(f"Error decoding JSON configuration: {e}")
+    except FileNotFoundError as e:
+        logging.error(f"JSON file not found: {e}")
+    return {}
