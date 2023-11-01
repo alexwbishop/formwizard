@@ -4,10 +4,12 @@
 	#- Methods: Logic specific to the jurisdiction.
 
 #Inherits from FilingType - need to import/define FilingType
+from ..Utilities.FormUtility import FormUtility
 from ..FilingType.filingtype import FilingType
 
 class Jurisdiction(FilingType):
-    def __init__(self, name, abbreviation, signature_type_allowed, hard_copy_required, poa_allowed, tax_clearance_req, annual_reports_must_be_current, signer_must_be_on_record, signer_titles_restricted):
+    def __init__(self, name, abbreviation, signature_type_allowed=None, hard_copy_required=None, poa_allowed=None, tax_clearance_req=None, annual_reports_must_be_current=None, signer_must_be_on_record=None, signer_titles_restricted=None, jurisdiction_instance=None):
+        super().__init__(jurisdiction_instance=jurisdiction_instance)  # Pass the required argument to BaseForm
         self.name = name
         self.abbreviation = abbreviation
         self.signature_type_allowed = signature_type_allowed
@@ -17,6 +19,22 @@ class Jurisdiction(FilingType):
         self.annual_reports_must_be_current = annual_reports_must_be_current
         self.signer_must_be_on_record = signer_must_be_on_record
         self.signer_titles_restricted = signer_titles_restricted
+        self.form_utility = FormUtility()  # Now this should work
+
+    @classmethod
+    def create_jurisdiction(cls, name, abbreviation):
+        # Here you can add default values for the other attributes if needed
+        return cls(name, abbreviation, None, None, None, None, None, None, None, None)
+
+    def some_method(self):
+        self.form_utility.method_requiring_jurisdiction(self)
+
+
+def some_method(self):
+        self.form_utility.method_requiring_jurisdiction(self)
+
+# ... (rest of your code for subclasses)
+
 
 # Subclasses for each state and district
 class Alabama(Jurisdiction):
@@ -41,6 +59,9 @@ class Connecticut(Jurisdiction):
     pass
 
 class Delaware(Jurisdiction):
+    pass
+
+class DistrictOfColumbia(Jurisdiction):
     pass
 
 class Florida(Jurisdiction):
@@ -169,5 +190,4 @@ class Wisconsin(Jurisdiction):
 class Wyoming(Jurisdiction):
     pass
 
-class DistrictOfColumbia(Jurisdiction):
-    pass
+

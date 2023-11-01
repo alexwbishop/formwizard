@@ -2,7 +2,7 @@
 # Version 1.0.0.2
 # Purpose: Automate the process of filling out Delaware Change of Agent forms (Corp, LLC, LP), Domestic and Foreign.
 
-## Import stuff
+# main.py
 # Imports
 import json
 import os
@@ -44,12 +44,20 @@ def populate_form(form_template_path, output_pdf_path, field_coordinates, field_
 # Function to merge text PDF onto blank form
 from PyPDF2 import PdfReader, PdfWriter
 
-# Load applicable jurisdiction names and abbreviations for the form-prep session
-de_jurisdiction = Jurisdiction("Delaware", "DE")
+# Create a DE instance of the Jurisdiction class
+de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
 
 # BaseForm: Instantiate to begin storing the inputted data with some default settings
-form_instance = BaseForm(domestic_state="DE", form_status="Blank", session_timestamp=datetime.now(), signed_on_date=datetime.now(), jurisdiction_instance=de_jurisdiction)
+form_instance = BaseForm(
+    domestic_state="DE", 
+    form_status="Blank", 
+    session_timestamp=datetime.now(), 
+    signed_on_date=datetime.now(),
+    jurisdiction_instance=de_jurisdiction  
+)
 
+# Now that form_instance is defined, you can update de_jurisdiction with it if needed
+de_jurisdiction.jurisdiction_instance = form_instance
 
 def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     pdf_reader_form = PdfReader(open(form_pdf_path, 'rb'))
@@ -71,39 +79,39 @@ with open('field_coordinates.json', 'r') as f:
     form_config = json.load(f)
 
 ## PHASE 1 = Basic command line prompt usage:
-
+user_id = "alexander.bishop"
 # Greet and Confirm that User is Alex
-while True:
-    user_id = input("Greetings. Please enter your WK username (e.g., 'john.doe'): ")
+#while True:
+#    user_id = input("Greetings. Please enter your WK username (e.g., 'john.doe'): ")
     # You can add more validation logic here to check the format of the username.
     # For example, you can check if it contains a dot (.) to match the format.
-    if '.' in user_id:
-        break  # Exit the loop if the format is correct
-    else:
-        print("Invalid format. Please enter a username in the correct format.")
+#    if '.' in user_id:
+#        break  # Exit the loop if the format is correct
+#    else:
+#        print("Invalid format. Please enter a username in the correct format.")
 
 # Ask for password
-password = input("Please enter your password: ")
+#password = input("Please enter your password: ")
 
 # Check if the username and password are correct
-if user_id == 'alexander.bishop' and password == 'scarlet':
-    print("Welcome, Alex!")
-else:
-    print("Access denied. Please check your username and password.")
-    exit()
+#if user_id == 'alexander.bishop' and password == 'scarlet':
+#    print("Welcome, Alex!")
+#else:
+#    print("Access denied. Please check your username and password.")
+#    exit()
 
 # Create a session_id for the form prep session and assign the user_id to it
 session_id = "FW-Test-001"
 form_instance.user_id = user_id
-form_instance.session_id = session_id # make this more dynamically-generated for each form-prep session (aka each successful run of program)
+form_instance.session_id = session_id # make this dynamically-generated for each form-prep session (aka each successful run of program)
 form_instance.session_timestamp = datetime.now()
 
 # Confirm filing type
-confirmation = input("FormWizard only supports form completion for DE and CA Change of Agents at this time. Please confirm (Y/N): ").lower()
+confirmation = input("FormWizard only supports form completion for Change of Agents at this time. Please confirm (Y/N): ").lower()
 if confirmation != 'y':
     print("Please check back later for more filing types to be supported in the future.")
     exit()
-filing_type = "Change of Agent"
+filing_type = "COA"
 form_instance.filing_type = filing_type
 
 # Ask for number of forms to complete
@@ -114,6 +122,19 @@ if num_forms > 10:
 if num_forms < 1:
     print("That's not even a real number. Why are you even here? Goodbye, silly person.")
     exit()
+
+# Confirm state of filing (currently only DE or CA)
+state_confirmation = input("FormWizard currently supports filings for Delaware (DE) and California (CA) only. Please enter the state code (DE/CA): ").upper()
+if state_confirmation not in ['DE', 'CA']:
+    print("Sorry, we currently only support filings for Delaware and California. Please check back later for more states.")
+    exit()
+
+# User selects the state based on input
+state_name = "Delaware" if state_confirmation == 'DE' else "California"
+state_code = state_confirmation
+
+# Create an instance of the Jurisdiction class based on user input
+jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
 
 # Ask if we are to use CT as Agent - Need to add validation to confirm if matched within agent name list or a custom name
 agent_name = "C T Corporation System"
@@ -152,10 +173,6 @@ form_instance.signer_name = signer_name
 form_instance.sig_conformed = sig_conformed
 form_instance.sig_typed = signer_first
 
-# You can access jurisdiction-specific fields through the BaseForm instance:
-#print(form_instance.jurisdiction_instance.name)  # Output: "Delaware"
-#print(form_instance.jurisdiction_instance.abbreviation)  # Output: "DE"
-
 # Collect entity info
 for i in range(num_forms):
     entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate suffix: ")
@@ -166,9 +183,9 @@ for i in range(num_forms):
     # need action to check if it's a valid state abbreviation
     jurisdiction = input(f"Enter the state to file {filing_type} for {entity_name} in (DE/CA): ")
     # need action to check if it's a jurisdiction that FormWizard can handle (DE or CA right now)
-    residency = input(f"Is {entity_name} Domestic or Foreign to {jurisdiction}? (D/F): ")
+    residency = input(f"Is {entity_name} Domestic or Foreign to {jurisdiction}? (Dom/For): ")
     # need action for the above line to convert the response into a value for residency, as either domestic or foreign in relation to the jurisdiction variable.
-    filing_type = input(f"Is {entity_name} filing a Change of Agent in {jurisdiction}? (Y/N): ")
+    #filing_type = input(f"Is {entity_name} filing a Change of Agent in {jurisdiction}? (Y/N): ")
     # need action to set filing_type to be 'Change of Agent' if Y is selected, otherwise go back to last menu (because we can only handle 1 filing_type right now).
     break
 
@@ -188,7 +205,7 @@ if confirmation != 'y':
     form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
 
 # Construct the PDF file path dynamically
-form_template_path = f"StateForms/{form_instance.jurisdiction}/{form_instance.jurisdiction}-{form_instance.entity_type}-{form_instance.residency}-{form_instance.filing_type}.pdf"
+form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
 
 # Check if PDF files exist
 if not file_exists(form_template_path):
@@ -210,7 +227,7 @@ forms.append(form_instance)
 # Display complete list of entities & forms to be filled
 print("List of entities/forms to be filled in this session:")
 for i, form in enumerate(forms):
-    print(f"{i+1}) {form.entity_name} - {form.entity_type} - {form.filing_type}")
+    print(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
 
 # Ask user to confirm the list of filings Y/N to proceed. If N, quit program.
 print(f"All information obtained, ready to complete forms now. Proceed? (Y/N): ")
@@ -220,9 +237,9 @@ if confirmation != 'y':
     exit()
 
 # ZIP code validation (not yet being used)
-agent_zip = input("Enter the agent's ZIP code: ")
-while not agent_zip.isdigit() or len(agent_zip) != 5:
-    agent_zip = input("Enter a valid ZIP code: ")
+#agent_zip = input("Enter the agent's ZIP code: ")
+#while not agent_zip.isdigit() or len(agent_zip) != 5:
+#    agent_zip = input("Enter a valid ZIP code: ")
 
 ## PHASE 2 = DOCUMENT PREPARATION
 

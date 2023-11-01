@@ -4,23 +4,35 @@
 	#- Attributes: Common fields like entity name, signer name, etc.
 	#- Methods: Data validation, PDF generation, etc.
 
+from ..Utilities.utilities import FormUtility
 # get current date & time to use in the timestamp feature
 from datetime import datetime
-from ..Jurisdiction.jurisdiction import Jurisdiction
 
 # define common form fields
 class BaseForm:
-    def __init__(self, jurisdiction_instance, form_status=None, attachments=None, line_number=None, signer_midinit=None, order_number=None, entity_name=None, domestic_state=None, agent_name=None, agent_street1=None, agent_street2=None, agent_city=None, agent_state=None, agent_zip=None, agent_county=None, session_id=None, session_timestamp=None, signer_name=None, signer_first=None, signer_mid=None, signer_last=None, signer_title=None, signer_title_ext=None, sig_conformed=None, sig_typed=None, signed_on_date=None, state_id=None, business_purpose=None, phys_street1=None, phys_street2=None, phys_city=None, phys_state=None, phys_zip=None, phys_county=None, mail_street1=None, mail_street2=None, mail_city=None, mail_state=None, mail_zip=None, mail_county=None, domestic_street1=None, domestic_street2=None, domestic_city=None, domestic_zip=None, domestic_county=None, user_id=None):
+    def __init__(self, jurisdiction_instance, residency=None, filing_type=None, entity_type=None, jurisdiction=None, form_status=None, attachments=None, line_number=None, signer_midinit=None, order_number=None, entity_name=None, domestic_state=None, agent_name=None, agent_street1=None, agent_street2=None, agent_city=None, agent_state=None, agent_zip=None, agent_county=None, session_id=None, session_timestamp=None, signer_name=None, signer_first=None, signer_mid=None, signer_last=None, signer_title=None, signer_title_ext=None, sig_conformed=None, sig_typed=None, signed_on_date=None, state_id=None, business_purpose=None, phys_street1=None, phys_street2=None, phys_city=None, phys_state=None, phys_zip=None, phys_county=None, mail_street1=None, mail_street2=None, mail_city=None, mail_state=None, mail_zip=None, mail_county=None, domestic_street1=None, domestic_street2=None, domestic_city=None, domestic_zip=None, domestic_county=None, user_id=None):
         
         # entity name
         self.entity_name = entity_name
+
+        # entity_type
+        self.entity_type = entity_type
+
+        # entity_type
+        self.residency = residency
+
+        # entity_type
+        self.filing_type = filing_type
 
         # a reference to an instance of the 'Jurisdiction' class within each form object
         self.jurisdiction_instance = jurisdiction_instance 
         # This allows access to all the state-specific attributes and methods through that reference.
         
-        # Create a DE instance of the Jurisdiction class
-        de_jurisdiction = Jurisdiction("Delaware", "DE")
+        # jurisdiction
+        self.jurisdiction = jurisdiction
+
+        # Create instance of FormUtility
+        self.form_utility = FormUtility()  # Composition over inheritance
 
         # domestic state
         self.domestic_state = domestic_state   
