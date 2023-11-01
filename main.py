@@ -44,7 +44,7 @@ def populate_form(form_template_path, output_pdf_path, field_coordinates, field_
 from PyPDF2 import PdfReader, PdfWriter
 
 # Initialize an empty BaseForm instance to begin storing the inputted data with some default settings
-form_instance = BaseForm(filing_type="Change of Agent", domestic_state="DE", form_status="Blank", agent_name="C T Corporation System", session_id="FW-Test-001", session_timestamp=datetime.now(), signed_on_date=datetime.now())
+form_instance = BaseForm(domestic_state="DE", form_status="Blank", agent_name="C T Corporation System", session_timestamp=datetime.now(), signed_on_date=datetime.now())
 
 def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     pdf_reader_form = PdfReader(open(form_pdf_path, 'rb'))
@@ -87,22 +87,26 @@ else:
     print("Access denied. Please check your username and password.")
     
 # Create a session_id for the form prep session and assign the user_id to it
+session_id = "FW-Test-001"
 form_instance.user_id = user_id
-form_instance.session_id = 1 # make this more dynamically-generated for each form-prep session (aka each successful run of program)
+form_instance.session_id = session_id # make this more dynamically-generated for each form-prep session (aka each successful run of program)
 form_instance.session_timestamp = datetime.now()
 
 # Confirm filing type
-input("FormWizard only supports form completion for DE and CA Change of Agents at this time. Please confirm (Y/N): ")
-confirmation = input()
-if confirmation.lower() != 'y':
+confirmation = input("FormWizard only supports form completion for DE and CA Change of Agents at this time. Please confirm (Y/N): ").lower()
+if confirmation != 'y':
     print("Please check back later for more filing types to be supported in the future.")
     exit()
 filing_type = "Change of Agent"
+form_instance.filing_type = filing_type
 
 # Ask for number of forms to complete
 num_forms = int(input("How many forms would you like to prepare for this session? (Up to 10): "))
 if num_forms > 10:
     print("Sorry, you can only prepare up to 10 forms at a time.")
+    exit()
+if num_forms < 1:
+    print("That's not even a real number. Why are you even here? Goodbye, silly person.")
     exit()
 
 # Ask if we are to use CT or NRAI as Agent
@@ -118,7 +122,7 @@ if num_forms > 10:
  # Confirm Signer's Name
 print(f"Signer's full name is {signer_name}. Is this correct? (Y/N): ")
 confirmation = input()
-if confirmation.lower() != 'y':
+if confirmation != 'y':
     print("Please restart the session with the correct signer's name.")
     exit()
 
@@ -133,7 +137,6 @@ form_instance.signer_last = signer_last
 form_instance.signer_name = signer_name
 form_instance.sig_conformed = sig_conformed
 form_instance.sig_typed = signer_first
-form_instance.filing_type = filing_type
 
 # Collect entity names, types, and residency
 for i in range(num_forms):
@@ -154,14 +157,13 @@ for i in range(num_forms):
 # Confirm entered entity info before proceeding to next entity
 print(f"Entity info entered: {entity_name} (a {residency} {entity_type}) is filing a {filing_type} in {jurisdiction}. Is this correct? (Y/N): ")
 confirmation = input()
-if confirmation.lower() == 'y':
+if confirmation != 'y':
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
     form_instance.signer_first=signer_first
     form_instance.signer_mid=signer_mid
     form_instance.signer_last=signer_last
     form_instance.signer_name=f"{signer_first} {signer_mid} {signer_last}"
-
 
 # Construct the PDF file path dynamically
 form_template_path = f"StateForms/{form_instance.jurisdiction}/{form_instance.jurisdiction}-{form_instance.entity_type}-{form_instance.residency}-{form_instance.filing_type}.pdf"
@@ -191,7 +193,7 @@ for i, form in enumerate(forms):
 # Ask user to confirm the list of filings Y/N to proceed. If N, quit program.
 print(f"All information obtained, ready to complete forms now. Proceed? (Y/N): ")
 confirmation = input()
-if confirmation.lower() != 'y':
+if confirmation != 'y':
     print("Please restart the session with the correct information.")
     exit()
 
@@ -227,6 +229,6 @@ populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f
 merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'completed_forms/{jurisdiction}-{entity_name}_-_{form_key}_Filled.pdf')
 
 # Show success message
-print(f"PDF for {entity_name} Successfully Filled.")
+print(f"PDF for {entity_name} Successfully Filled. Thank you for using FormWizard. Your session ID is: {session_id}.")
 
 # Done! For now...
