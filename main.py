@@ -3,14 +3,13 @@
 # Purpose: Automate the process of filling out Change of Agent forms (Corp, LLC, LP), Domestic and Foreign. in DE and CA.
 # main.py
 
-# Add your additional imports at the top
-from config_utils import load_json_config  # or whatever the name of the file where you moved this function
-from validations import date_time_validation, validate_target_file, validate_confirmation_checks  # Replace with actual function names
-from logging_and_time import message_logging, create_session_id  # Replace with actual function names
-from pdf_operations import get_pdf_dimensions, populate_form, merge_pdfs  # Replace with actual function names
-from form_questions import get_signer_name, collect_entity_info  # Replace with actual function names
-from report_manager import display_complete_list  # Replace with actual function names
-# ... and so on for all the functions you moved
+# load external functions
+from config_utils import load_json_config
+from input_validators import date_time_validation, validate_target_file, validate_confirmation_checks  # Replace with actual function names
+from logging_utils import message_logging, create_session_id  # Replace with actual function names
+from pdf_utils import get_pdf_dimensions, populate_form, merge_pdfs  # Replace with actual function names
+from questions import get_signer_name, collect_entity_info  # Replace with actual function names
+from session_utils import display_complete_list  # Replace with actual function names
 
 # Imports
 import re
@@ -27,9 +26,9 @@ from PyPDF2 import PdfReader, PdfWriter
 from classes.BaseForm.base_form import BaseForm
 from classes.Jurisdiction.jurisdiction import Jurisdiction
 
-## Define all functions
+## Call functions
 
-# questioning by state
+# line of questioning by state
 if state == "CA":
     question_obj = CAQuestion()
 elif state == "DE":
@@ -37,13 +36,13 @@ elif state == "DE":
 question_obj.all_questions()
 
 # message logging function - Moved
+
 # date & time validation - Moved
 
 # JSON configuration function - Moved
-
-# Load JSON configurations
-config = load_json_config('config.json')
-form_config = load_json_config('field_coordinates.json')
+def main():
+    config = load_json_config("config.json")
+    form_config = load_json_config('field_coordinates.json')
 VALID_STATES = config.get('VALID_STATES', []) 
 ENTITY_TYPES = config.get('ENTITY_TYPES', [])
 FILING_TYPES = config.get('FILING_TYPES', [])
@@ -51,16 +50,7 @@ ALL_STATES = config.get('ALL STATES', [])
 MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
 VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
 DEFAULTS = config.get('DEFAULTS', [])
-#VALID_COUNTRIES = config.get('VALID_COUNTRIES', [])
-#VALID_ZIP_CODES = config.get('VALID_ZIP_CODES', [])
-#OTHER_VALID_OPTIONS = config.get('OTHER_VALID_OPTIONS', [])
 
-# Function to collect signer's name
-def get_signer_name():
-    signer_first = input("Enter the signer's first name: ")
-    signer_mid = input("Enter the signer's middle name or initial, if any: ")
-    signer_last = input("Enter the signer's last name: ")
-    return f"{signer_first} {signer_mid} {signer_last}"
 
 # Validation Function for Confirmation Checks - Moved
 
@@ -264,12 +254,17 @@ merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'co
 # Print quicklist of all forms/entities that were filled out in current session - Moved
 
 # Show success message & goodbye
-logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
+ging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
 \n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
 
-#SCARLET# help me to add a session log txt file export - confirm with user
+#SCARLET# help me to add a session  txt file export - confirm with user
 
 #SCARLET# prompt for user feedback of experience 1-10
 
 ### END OF PHASE 2 ###
+
+if __name__ == "__main__":
+    main()
+
 # Done
+
