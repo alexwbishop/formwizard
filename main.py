@@ -153,16 +153,23 @@ def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     with open(output_pdf_path, 'wb') as f:
         pdf_writer.write(f)
     
-# Load JSON configurations
 config = load_json_config('config.json')
-form_config = load_json_config('field_coordinates.json')
 
 VALID_STATES = config.get('VALID_STATES', {})
 ENTITY_TYPES = config.get('ENTITY_TYPES', [])
 FILING_TYPES = config.get('FILING_TYPES', [])
 MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
 VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
+DEFAULTS = config.get('DEFAULTS', {})
 
+# Use the defaults
+form_instance = BaseForm(
+    domestic_state=DEFAULTS.get('domestic_state', 'DE'), 
+    form_status=DEFAULTS.get('form_status', 'Blank'), 
+    session_timestamp=datetime.now(), 
+    signed_on_date=datetime.now(),
+    jurisdiction_instance=de_jurisdiction,
+)
 ## PHASE 1 = Basic command line prompt usage:
 
 user_id = "alexander.bishop"
