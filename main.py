@@ -26,10 +26,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 from datetime import datetime
 try:
     current_time = datetime.now()
-    logging.info(f"Current time:", {current_time}")
+    logging.info(f"Current time: {current_time}")  # Corrected this line
 except Exception as e:
-    logging.error(f"An error occurred:", {e}")
-    # Here you could also log the error or take corrective measures
+    logging.error(f"An error occurred: {e}")  # Corrected this line
 
 # JSON configuration function
 def load_json_config(file_path):
@@ -45,12 +44,15 @@ def load_json_config(file_path):
 # Load JSON configurations
 config = load_json_config('config.json')
 form_config = load_json_config('field_coordinates.json')
-
-VALID_STATES = config.get('VALID_STATES', {})
+VALID_STATES = config.get('VALID_STATES', []) 
 ENTITY_TYPES = config.get('ENTITY_TYPES', [])
 FILING_TYPES = config.get('FILING_TYPES', [])
+ALL_STATES = config.get('ALL STATES', [])
 MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
 VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
+#VALID_COUNTRIES = config.get('VALID_COUNTRIES', [])
+#VALID_ZIP_CODES = config.get('VALID_ZIP_CODES', [])
+#OTHER_VALID_OPTIONS = config.get('OTHER_VALID_OPTIONS', [])
 
 # Function to collect signer's name
 def get_signer_name():
