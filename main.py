@@ -64,17 +64,23 @@ DEFAULTS = config.get('DEFAULTS', [])
 
 # Function to merge text PDF onto blank form - Moved
 
-# Create a DE and CA instance of the Jurisdiction class
-de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
-ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
+# Create an instance of the Jurisdiction class
+current_jurisdiction = Jurisdiction.create_jurisdiction(state_name_mapping[state], state)
+#de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
+#ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 
-# BaseForm: Instantiate to begin storing the inputted data with some default settings
+# Create a single BaseForm instance with defaults
 form_instance = BaseForm(
-    domestic_state="DE", 
-    form_status="Blank", 
+    domestic_state=DEFAULTS.get('domestic_state', 'DE'), 
+    form_status=DEFAULTS.get('form_status', 'Blank'), 
     session_timestamp=datetime.now(), 
     signed_on_date=datetime.now(),
     jurisdiction_instance=de_jurisdiction,
+)
+
+# Overwrite attributes as necessary
+if some_condition:
+    form_instance.domestic_state = "DE"
 )
 
 # Now that form_instance is defined, you can update de_jurisdiction with it if needed
@@ -140,8 +146,8 @@ jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
 forms = []
 
 # Load applicable jurisdiction names and abbreviations for the form-prep session
-de_jurisdiction = Jurisdiction("Delaware", "DE")
-ca_jurisdiction = Jurisdiction("California", "CA")
+#de_jurisdiction = Jurisdiction("Delaware", "DE")
+#ca_jurisdiction = Jurisdiction("California", "CA")
 
 # Store inputted signature block info into previously initialized BaseForm instance
 form_instance.agent_name = agent_name
