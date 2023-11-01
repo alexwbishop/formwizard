@@ -1,27 +1,7 @@
 # FormWizard by Alex Bishop - incyde@riseup.net
 # Version 1.0.0.2
 # Purpose: Automate the process of filling out Change of Agent forms (Corp, LLC, LP), Domestic and Foreign. in DE and CA.
-
 # main.py
-
-# Constants
-VALID_STATES = ["DE": "Delaware", "CA": "California"]
-ENTITY_TYPES = ["LLC", "Corp", "LP"]
-FILING_TYPES = ["Change of Agent", "COA"]
-ALL_STATES = [
-    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
-    "DC"
-]
-MAX_FORM_QUANTITY = 10
-VALID_AGENT_NAMES = [
-    "C T Corporation System",
-    "National Registered Agents, Inc.",
-    "The Corporation Trust Company"
-]
 
 # Imports
 import json
@@ -51,7 +31,7 @@ except Exception as e:
     logging.error(f"An error occurred:", {e}")
     # Here you could also log the error or take corrective measures
 
-# JSON - load configuration
+# JSON configuration function
 def load_json_config(file_path):
     try:
         with open(file_path, 'r') as f:
@@ -61,6 +41,16 @@ def load_json_config(file_path):
     except FileNotFoundError as e:
         logging.error(f"JSON file not found: {e}")
     return {}
+
+# Load JSON configurations
+config = load_json_config('config.json')
+form_config = load_json_config('field_coordinates.json')
+
+VALID_STATES = config.get('VALID_STATES', {})
+ENTITY_TYPES = config.get('ENTITY_TYPES', [])
+FILING_TYPES = config.get('FILING_TYPES', [])
+MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
+VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
 
 # Function to collect signer's name
 def get_signer_name():
@@ -72,14 +62,16 @@ def get_signer_name():
 # Validation Function for Confirmation Checks
 def get_confirmation(prompt: str, error_msg: str = "Invalid input. Please try again.") -> bool:
     while True:
-        confirmation = input(prompt).lower()
-        if confirmation == 'y':
-            return True
-        elif confirmation == 'n':
-            return False
-        else:
-        except Exception as error_msg:
-            logging.error({error_msg})
+        try:
+            confirmation = input(prompt).lower()
+            if confirmation == 'y':
+                return True
+            elif confirmation == 'n':
+                return False
+            else:
+                print(error_msg)
+        except Exception as e:
+            logging.error(str(e))
 
 # Function to check if a file exists
 def file_exists(filepath):
@@ -152,15 +144,6 @@ def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     
     with open(output_pdf_path, 'wb') as f:
         pdf_writer.write(f)
-    
-config = load_json_config('config.json')
-
-VALID_STATES = config.get('VALID_STATES', {})
-ENTITY_TYPES = config.get('ENTITY_TYPES', [])
-FILING_TYPES = config.get('FILING_TYPES', [])
-MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
-VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
-DEFAULTS = config.get('DEFAULTS', {})
 
 # Use the defaults
 form_instance = BaseForm(
@@ -211,7 +194,6 @@ while True:
     else:
         logging.warning("Only Change of Agent filing type is currently supported.\n
         Please check back later for more filing types in the future.")
-        exit()
 
 # Ask for number of forms to complete
 while True:
@@ -309,13 +291,13 @@ for i in range(num_forms):
             logging.warning("Invalid state. Please enter again.")
     
     # Filing State
+    def get_jurisdiction(entity_name: str) -> str:
     while True:
-        jurisdiction = input(f"Enter the state that {entity_name} will file in (i.e. DE, CA): ")
+        jurisdiction = input(f"Enter the state that {entity_name} will file in (i.e. DE, CA): ").upper()
         if jurisdiction in VALID_STATES:
-            break
+            return jurisdiction
         else:
-            logging.warning("Sorry, we currently only support filings for Delaware and California. Please check back later for more states.")
-            exit()
+            logging.warning(f"Sorry, we currently only support filings for {', '.join(VALID_STATES)}. Please enter a valid state.")
     
     # Residency
     residency = 'Dom' if jurisdiction == domestic_state else 'For'
@@ -332,10 +314,14 @@ for i in range(num_forms):
     # Add to list
     entity_data_list.append(entity_data)
     
-    # Entity Info Confirmation
-   if not get_confirmation(f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} to {agent_name} in {jurisdiction}. Is this correct? (Y/N): "):
-        logging.warning("Please restart the session with the correct information.")  
-        exit() # Need this to just go back a step to Collect entity names, not exit completely
+# Entity Info Confirmation
+def collect_entity_info():
+    while True:
+        entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction = gather_entity_details()
+        if get_confirmation(f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} to {agent_name} in {jurisdiction}. Is this correct? (Y/N): "):
+            return entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction
+        else:
+            logging.warning("Please re-enter the entity details.")
 
 # Print all collected entity data for confirmation
 for i, data in enumerate(entity_data_list):
@@ -352,9 +338,17 @@ for i, data in enumerate(entity_data_list):
 form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
 
 # Check if PDF files exist
-if not file_exists(form_template_path):
-    logging.warning(f"Error: The template PDF file, {form_template_path}, is missing.")
-    exit(1) # provide option to supply a custom path to search in. eventually, a file browser.
+def check_file_path():
+    while True:
+        if file_exists(form_template_path):
+            return form_template_path
+        else:
+            logging.warning(f"Error: The template PDF file, {form_template_path}, is missing.")
+            custom_path = input("Would you like to provide a custom path for the template PDF file? (Y/N): ").lower()
+            if custom_path == 'y':
+                form_template_path = input("Please enter the custom path: ")
+            else:
+                logging.warning("Please place the template PDF file in the correct location and restart.")
 
 # store the data into the form class
 form_instance.entity_name = entity_name,
@@ -373,10 +367,14 @@ logging.info(f"List of entities/forms to be filled in this session: ")
 for i, form in enumerate(forms):
     logging.info(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
 
-# Ask user to confirm the list of filings Y/N to proceed. If N, quit program.
-if not get_confirmation(f"All information for form preparation request has been obtained, we are ready to complete {num_forms} forms now. Proceed? (Y/N): "):
-    logging.warning("Please restart the session with the correct information.")
-    exit() # loop back, don't exit completely
+# Ask user to confirm the list of filings Y/N to proceed. If N, go back.
+def prepare_filings():
+    while True:
+        num_forms, form_list = gather_filing_details()
+        if get_confirmation(f"All information for form preparation request has been obtained, we are ready to complete {num_forms} forms now. Proceed? (Y/N): "):
+            return num_forms, form_list
+        else:
+            logging.warning("Please restart the session with the correct information.")
 
 # ZIP code validation (not yet being used)
 #agent_zip = input("Enter the agent's ZIP code: ")
@@ -416,8 +414,10 @@ for i, data in enumerate(entity_data_list):
 
 # Show success message & goodbye
 logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
-\n Your session ID is: {session_id}. | Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
+\n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
 
 # prompt for text file export function
+
+# prompt for feedback of experience 1-10
 
 # Done! For now...
