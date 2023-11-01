@@ -7,110 +7,155 @@
 # get current date & time to use in the timestamp feature
 from datetime import datetime
 
-# define BaseForm common data fields (e.g. fields generally needed for at least 1 form within all 51 jurisdictions)
+# define common form fields
 class BaseForm:
-	def __init__(self, **kwargs):
-        # Common Form Metadata
-        self.filing_type = kwargs.get('filing_type', 'Change of Agent')
-        self.jurisdiction = kwargs.get('jurisdiction', 'DE')
-        self.jurisdiction_instance = kwargs.get('jurisdiction_instance', None)
-        self.residency = kwargs.get('residency', 'Foreign')
-        self.version_last_updated = kwargs.get('version_last_updated', datetime.now())
-        self.attachments = kwargs.get('attachments', None)
-        
-        # Registered Agent Information
-	self.agent_name = kwargs.get('agent_name', 'C T Corporation System')
-	self.agent_street1 = kwargs.get('agent_street1', None)
-        self.agent_street2 = kwargs.get('agent_street2', None)
-        self.agent_city = kwargs.get('agent_city', None)
-	self.agent_state = kwargs.get('agent_state', None)
-	self.agent_zip = kwargs.get('agent_zip', None)
-        self.agent_county = kwargs.get('agent_county', None)
-        
-        # Entity-Specific Information
-	self.state_id = kwargs.get('state_id', None)
-	self.entity_type = kwargs.get('entity_type', 'LLC')
-	self.domestic_state = kwargs.get('domestic_state', 'DE')
-	self.entity_name = kwargs.get('entity_name', None)
-	self.domestic_entity_name = kwargs.get('domestic_entity_name', None)
-	self.forced_fict_name = kwargs.get('forced_fict_name', None)
-	self.state_id = kwargs.get('state_id', None)
-	self.formation_date = kwargs.get('formation_date', None)
-	self.registration_date = kwargs.get('registration_date', None)
-	# ... (other attributes)
-        
-        # Signature Block Info
-        self.hard_copy_required = kwargs.get('hard_copy_required', 'No')
-	self.signature_needed = kwargs.get('signature_needed', 'Yes')
-	self.signature_type_allowed = kwargs.get('signature_type_allowed', 'E-Signature')
-	self.signer_must_be_on_record = kwargs.get('signer_must_be_on_record', 'No')
-	self.signer_name = kwargs.get('signer_name', None)
-	self.signer_title = kwargs.get('signer_title', 'Authorized Person')
-	self.signer_title_ext = kwargs.get('signer_title_ext', None)
-	self.signer_titles_restricted = kwargs.get('signer_titles_restricted', 'No')
-	self.signature_conformed = kwargs.get('signature_conformed', f"/s/ {self.signer_name}")
-	self.signature_typed = kwargs.get('signer_name', None)
-	self.poa_allowed = kwargs.get('poa_allowed', 'Yes')
-	self.signed_on_date = kwargs.get('signed_on_date', datetime.now())
-        # ... (other attributes)
-        
-        # Order-Specific Details
-        self.line_number = kwargs.get('line_number', None)
-	self.order_number = kwargs.get('order_number', None)
-	self.target_number = kwargs.get('target_number', '1')
-	self.supporting_docs_needed = kwargs.get('supporting_docs_needed', None)
-	self.utilizing_poa = kwargs.get('utilizing_poa', 'Yes')
-	self.form_status = kwargs.get('form_status', 'Blank')
-	self.user_id = kwargs.get('user_id', 'alexander.bishop')
-	self.user_email = f"{self.user_id}@wolterskluwer.com"
-        # ... (other attributes)
-        
-	def validate_data(self):
-        pass
-    	# ... (other methods)
+    def __init__(self, entity_name, jurisdiction_instance, domestic_state, agent_name, agent_street1, agent_street2, agent_city, agent_state, agent_zip, agent_county, session_id, session_timestamp, signer_name, signer_title, signer_title_ext, sig_conformed, sig_typed, signed_on_date, state_id, business_purpose, phys_street1, phys_street2, phys_city, phys_state, phys_zip, phys_county, mail_street1, mail_street2, mail_city, mail_state, mail_zip, mail_county, domestic_street1, domestic_street2, domestic_city, domestic_zip, domestic_county, user_id):
+        # entity name
+        self.entity_name = entity_name
 
-class DEForm(BaseForm):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        current_date = datetime.now()
-        day = current_date.day
-        if 10 <= day % 100 <= 20:
-            day_str = str(day) + "th"
-        else:
-            day_str = str(day) + {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
-        self.signed_on_day = kwargs.get('signed_on_day', day_str) # Day spelled out e.g. 4th
-        self.signed_on_month = kwargs.get('signed_on_month', current_date.strftime('%B'))  # Full month name
-        self.signed_on_year = kwargs.get('signed_on_year', current_date.year)
-        # ... (other DE-specific attributes)
-        
-    # DE-specific methods
-    def special_DE_validation(self):
-        pass
-    # ... (other methods)
+        # (the below is a reference to an instance of the 'Jurisdiction' class within each form object.
+        self.jurisdiction_instance = jurisdiction_instance 
+            # This way, you can access all the state-specific attributes and methods through that reference.)
+            
+        # domestic state
+        self.domestic_state = domestic_state   
 
-class DECorpForm(DEForm):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # ... (Corp-specific attributes)
-        
-    # Corp-specific methods
-    def special_corp_validation(self):
-        pass
-    # ... (other methods)
+        # agent_name
+        self.agent_name = agent_name
 
-class CAForm(BaseForm):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-	    
-        # ... (CA-specific attributes)
-        
-    # CA-specific methods
-    def special_CA_validation(self):
-        pass
-    # ... (other methods)
+        # agent_street1
+        self.agent_street1 = agent_street1
 
-# Example usage
-# de_form = DEForm(filing_type="ChangeOfAgent", jurisdiction="DE", agent_city="Dover")
+        # agent_street2
+        self.agent_street2 = agent_street2
+
+        # agent_city
+        self.agent_city = agent_city
+
+        # agent_state
+        self.agent_state = agent_state
+
+        # agent_zip
+        self.agent_zip = agent_zip
+
+        # agent_county
+        self.agent_county = agent_county
+
+        # signer_name
+        self.signer_name = signer_name
+
+        # signer_title
+        self.signer_title = signer_title
+
+        # signer_title_ext
+        self.signer_title_ext = signer_title_ext
+
+        # sig_conformed
+        self.sig_conformed = sig_conformed
+
+        # sig_typed
+        self.sig_typed = sig_typed
+
+        # signed_on_date
+        self.signed_on_date = signed_on_date
+
+        # state_id
+        self.state_id = state_id
+
+        # business_purpose
+        self.business_purpose = business_purpose
+
+        # phys_street1
+        self.phys_street1 = phys_street1
+
+        # phys_street2
+        self.phys_street2 = phys_street2
+
+        # phys_city
+        self.phys_city = phys_city
+
+        # phys_state
+        self.phys_state = phys_state
+
+        # phys_zip
+        self.phys_zip = phys_zip
+
+        # phys_county
+        self.phys_county = phys_county
+
+        # mail_street1
+        self.mail_street1 = mail_street1
+
+        # mail_street2
+        self.mail_street2 = mail_street2
+
+        # mail_city
+        self.mail_city = mail_city
+
+        # mail_state
+        self.mail_state = mail_state
+
+        # mail_zip
+        self.mail_zip = mail_zip
+
+        # mail_county
+        self.mail_county = mail_county
+
+        # domestic_street1
+        self.domestic_street1 = domestic_street1
+
+        # domestic_street2
+        self.domestic_street2 = domestic_street2
+
+        # domestic_city
+        self.domestic_city = domestic_city
+
+        # domestic_zip
+        self.domestic_zip = domestic_zip
+
+        # domestic_county
+        self.domestic_county = domestic_county
+
+        # user_ID
+        self.user_id = user_id # user completed the form (e.g. John.Smith) 
+
+        # session_id 
+        self.session_id = session_id #formWizard unique form-prep session ID#
+
+        # session_timestamp 
+        self.session_timestamp = session_timestamp # for when forms were filled out
+
+        # form status
+        self.form_status = None
+
+        # date the form/template version was last updated
+        self.last_updated_timestamp = "10.1.2023"
+        # want to replace None above with datetime.now() as old forms are updated with new versions
+
+        # attachments 
+        self.attachments = []  # List or dictionary to hold additional documents that need to be submitted with the form (e.g. eSignature page)
+        
+        # line_number
+        self.line_number = None  # For internal order tracking
+        
+        # order_number
+        self.order_number = None  # For internal order tracking
+
+    def validate_data(self):
+        # Implement your data validation logic here
+        pass
+
+    def generate_pdf(self):
+        # Implement your PDF generation logic here
+        pass
+
+    def save_draft(self):
+        # To save the current state of the form as a draft.
+        pass
+
+    def load_draft(self):
+        #To load a saved draft of the form.
+        pass
 
 
 

@@ -4,12 +4,15 @@
 
 ## Import stuff
 # Imports
+import json
+import os
+import PyPDF2
+from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from PyPDF2 import PdfReader, PdfWriter
-import json
-import os
+from classes.BaseForm.base_form import BaseForm
 
 ## Define all functions
 # Function to check if a file exists
@@ -67,7 +70,7 @@ with open('field_coordinates.json', 'r') as f:
 # Greet and Confirm that User is Alex
 user_id = input("Hello! Are you Alex? (Y/N): ")
 # Develop this further to ask for the WK username and validate correct format before asking for password. Once validated, store the WK username as user_id variable.
-if user_name.lower() == 'y':
+if user_id.lower() == 'y':
     password = input("Please enter your password: ")
     if password == 'scarletrules':
         print("Welcome, Alex!")
@@ -79,13 +82,14 @@ else:
     print("You are not authorized to use this program. Exiting.")
     exit()
     
-# Store the user_id into the session
-form_instance.user_id = {user_id}
-form_instance.session_id = {session_id}
-form_instance.session_timestamp = {}
+# Store the user_id into a new form-prep session
+form_instance.user_id = user_id
+session_id = 1
+form_instance.session_id = session_id
+form_instance.session_timestamp = datetime.now()
 
 # Ask for number of forms to complete
-num_forms = int(input("How many DE forms would you like to prepare for this session? (Up to 10): "))
+num_forms = int(input("How many forms would you like to prepare for this session? (Up to 10): "))
 if num_forms > 10:
     print("Sorry, you can only prepare up to 10 forms at a time.")
     exit()
@@ -95,11 +99,12 @@ if num_forms > 10:
     
 # Collect Signer's Name
     signer_first = input("Enter the signer's first name: ")
-    signer_mid = input("Enter the signer's last name: ")
+    signer_mid = input("Enter the signer's middle name or initial, if any: ")
     signer_last = input("Enter the signer's last name: ")
-    
+    signer_name = f"{signer_first} {signer_mid} {signer_last}"
+
  # Confirm Signer's Name
-print(f"Signer's full name is {signer_first} {signer_mid} {signer_last}. Is this correct? (Y/N): ")
+print(f"Signer's full name is {signer_name}. Is this correct? (Y/N): ")
 confirmation = input()
 if confirmation.lower() != 'y':
     print("Please restart the session with the correct signer's name.")
@@ -109,14 +114,14 @@ if confirmation.lower() != 'y':
 forms = []
 
 # Store inputted signature block info into previously initialized BaseForm instance
-form_instance.agent_name = {agent_name}
-form_instance.signer_first = {signer_first}
-form_instance.signer_mid = {signer_mid}
-form_instance.signer_last = {signer_last}
-form_instance.signer_name = {signer_first} {signer_mid} {signer_last}
+form_instance.agent_name = agent_name
+form_instance.signer_first = signer_first
+form_instance.signer_mid = signer_mid
+form_instance.signer_last = signer_last
+form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
 form_instance.sig_conformed = f"/s/{signer_name}"
-form_instance.sig_typed = {signer_first}
-
+form_instance.sig_typed = signer_first
+form_instance.filing_type = filing_type
 
 # Collect entity names, types, and residency
 for i in range(num_forms):
@@ -132,25 +137,26 @@ for i in range(num_forms):
     # need action for the above line to convert the response into a value for residency, as either domestic or foreign in relation to the jurisdiction variable.
     filing_type = input(f"Is {entity_name} filing a Change of Agent in {jurisdiction}? (Y/N): ")
     # need action to set filing_type to be 'Change of Agent' if Y is selected, otherwise go back to last menu (because we can only handle 1 filing_type right now).
-    
-    print(f"Entity info entered: {entity_name} (a {residency} {entity_type}) is filing a {filing type} in {jurisdiction}. Is this correct? (Y/N): ")
-        confirmation = input()
-        if confirmation.lower() == 'y':
-            break
+    break
+
+# Confirm entered entity info before proceeding to next entity
+print(f"Entity info entered: {entity_name} (a {residency} {entity_type}) is filing a {filing_type} in {jurisdiction}. Is this correct? (Y/N): ")
+confirmation = input()
+if confirmation.lower() == 'y':
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
-form_instance.signer_first = {signer_first}
-form_instance.signer_mid = {signer_mid}
-form_instance.signer_last = {signer_last}
-form_instance.signer_name = {signer_first} {signer_mid} {signer_last}
-form_instance.sig_conformed = f"/s/ {signer_first}"
+    form_instance.signer_first=signer_first
+    form_instance.signer_mid=signer_mid
+    form_instance.signer_last=signer_last
+    form_instance.signer_name=f"{signer_first} {signer_mid} {signer_last}"
+    form_instance.sig_conformed=f"/s/{signer_first}"
 
 # Construct the PDF file path dynamically
-form_template_path = f"StateForms/{form_instance.jurisdiction}/{form_instance.jurisdiction}-{form_instance.entity_type}-{form_instance.residency}-{form_instance.filing_type}.pdf
+form_template_path = f"StateForms/{form_instance.jurisdiction}/{form_instance.jurisdiction}-{form_instance.entity_type}-{form_instance.residency}-{form_instance.filing_type}.pdf"
 
 # Check if PDF files exist
 if not file_exists(form_template_path):
-    print(f"Error: The template PDF file, {pdf_file_path}, is missing.")
+    print(f"Error: The template PDF file, {form_template_path}, is missing.")
     exit(1)
 
 # store the data into the form class
@@ -160,7 +166,6 @@ form_instance.jurisdiction_instance=None,  # Not yet used - to pull attributes f
 form_instance.domestic_state=domestic_state,
 form_instance.residency=residency,
 form_instance.filing_type=filing_type,
-)
 
 forms.append(form_instance)
 

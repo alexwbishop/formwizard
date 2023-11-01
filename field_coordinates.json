@@ -172,7 +172,7 @@
 	"newaddr_state": {"x": 475, "y": 438},
 	"newaddr_zip": {"x": 513, "y": 438},
 	"signer_name": {"x": 296, "y": 645},
-	"signed_on_date": {"x": 495, "y": 645},
+	"signed_on_date": {"x": 495, "y": 645}
   },
 "CA-LP-Foreign-COA": {
 	"entity_name": {"x": 220, "y": 210},
@@ -205,6 +205,6 @@
 	"newaddr_city": {"x": 370, "y": 586},
 	"newaddr_state": {"x": 477, "y": 586},
 	"newaddr_zip": {"x": 520, "y": 586},
-	"signer_name": {"x": 320, "y": 730},
+	"signer_name": {"x": 320, "y": 730}
   }
 }
