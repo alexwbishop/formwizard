@@ -43,6 +43,11 @@
     "form_status": "Blank",
     "other_defaults": "value_here"
   },
+
+  "JURISDICTIONS" = {
+    'DE': Jurisdiction.create_jurisdiction("Delaware", "DE"),
+    'CA': Jurisdiction.create_jurisdiction("California", "CA")
+  },
   
   "VALIDATION_RULES": {
     "agent_zip": "^[0-9]{5}(?:-[0-9]{4})?$",
@@ -65,5 +70,5 @@
   "COUNTRIES": ["USA", "Canada", "UK"],
   "USER_ROLES": ["Admin", "Editor", "Viewer"]
  }
-}
+
 
