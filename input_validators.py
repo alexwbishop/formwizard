@@ -5,16 +5,11 @@
 import re
 import json
 import os
-import PyPDF2
 import uuid
 import logging
-from questions import CAQuestion, DEQuestion
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
-from PyPDF2 import PdfReader, PdfWriter
-from classes.BaseForm.base_form import BaseForm
-from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 # functions
 
@@ -33,7 +28,7 @@ def get_confirmation(prompt: str, error_msg: str = "Invalid input. Please try ag
             logging.error(str(e))
 
 # Calculate Domestic or Foreign Residency (only for this form/filing)
-residency = 'Dom' if jurisdiction == domestic_state else 'For'
+def get_residency() = 'Dom' if jurisdiction == domestic_state else 'For'
 
 # Validate if target file exists
 def file_exists(filepath):
