@@ -5,9 +5,9 @@
 	#- Methods: Logic specific to the filing type.
 
 #Inherits from Residency (i.e. Domestic or Foreign).
+from ..Residency.residency import Residency
 
-
-class FilingType(BaseForm):  
+class FilingType(Residency):
     pass
 
 class ChangeOfAgent(FilingType):

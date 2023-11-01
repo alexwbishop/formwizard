@@ -13,6 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from PyPDF2 import PdfReader, PdfWriter
 from classes.BaseForm.base_form import BaseForm
+from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 ## Define all functions
 # Function to check if a file exists
@@ -43,8 +44,12 @@ def populate_form(form_template_path, output_pdf_path, field_coordinates, field_
 # Function to merge text PDF onto blank form
 from PyPDF2 import PdfReader, PdfWriter
 
-# Initialize an empty BaseForm instance to begin storing the inputted data with some default settings
-form_instance = BaseForm(domestic_state="DE", form_status="Blank", agent_name="C T Corporation System", session_timestamp=datetime.now(), signed_on_date=datetime.now())
+# Load applicable jurisdiction names and abbreviations for the form-prep session
+de_jurisdiction = Jurisdiction("Delaware", "DE")
+
+# BaseForm: Instantiate to begin storing the inputted data with some default settings
+form_instance = BaseForm(domestic_state="DE", form_status="Blank", session_timestamp=datetime.now(), signed_on_date=datetime.now(), jurisdiction_instance=de_jurisdiction)
+
 
 def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     pdf_reader_form = PdfReader(open(form_pdf_path, 'rb'))
@@ -69,7 +74,7 @@ with open('field_coordinates.json', 'r') as f:
 
 # Greet and Confirm that User is Alex
 while True:
-    user_id = input("Greetings. Please enter your WK username (e.g., 'alexander.bishop'): ")
+    user_id = input("Greetings. Please enter your WK username (e.g., 'john.doe'): ")
     # You can add more validation logic here to check the format of the username.
     # For example, you can check if it contains a dot (.) to match the format.
     if '.' in user_id:
@@ -81,11 +86,12 @@ while True:
 password = input("Please enter your password: ")
 
 # Check if the username and password are correct
-if user_id == 'alexander.bishop' and password == 'scarletrules':
+if user_id == 'alexander.bishop' and password == 'scarlet':
     print("Welcome, Alex!")
 else:
     print("Access denied. Please check your username and password.")
-    
+    exit()
+
 # Create a session_id for the form prep session and assign the user_id to it
 session_id = "FW-Test-001"
 form_instance.user_id = user_id
@@ -109,25 +115,33 @@ if num_forms < 1:
     print("That's not even a real number. Why are you even here? Goodbye, silly person.")
     exit()
 
-# Ask if we are to use CT or NRAI as Agent
-    agent_name = input(f"Confirm the agent to be designated: (CT/NRAI)")
+# Ask if we are to use CT as Agent - Need to add validation to confirm if matched within agent name list or a custom name
+agent_name = "C T Corporation System"
+print(f"Please confirm that agent to be designated is: {agent_name} (Y/N): ")
+confirmation = input().lower()
+if confirmation != 'y':
+    print("We can only change agents to CT at this time. Please check back later.")
+    exit()
     
 # Collect Signer's Name
-    signer_first = input("Enter the signer's first name: ")
-    signer_mid = input("Enter the signer's middle name or initial, if any: ")
-    signer_last = input("Enter the signer's last name: ")
-    signer_name = f"{signer_first} {signer_mid} {signer_last}"
-    sig_conformed = f"/s/{signer_name}"
+signer_first = input("Enter the signer's first name: ")
+signer_mid = input("Enter the signer's middle name or initial, if any: ")
+signer_last = input("Enter the signer's last name: ")
+signer_name = f"{signer_first} {signer_mid} {signer_last}"
+sig_conformed = f"/s/{signer_name}"
 
  # Confirm Signer's Name
 print(f"Signer's full name is {signer_name}. Is this correct? (Y/N): ")
-confirmation = input()
+confirmation = input().lower()
 if confirmation != 'y':
     print("Please restart the session with the correct signer's name.")
     exit()
 
 # Initialize list to store form instances
 forms = []
+
+# Load applicable jurisdiction names and abbreviations for the form-prep session
+de_jurisdiction = Jurisdiction("Delaware", "DE")
 
 # Store inputted signature block info into previously initialized BaseForm instance
 form_instance.agent_name = agent_name
@@ -138,9 +152,13 @@ form_instance.signer_name = signer_name
 form_instance.sig_conformed = sig_conformed
 form_instance.sig_typed = signer_first
 
-# Collect entity names, types, and residency
+# You can access jurisdiction-specific fields through the BaseForm instance:
+#print(form_instance.jurisdiction_instance.name)  # Output: "Delaware"
+#print(form_instance.jurisdiction_instance.abbreviation)  # Output: "DE"
+
+# Collect entity info
 for i in range(num_forms):
-    entity_name = input(f"Enter the full name of entity {i+1} of range(num_forms), including corporate suffix: ")
+    entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate suffix: ")
     # need action to attempt to guess at the entity_type by scanning through the entity_name
     entity_type = input(f"Confirm the entity type for {entity_name} (LLC/Corp/LP): ")
     # need action to only allow those options to be selected
@@ -155,15 +173,19 @@ for i in range(num_forms):
     break
 
 # Confirm entered entity info before proceeding to next entity
-print(f"Entity info entered: {entity_name} (a {residency} {entity_type}) is filing a {filing_type} in {jurisdiction}. Is this correct? (Y/N): ")
-confirmation = input()
+confirmation_message = f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} in {jurisdiction}. Is this correct? (Y/N): "
+print(confirmation_message)
+confirmation = input().lower()
+if confirmation != 'y':
+    print("Please restart the session with the correct information.") # Need this to just go back a step to Collect entity names
+    exit()
 if confirmation != 'y':
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
-    form_instance.signer_first=signer_first
-    form_instance.signer_mid=signer_mid
-    form_instance.signer_last=signer_last
-    form_instance.signer_name=f"{signer_first} {signer_mid} {signer_last}"
+    form_instance.signer_first = signer_first
+    form_instance.signer_mid = signer_mid
+    form_instance.signer_last = signer_last
+    form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
 
 # Construct the PDF file path dynamically
 form_template_path = f"StateForms/{form_instance.jurisdiction}/{form_instance.jurisdiction}-{form_instance.entity_type}-{form_instance.residency}-{form_instance.filing_type}.pdf"
@@ -174,12 +196,12 @@ if not file_exists(form_template_path):
     exit(1)
 
 # store the data into the form class
-form_instance.entity_name=entity_name,
-form_instance.entity_type=entity_type,
-form_instance.jurisdiction_instance=None,  # Not yet used - to pull attributes from jurisdiction class
-form_instance.domestic_state=domestic_state,
-form_instance.residency=residency,
-form_instance.filing_type=filing_type,
+form_instance.entity_name = entity_name,
+form_instance.entity_type = entity_type,
+form_instance.jurisdiction_instance = None,  # Not yet used - to pull attributes from jurisdiction class
+form_instance.domestic_state = domestic_state,
+form_instance.residency = residency,
+form_instance.filing_type = filing_type,
 
 forms.append(form_instance)
 
@@ -192,7 +214,7 @@ for i, form in enumerate(forms):
 
 # Ask user to confirm the list of filings Y/N to proceed. If N, quit program.
 print(f"All information obtained, ready to complete forms now. Proceed? (Y/N): ")
-confirmation = input()
+confirmation = input().lower()
 if confirmation != 'y':
     print("Please restart the session with the correct information.")
     exit()

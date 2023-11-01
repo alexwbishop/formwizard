@@ -3,10 +3,13 @@
 	#- Attributes: Fields specific to the jurisdiction.
 	#- Methods: Logic specific to the jurisdiction.
 
-#Inherits from FilingType.
+#Inherits from FilingType - need to import/define FilingType
+from ..FilingType.filingtype import FilingType
 
 class Jurisdiction(FilingType):
-    def __init__(self, signature_type_allowed, hard_copy_required, poa_allowed, tax_clearance_req, annual_reports_must_be_current, signer_must_be_on_record, signer_titles_restricted):
+    def __init__(self, name, abbreviation, signature_type_allowed, hard_copy_required, poa_allowed, tax_clearance_req, annual_reports_must_be_current, signer_must_be_on_record, signer_titles_restricted):
+        self.name = name
+        self.abbreviation = abbreviation
         self.signature_type_allowed = signature_type_allowed
         self.hard_copy_required = hard_copy_required
         self.poa_allowed = poa_allowed

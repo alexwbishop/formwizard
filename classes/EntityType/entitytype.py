@@ -5,6 +5,8 @@
 	#- Methods: Logic specific to the entity type.
 
 # Inherits from BaseForm.
+from ..BaseForm.base_form import BaseForm
+
 
 class EntityType(BaseForm):
     pass

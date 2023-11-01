@@ -5,6 +5,8 @@
 	#- Methods: Logic specific to the jurisdiction.
 
 #Inherits from EntityType.
+from ..EntityType.entitytype import EntityType
+
 
 class Residency(EntityType):
     pass
