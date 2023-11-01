@@ -8,7 +8,6 @@ import os
 import PyPDF2
 import uuid
 import logging
-from questions import CAQuestion, DEQuestion
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
