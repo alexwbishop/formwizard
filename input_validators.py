@@ -43,6 +43,13 @@ def file_exists(filepath):
         logging.error(f"An error occurred:", {e}")
         return False
 
+# Collect signer's name
+def get_signer_name():
+    signer_first = input("Enter the signer's first name: ")
+    signer_mid = input("Enter the signer's middle name or initial, if any: ")
+    signer_last = input("Enter the signer's last name: ")
+    return f"{signer_first} {signer_mid} {signer_last}"
+
 # Entity & Filing Info Confirmation - Individual
 def collect_entity_info():
     while True:
