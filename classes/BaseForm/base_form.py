@@ -101,6 +101,7 @@ class DECorpForm(DEForm):
 class CAForm(BaseForm):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+	    
         # ... (CA-specific attributes)
         
     # CA-specific methods
