@@ -12,16 +12,10 @@ import logging
 # functions
 
 # logging enabled
+def message_logging 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='formwizard.log')
 
-# date & time validation
-from datetime import datetime
-try:
-    current_time = datetime.now()
-    logging.info(f"Current time: {current_time}")
-except Exception as e:
-    logging.error(f"An error occurred: {e}")
-
+def display_complete_list
 # Display a complete list of up to 10 entities & forms to be filled
 logging.info(f"List of entities/forms to be filled in this session: ")
 for i, form in enumerate(forms):
