@@ -3,6 +3,15 @@
 # Purpose: Automate the process of filling out Change of Agent forms (Corp, LLC, LP), Domestic and Foreign. in DE and CA.
 # main.py
 
+# Add your additional imports at the top
+from config_utils import load_json_config  # or whatever the name of the file where you moved this function
+from validations import date_time_validation, validate_target_file, validate_confirmation_checks  # Replace with actual function names
+from logging_and_time import message_logging, create_session_id  # Replace with actual function names
+from pdf_operations import get_pdf_dimensions, populate_form, merge_pdfs  # Replace with actual function names
+from form_questions import get_signer_name, collect_entity_info  # Replace with actual function names
+from report_manager import display_complete_list  # Replace with actual function names
+# ... and so on for all the functions you moved
+
 # Imports
 import re
 import json
@@ -30,16 +39,7 @@ question_obj.all_questions()
 # message logging function - Moved
 # date & time validation - Moved
 
-# JSON configuration function
-def load_json_config(file_path):
-    try:
-        with open(file_path, 'r') as f:
-            return json.load(f)
-    except json.JSONDecodeError as e:
-        logging.error(f"Error decoding JSON configuration: {e}")
-    except FileNotFoundError as e:
-        logging.error(f"JSON file not found: {e}")
-    return {}
+# JSON configuration function - Moved
 
 # Load JSON configurations
 config = load_json_config('config.json')
@@ -143,8 +143,8 @@ jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
 forms = []
 
 # Load applicable jurisdiction names and abbreviations for the form-prep session
-## redundant? # de_jurisdiction = Jurisdiction("Delaware", "DE")
-## redundant? # ca_jurisdiction = Jurisdiction("California", "CA")
+#SCARLET# is this redundant? # de_jurisdiction = Jurisdiction("Delaware", "DE")
+#SCARLET# is this redundant? # ca_jurisdiction = Jurisdiction("California", "CA")
 
 # Store inputted signature block info into previously initialized BaseForm instance
 form_instance.agent_name = agent_name
