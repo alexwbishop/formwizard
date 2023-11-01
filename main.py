@@ -27,16 +27,8 @@ elif state == "DE":
     question_obj = DEQuestion()
 question_obj.all_questions()
 
-# logging enabled
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='formwizard.log')
-
-# date & time validation
-from datetime import datetime
-try:
-    current_time = datetime.now()
-    logging.info(f"Current time: {current_time}")  # Corrected this line
-except Exception as e:
-    logging.error(f"An error occurred: {e}")  # Corrected this line
+# message logging function - Moved
+# date & time validation - Moved
 
 # JSON configuration function
 def load_json_config(file_path):
@@ -70,60 +62,17 @@ def get_signer_name():
     signer_last = input("Enter the signer's last name: ")
     return f"{signer_first} {signer_mid} {signer_last}"
 
-# Validation Function for Confirmation Checks
-def get_confirmation(prompt: str, error_msg: str = "Invalid input. Please try again.") -> bool:
-    while True:
-        try:
-            confirmation = input(prompt).lower()
-            if confirmation == 'y':
-                return True
-            elif confirmation == 'n':
-                return False
-            else:
-                print(error_msg)
-        except Exception as e:
-            logging.error(str(e))
+# Validation Function for Confirmation Checks - Moved
 
-# Function to check if a file exists
-def file_exists(filepath):
-    try:
-        return os.path.isfile(filepath)
-    except Exception as e:
-        logging.error(f"An error occurred:", {e}")
-        return False
+# Validate if target file exists - Moved
 
-# Function to get PDF dimensions
-def get_pdf_dimensions(pdf_path):
-    try:
-        pdf_reader = PyPDF2.PdfReader(open(pdf_path, 'rb'))
-        page = pdf_reader.pages[0]  # Reads the first page
-        media_box = page.mediabox
-        return media_box.width, media_box.height  
-    except Exception as e:
-        logging.error(f"An error occurred while reading PDF", {e}")
-        return None, None
+# Function to get PDF dimensions - Moved
 
-# Function to populate form fields
-def populate_form(form_template_path, output_pdf_path, field_coordinates, field_values):
-    _, height = get_pdf_dimensions(form_template_path)
-    c = canvas.Canvas(output_pdf_path)
-    c.setFont("Helvetica", 12)
+# Function to populate form fields - Moved
 
-    for field, coordinates in field_coordinates.items():
-        x = coordinates['x']
-        y = height - coordinates['y']
-        value = field_values.get(field, '')
-        c.drawString(x, y, str(value))
+# Function to merge text PDF onto blank form - Moved
 
-    c.save()
-    
-# Function to merge text PDF onto blank form
-from PyPDF2 import PdfReader, PdfWriter
-
-# Define creation of session id#
-def generate_session_id():
-    session_id = uuid.uuid4().hex.upper()[0:6]
-    return session_id
+# Define creation of session id# - Moved
 
 # Create a DE and CA instance of the Jurisdiction class
 de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
@@ -141,20 +90,7 @@ form_instance = BaseForm(
 # Now that form_instance is defined, you can update de_jurisdiction with it if needed
 de_jurisdiction.jurisdiction_instance = form_instance
 
-def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
-    pdf_reader_form = PdfReader(open(form_pdf_path, 'rb'))
-    pdf_reader_text = PdfReader(open(text_pdf_path, 'rb'))
-    
-    pdf_writer = PdfWriter()
-    
-    page_form = pdf_reader_form.pages[0]
-    page_text = pdf_reader_text.pages[0]
-    
-    page_form.merge_page(page_text)
-    pdf_writer.add_page(page_form)
-    
-    with open(output_pdf_path, 'wb') as f:
-        pdf_writer.write(f)
+# Merge overlay and form PDFs together - Moved
 
 # Use the defaults
 form_instance = BaseForm(
@@ -186,78 +122,22 @@ user_id = "alexander.bishop"
 #except Exception as e:
 #    logging.error(f"Access denied. Please check your username and password.")
 
+# Create a session_id for the form prep session - Moved
 
-# Create a session_id for the form prep session
-if __name__ == "__main__":
-    session_id = generate_session_id()
-#  assign the user_id and timestamp to the session markers
-form_instance.user_id = user_id
-form_instance.session_id = session_id
-form_instance.session_timestamp = datetime.now()
-logging.info(f"Thank you for authenticating, {user_id}! \n Form prep session initialized. \n Username: {user.id} | Session ID: {session_id}") | Timestamp: {session_timestamp}")
+# Confirm filing type (currently COA only) - Moved
 
-# Confirm filing type (currently COA only)
-while True:
-    filing_type = input(f"Note: FormWizard only supports form completion for 'Change of Agent' at this time. Please confirm (COA): ")
-    if filing_type in FILING TYPES:
-        form_instance.filing_type = filing_type
-        break
-    else:
-        logging.warning("Only Change of Agent filing type is currently supported.\n
-        Please check back later for more filing types in the future.")
+# Ask for number of forms to complete - Moved
 
-# Ask for number of forms to complete
-while True:
-    try:
-        num_forms = int(input("How many forms would you like to prepare for this session? (Up to 10): "))
-        if 1 <= num_forms <= MAX_FORM_QUANTITY:
-            break
-        logging.warning(f"Please enter a number between 1 and {MAX_FORM_QUANTITY}.")
-    except ValueError:
-        logging.warning("Invalid input. Please enter a number.")
-
-# Confirm state of filing
-while True:
-    state_code = input("FormWizard currently supports filings for Delaware (DE) and California (CA) only. Please enter the corresponding state code (DE/CA): ").upper()
-    if state_code in VALID_STATES:
-        state_name = VALID_STATES[state_code]
-        break
-    logging.warning("Sorry, we currently only support filings for Delaware (DE) and California (CA). Please check back later for more states.")
+# Confirm state of filing - Moved
 
 # Create an instance of the Jurisdiction class based on user input
 jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
 
-# Confirm agent name
-while True:
-    logging.info("Please select the agent name from the list of valid options:")
-    for i, name in enumerate(VALID_AGENT_NAMES, 1):
-        logging.info(f"{i}. {name}")
-    try:
-        selection = int(input("Enter the number corresponding to your choice: "))
-        if 1 <= selection <= len(VALID_AGENT_NAMES):
-            agent_name = VALID_AGENT_NAMES[selection - 1]
-            break
-        else:
-            logging.warning("Invalid selection. Please choose a number from the list.")
-    except ValueError:
-        logging.warning("Invalid input. Please enter a number.")
-logging.info(f"You've selected {agent_name} as the agent.")
-    
-# Collect Signer's Name
-signer_first = input("Enter the signer's first name: ")
-signer_mid = input("Enter the signer's middle name or initial, if any: ")
-signer_last = input("Enter the signer's last name: ")
-signer_name = f"{signer_first} {signer_mid} {signer_last}"
-sig_conformed = f"/s/{signer_name}"
+# Confirm agent name - Moved
 
-# Confirm Signer's Name
-while True:
-    signer_name = get_signer_name()
-    if get_confirmation(f"Signer's full name is {signer_name}. Is this correct? (Y/N): "):
-        logging.info(f"Signer's name confirmed as {signer_name}")
-        break
-    else:
-        logging.warning("Signer's name not confirmed. Asking for re-entry.")
+# Collect Signer's Name - Moved
+
+# Confirm Signer's Name - Moved
 
 # Initialize list to store form instances
 forms = []
@@ -275,43 +155,20 @@ form_instance.signer_name = signer_name
 form_instance.sig_conformed = sig_conformed
 form_instance.sig_typed = signer_name
 
-## Collect entity info
+### PHASE 1: DATA COLLECTION & VALIDATION ###
+
+## BEGIN GENERAL QUESTIONS FOR ALL STATES ##
 
 # Initialize a list to store entity data
 entity_data_list = []
 
-# Loop to collect entity info
-for i in range(num_forms):
-    # Entity Name
-    entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")
+# Collect entity info - Moved
     
-    # Entity Type -  # add action to attempt to guess at the entity_type by scanning through the entity_name
-    while True:
-        entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
-        if entity_type in ENTITY_TYPES:
-            break
-        else:
-            logging.warning("Invalid entity type, or type is not supported. Please select from the approved list (LLC/Corp/LP) again.")
+# Ask Domestic State - Moved
     
-    # Domestic State
-    while True:
-        domestic_state = input(f"Enter the domestic state for {entity_name}: (i.e. DE, CA): ")
-        if domestic_state in ALL_STATES:
-            break
-        else:
-            logging.warning("Invalid state. Please enter again.")
+# Ask Filing State - Moved
     
-# Filing State
-    def get_jurisdiction(entity_name: str) -> str:
-    while True:
-        jurisdiction = input(f"Enter the state that {entity_name} will file in (i.e. DE, CA): ").upper()
-        if jurisdiction in VALID_STATES:
-            return jurisdiction
-        else:
-            logging.warning(f"Sorry, we currently only support filings for {', '.join(VALID_STATES)}. Please enter a valid state.")
-    
-# Residency
-residency = 'Dom' if jurisdiction == domestic_state else 'For'
+# Calculate Domestic or Foreign Residency (only for this form/filing) - Moved
 
 # Store entity data in a dictionary
 entity_data = {
@@ -321,8 +178,11 @@ entity_data = {
     'jurisdiction': jurisdiction,
     'residency': residency
 }
+## END GENERAL QUESTIONS FOR ALL STATES ##
 
-## BEGIN CALIFORNIA ONLY QUESTIONS:
+## BEGIN CALIFORNIA ONLY QUESTIONS ##
+
+# init state-specific questioning as applicable for filings requested
 if jurisdiction == 'CA':
     try:
         # Get the regular expression for business_purpose validation
@@ -339,24 +199,15 @@ if jurisdiction == 'CA':
 
     except KeyError:
         logging.error("CA_business_purpose not found in the JSON configuration.")
-## END CALIFORNIA ONLY QUESTIONS
+        
+## END CALIFORNIA ONLY QUESTIONS ##
 
     # Add to list
     entity_data_list.append(entity_data)
     
-# Entity Info Confirmation
-def collect_entity_info():
-    while True:
-        entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction = gather_entity_details()
-        if get_confirmation(f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} to {agent_name} in {jurisdiction}. Is this correct? (Y/N): "):
-            return entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction
-        else:
-            logging.warning("Please re-enter the entity details.")
+# Entity & Filing Info Confirmation (Individual) - Moved
 
-# Print all collected entity data for confirmation
-for i, data in enumerate(entity_data_list):
-    logging.info(f"Entity {i+1}: {data['entity_name']} (a {data['domestic_state']} {data['entity_type']},)
-           is filing a {data['residency']} {data['filing_type']} in {data['jurisdiction']}.")
+# Entity & Filing Info Confirmation (Complete List) - Moved
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
     form_instance.signer_first = signer_first
@@ -364,54 +215,27 @@ for i, data in enumerate(entity_data_list):
     form_instance.signer_last = signer_last
     form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
 
-# Construct the PDF file path dynamically
-form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
+# Construct the PDF file path dynamically - Moved
 
-# Check if PDF files exist
-def check_file_path():
-    while True:
-        if file_exists(form_template_path):
-            return form_template_path
-        else:
-            logging.warning(f"Error: The template PDF file, {form_template_path}, is missing.")
-            custom_path = input("Would you like to provide a custom path for the template PDF file? (Y/N): ").lower()
-            if custom_path == 'y':
-                form_template_path = input("Please enter the custom path: ")
-            else:
-                logging.warning("Please place the template PDF file in the correct location and restart.")
+# Check if PDF files exist - Moved
 
 # store the data into the form class
 form_instance.entity_name = entity_name,
 form_instance.entity_type = entity_type,
-form_instance.jurisdiction_instance = None,  # Not yet used - to pull attributes from jurisdiction class
+form_instance.jurisdiction_instance = None,  # Not in use- can pull class attributes from jurisdiction layer
 form_instance.domestic_state = domestic_state,
 form_instance.residency = residency,
 form_instance.filing_type = filing_type,
 
+# Loop through the total # of filings requested (up to 10) and store each data set into 'forms', then display list
 forms.append(form_instance)
 
-# It should loop through the total # of filings requested (up to 10) and store each data set into 'forms', then display below
+# Display a complete list of up to 10 entities & forms to be filled - Moved
 
-# Display a complete list of up to 10 entities & forms to be filled
-logging.info(f"List of entities/forms to be filled in this session: ")
-for i, form in enumerate(forms):
-    logging.info(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
+# Ask user to confirm info provided for all filings is correct, proceed to next phase - Moved
+### END PHASE 1 ###
 
-# Ask user to confirm the list of filings Y/N to proceed. If N, go back.
-def prepare_filings():
-    while True:
-        num_forms, form_list = gather_filing_details()
-        if get_confirmation(f"All information for form preparation request has been obtained, we are ready to complete {num_forms} forms now. Proceed? (Y/N): "):
-            return num_forms, form_list
-        else:
-            logging.warning("Please restart the session with the correct information.")
-
-# ZIP code validation (not yet being used)
-#agent_zip = input("Enter the agent's ZIP code: ")
-#while not agent_zip.isdigit() or len(agent_zip) != 5:
-#    agent_zip = input("Enter a valid ZIP code: ")
-
-## PHASE 2 = DOCUMENT PREPARATION
+### PHASE 2: DOCUMENT PREPARATION ###
 
 # Update form_data with user input
 form_data = {
@@ -419,17 +243,17 @@ form_data = {
     'agent_name': agent_name,
     'sig_conformed': sig_conformed,
     'signer_name': signer_name
-# Need to add functionality to load the registered agent address in from a separate library, based on selecting CT or NRAI as the agent_name
+#SCARLET# Help me to add functionality to load the registered agent address in from a separate library, based on selecting CT or NRAI as the agent_name
 }
 
-# define the form key for labeling PDF files being processed, e.g. DE-Corp-Dom-COA
-form_key = f"{jurisdiction}-{entity_type}-{residency}-{filing_type}"
+# define the form key for labeling PDF files being processed, e.g. DE-Corp-Dom-COA - Moved
 
 # Run the populate function on the form
 populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', f'StateForms/{jurisdiction}/output_{form_key}.pdf', form_config.get(form_key, {}), form_data)
 
-# Temporary text PDF path
+# Temporary text overlay PDF path
 temp_text_pdf_path = f'completed_forms/temp/temp_text_{form_key}.pdf'
+#SCARLET# Help me add a command to delete the temp file folder contents at start of next session (with confirmation)
 
 # Populate form with text
 populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, form_config.get(form_key, {}), form_data)
@@ -437,17 +261,15 @@ populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f
 # Merge the original form and text PDF
 merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'completed_forms/{jurisdiction}-{entity_name}_-_{form_key}_Filled.pdf')
 
-# Print all collected entity data for confirmation
-for i, data in enumerate(entity_data_list):
-    logging.info(f"PDF for: {data['entity_name']} - {data['jurisdiction']} {data['residency']} 
-          {data['entity_type']},) {data['filing_type']}.")
+# Print quicklist of all forms/entities that were filled out in current session - Moved
 
 # Show success message & goodbye
 logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
 \n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
 
-# prompt for text file export function
+#SCARLET# help me to add a session log txt file export - confirm with user
 
-# prompt for feedback of experience 1-10
+#SCARLET# prompt for user feedback of experience 1-10
 
-# Done! For now...
+### END OF PHASE 2 ###
+# Done
