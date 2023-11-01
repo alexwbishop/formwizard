@@ -5,7 +5,7 @@
   },
   "ENTITY_TYPES": ["LLC", "Corp", "LP"],
   "FILING_TYPES": ["Change of Agent", "COA"],
-  "ALL_STATES" = [
+  "ALL_STATES": [
     "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
     "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
     "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
