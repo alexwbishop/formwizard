@@ -3,13 +3,13 @@
 # Purpose: Automate the process of filling out Change of Agent forms (Corp, LLC, LP), Domestic and Foreign. in DE and CA.
 # main.py
 
-# load external functions
+# load external functions: state, datetime, state_name, state_code, entity_name
 from config_utils import load_json_config
-from input_validators import date_time_validation, validate_target_file, validate_confirmation_checks  # Replace with actual function names
-from logging_utils import message_logging, create_session_id  # Replace with actual function names
-from pdf_utils import get_pdf_dimensions, populate_form, merge_pdfs  # Replace with actual function names
-from questions import get_signer_name, collect_entity_info  # Replace with actual function names
-from session_utils import display_complete_list  # Replace with actual function names
+from input_validators import get_confirmation, validate_zip, get_residency, calculate_residency, file_exists, collect_entity_info, log_entity_data_list, prepare_filings, print_quicklist, load_agent_address
+from logging_utils import message_logging, display_complete_list, validate_timestamp
+from pdf_utils import clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
+from questions import ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction
+from session_utils import generate_session_id
 
 # Imports
 import re
@@ -41,9 +41,11 @@ question_obj.all_questions()
 
 # JSON configuration function - Moved
 def main():
+    # Load configs
     config = load_json_config("config.json")
     form_config = load_json_config('field_coordinates.json')
-VALID_STATES = config.get('VALID_STATES', []) 
+    VALID_STATES = config.get('VALID_STATES', [])
+    
 ENTITY_TYPES = config.get('ENTITY_TYPES', [])
 FILING_TYPES = config.get('FILING_TYPES', [])
 ALL_STATES = config.get('ALL STATES', [])
@@ -61,8 +63,6 @@ DEFAULTS = config.get('DEFAULTS', [])
 # Function to populate form fields - Moved
 
 # Function to merge text PDF onto blank form - Moved
-
-# Define creation of session id# - Moved
 
 # Create a DE and CA instance of the Jurisdiction class
 de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
@@ -112,7 +112,14 @@ user_id = "alexander.bishop"
 #except Exception as e:
 #    logging.error(f"Access denied. Please check your username and password.")
 
-# Create a session_id for the form prep session - Moved
+# Create a session_id for the form prep session
+if __name__ == "__main__":
+    session_id = generate_session_id()
+#  assign the user_id and timestamp to the session markers
+form_instance.user_id = user_id
+form_instance.session_id = session_id
+form_instance.session_timestamp = datetime.now()
+logging.info(f"Thank you for authenticating, {user_id}! \n Form prep session initialized. \n Username: {user.id} | Session ID: {session_id}") | Timestamp: {session_timestamp}")
 
 # Confirm filing type (currently COA only) - Moved
 
@@ -133,8 +140,8 @@ jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
 forms = []
 
 # Load applicable jurisdiction names and abbreviations for the form-prep session
-#SCARLET# is this redundant? # de_jurisdiction = Jurisdiction("Delaware", "DE")
-#SCARLET# is this redundant? # ca_jurisdiction = Jurisdiction("California", "CA")
+de_jurisdiction = Jurisdiction("Delaware", "DE")
+ca_jurisdiction = Jurisdiction("California", "CA")
 
 # Store inputted signature block info into previously initialized BaseForm instance
 form_instance.agent_name = agent_name
@@ -233,8 +240,12 @@ form_data = {
     'agent_name': agent_name,
     'sig_conformed': sig_conformed,
     'signer_name': signer_name
-#SCARLET# Help me to add functionality to load the registered agent address in from a separate library, based on selecting CT or NRAI as the agent_name
 }
+
+# load stored agent address based on selection of agent_name
+if agent_name in ["CT", "NRAI"]:
+    agent_address = load_agent_address(agent_name)
+    form_data['agent_address'] = agent_address
 
 # define the form key for labeling PDF files being processed, e.g. DE-Corp-Dom-COA - Moved
 
@@ -243,7 +254,6 @@ populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', f'StateForms/{jurisdi
 
 # Temporary text overlay PDF path
 temp_text_pdf_path = f'completed_forms/temp/temp_text_{form_key}.pdf'
-#SCARLET# Help me add a command to delete the temp file folder contents at start of next session (with confirmation)
 
 # Populate form with text
 populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, form_config.get(form_key, {}), form_data)
@@ -256,6 +266,9 @@ merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'co
 # Show success message & goodbye
 ging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
 \n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
+
+# prompt user to delete the temp file folder contents (with confirmation)
+clear_temp_folder()
 
 #SCARLET# help me to add a session  txt file export - confirm with user
 
