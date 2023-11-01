@@ -4,6 +4,7 @@
 # main.py
 
 # Imports
+import re
 import json
 import os
 import PyPDF2
@@ -293,7 +294,7 @@ for i in range(num_forms):
         else:
             logging.warning("Invalid state. Please enter again.")
     
-    # Filing State
+# Filing State
     def get_jurisdiction(entity_name: str) -> str:
     while True:
         jurisdiction = input(f"Enter the state that {entity_name} will file in (i.e. DE, CA): ").upper()
@@ -302,18 +303,37 @@ for i in range(num_forms):
         else:
             logging.warning(f"Sorry, we currently only support filings for {', '.join(VALID_STATES)}. Please enter a valid state.")
     
-    # Residency
-    residency = 'Dom' if jurisdiction == domestic_state else 'For'
+# Residency
+residency = 'Dom' if jurisdiction == domestic_state else 'For'
 
-    # Store entity data in a dictionary
-    entity_data = {
-        'entity_name': entity_name,
-        'entity_type': entity_type,
-        'domestic_state': domestic_state,
-        'jurisdiction': jurisdiction,
-        'residency': residency
-    }
-    
+# Store entity data in a dictionary
+entity_data = {
+    'entity_name': entity_name,
+    'entity_type': entity_type,
+    'domestic_state': domestic_state,
+    'jurisdiction': jurisdiction,
+    'residency': residency
+}
+
+## BEGIN CALIFORNIA ONLY QUESTIONS:
+if jurisdiction == 'CA':
+    try:
+        # Get the regular expression for business_purpose validation
+        business_purpose_regex = config['VALIDATION_RULES']['CA_business_purpose']
+
+        # Assuming user_input is the data you want to validate
+        user_input = "CA business purpose must be less than 50 characters."
+
+        # Perform the validation
+        if re.match(business_purpose_regex, user_input):
+            print("Valid input.")
+        else:
+            print("Invalid input. Must be 1-50 characters.")
+
+    except KeyError:
+        logging.error("CA_business_purpose not found in the JSON configuration.")
+## END CALIFORNIA ONLY QUESTIONS
+
     # Add to list
     entity_data_list.append(entity_data)
     
