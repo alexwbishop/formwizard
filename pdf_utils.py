@@ -18,6 +18,14 @@ from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 # functions
 
+# delete temp folder of unused pdf overlays
+def clear_temp_folder():
+    confirm = input("Do you want to clear the temp folder? (Y/N): ")
+    if confirm.lower() == 'yes':
+        for filename in os.listdir('StateForms/completed_forms/temp'):
+            os.remove(f'StateForms/completed_forms/temp/{filename}')
+
+
 # Check if blank PDF template exists
 def check_file_path():
     while True:
