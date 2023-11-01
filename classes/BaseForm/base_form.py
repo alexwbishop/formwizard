@@ -9,7 +9,7 @@ from datetime import datetime
 
 # define common form fields
 class BaseForm:
-    def __init__(self, entity_name, jurisdiction_instance, domestic_state, agent_name, agent_street1, agent_street2, agent_city, agent_state, agent_zip, agent_county, session_id, session_timestamp, signer_name, signer_title, signer_title_ext, sig_conformed, sig_typed, signed_on_date, state_id, business_purpose, phys_street1, phys_street2, phys_city, phys_state, phys_zip, phys_county, mail_street1, mail_street2, mail_city, mail_state, mail_zip, mail_county, domestic_street1, domestic_street2, domestic_city, domestic_zip, domestic_county, user_id):
+    def __init__(self, form_status, attachments, line_number, order_number, entity_name, jurisdiction_instance, domestic_state, agent_name, agent_street1, agent_street2, agent_city, agent_state, agent_zip, agent_county, session_id, session_timestamp, signer_name, signer_first, signer_mid, signer_last, signer_title, signer_title_ext, sig_conformed, sig_typed, signed_on_date, state_id, business_purpose, phys_street1, phys_street2, phys_city, phys_state, phys_zip, phys_county, mail_street1, mail_street2, mail_city, mail_state, mail_zip, mail_county, domestic_street1, domestic_street2, domestic_city, domestic_zip, domestic_county, user_id):
         # entity name
         self.entity_name = entity_name
 
@@ -117,7 +117,7 @@ class BaseForm:
         self.domestic_county = domestic_county
 
         # user_ID
-        self.user_id = user_id # user completed the form (e.g. John.Smith) 
+        self.user_id = user_id # user who completed the form (e.g. John.Smith) 
 
         # session_id 
         self.session_id = session_id #formWizard unique form-prep session ID#
@@ -126,20 +126,20 @@ class BaseForm:
         self.session_timestamp = session_timestamp # for when forms were filled out
 
         # form status
-        self.form_status = None
+        self.form_status = form_status
 
         # date the form/template version was last updated
         self.last_updated_timestamp = "10.1.2023"
         # want to replace None above with datetime.now() as old forms are updated with new versions
 
         # attachments 
-        self.attachments = []  # List or dictionary to hold additional documents that need to be submitted with the form (e.g. eSignature page)
+        self.attachments = [attachments] # List or dictionary to hold additional documents that need to be submitted with the form (e.g. eSignature page)
         
         # line_number
-        self.line_number = None  # For internal order tracking
+        self.line_number = line_number  # For internal order tracking
         
         # order_number
-        self.order_number = None  # For internal order tracking
+        self.order_number = order_number  # For internal order tracking
 
     def validate_data(self):
         # Implement your data validation logic here
