@@ -53,7 +53,7 @@ form_instance = BaseForm(
     form_status="Blank", 
     session_timestamp=datetime.now(), 
     signed_on_date=datetime.now(),
-    jurisdiction_instance=de_jurisdiction  
+    jurisdiction_instance=de_jurisdiction,
 )
 
 # Now that form_instance is defined, you can update de_jurisdiction with it if needed
@@ -107,10 +107,10 @@ form_instance.session_id = session_id # make this dynamically-generated for each
 form_instance.session_timestamp = datetime.now()
 
 # Confirm filing type
-confirmation = input("FormWizard only supports form completion for Change of Agents at this time. Please confirm (Y/N): ").lower()
-if confirmation != 'y':
-    print("Please check back later for more filing types to be supported in the future.")
-    exit()
+#confirmation = input("FormWizard only supports form completion for Change of Agents at this time. Please confirm (Y/N): ").lower()
+#if confirmation != 'y':
+#    print("Please check back later for more filing types to be supported in the future.")
+#    exit()
 filing_type = "COA"
 form_instance.filing_type = filing_type
 
@@ -123,7 +123,7 @@ if num_forms < 1:
     print("That's not even a real number. Why are you even here? Goodbye, silly person.")
     exit()
 
-# Confirm state of filing (currently only DE or CA)
+# Confirm state of filing
 state_confirmation = input("FormWizard currently supports filings for Delaware (DE) and California (CA) only. Please enter the state code (DE/CA): ").upper()
 if state_confirmation not in ['DE', 'CA']:
     print("Sorry, we currently only support filings for Delaware and California. Please check back later for more states.")
@@ -163,6 +163,7 @@ forms = []
 
 # Load applicable jurisdiction names and abbreviations for the form-prep session
 de_jurisdiction = Jurisdiction("Delaware", "DE")
+ca_jurisdiction = Jurisdiction("California", "CA")
 
 # Store inputted signature block info into previously initialized BaseForm instance
 form_instance.agent_name = agent_name
@@ -173,30 +174,79 @@ form_instance.signer_name = signer_name
 form_instance.sig_conformed = sig_conformed
 form_instance.sig_typed = signer_first
 
-# Collect entity info
-for i in range(num_forms):
-    entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate suffix: ")
-    # need action to attempt to guess at the entity_type by scanning through the entity_name
-    entity_type = input(f"Confirm the entity type for {entity_name} (LLC/Corp/LP): ")
-    # need action to only allow those options to be selected
-    domestic_state = input(f"Enter the domestic state/home jurisdiction of {entity_name} (i.e. DE): ")
-    # need action to check if it's a valid state abbreviation
-    jurisdiction = input(f"Enter the state to file {filing_type} for {entity_name} in (DE/CA): ")
-    # need action to check if it's a jurisdiction that FormWizard can handle (DE or CA right now)
-    residency = input(f"Is {entity_name} Domestic or Foreign to {jurisdiction}? (Dom/For): ")
-    # need action for the above line to convert the response into a value for residency, as either domestic or foreign in relation to the jurisdiction variable.
-    #filing_type = input(f"Is {entity_name} filing a Change of Agent in {jurisdiction}? (Y/N): ")
-    # need action to set filing_type to be 'Change of Agent' if Y is selected, otherwise go back to last menu (because we can only handle 1 filing_type right now).
-    break
+## Collect entity info
 
-# Confirm entered entity info before proceeding to next entity
-confirmation_message = f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} in {jurisdiction}. Is this correct? (Y/N): "
-print(confirmation_message)
-confirmation = input().lower()
-if confirmation != 'y':
-    print("Please restart the session with the correct information.") # Need this to just go back a step to Collect entity names
-    exit()
-if confirmation != 'y':
+# Initialize a list to store entity data
+entity_data_list = []
+
+# Loop to collect entity info
+for i in range(num_forms):
+    # Entity Name
+    entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")
+    
+    # Entity Type -  # add action to attempt to guess at the entity_type by scanning through the entity_name
+    entity_types = ["LLC", "Corp", "LP"]
+    while True:
+        entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
+        if entity_type in entity_types:
+            break
+        else:
+            print("Invalid entity type. Please enter again.")
+    
+    # Domestic State
+    all_states = [
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+    "DC"  ]
+    while True:
+        domestic_state = input(f"Enter the domestic state for {entity_name}: (i.e. DE, CA): ")
+        if domestic_state in all_states:
+            break
+        else:
+            print("Invalid state. Please enter again.")
+    
+    # Filing State
+    valid_states = ["DE", "CA"]
+    while True:
+        jurisdiction = input(f"Enter the state that {entity_name} will file in (i.e. DE, CA): ")
+        if jurisdiction in valid_states:
+            break
+        else:
+            print("Sorry, we currently only support filings for Delaware and California. Please check back later for more states.")
+    
+    # Residency
+    residency = 'Dom' if jurisdiction == domestic_state else 'For'
+    
+    # Filing Type = Change of Agent. Set this up later to accommodate multiple filing types (besides Change of Agent)
+
+    # Store entity data in a dictionary
+    entity_data = {
+        'entity_name': entity_name,
+        'entity_type': entity_type,
+        'domestic_state': domestic_state,
+        'jurisdiction': jurisdiction,
+        'residency': residency
+    }
+    
+    # Add to list
+    entity_data_list.append(entity_data)
+    
+    # Confirmation
+    confirmation_message = f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing 
+                            a {filing_type} to {agent_name} in {jurisdiction}. Is this correct? (Y/N): "
+    print(confirmation_message)
+    confirmation = input().lower()
+    if confirmation != 'y':
+        print("Please restart the session with the correct information.")  
+        exit() # Need this to just go back a step to Collect entity names, not exit completely
+
+# Print all collected entity data for confirmation
+for i, data in enumerate(entity_data_list):
+    print(f"Entity {i+1}: {data['entity_name']} (a {data['domestic_state']} {data['entity_type']},)
+           is filing a {data['residency']} {data['filing_type']} in {data['jurisdiction']}.")
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
     form_instance.signer_first = signer_first
@@ -222,10 +272,10 @@ form_instance.filing_type = filing_type,
 
 forms.append(form_instance)
 
-# It should loop through the total # of filings requested (up to 10) and store each data set into 'forms'
+# It should loop through the total # of filings requested (up to 10) and store each data set into 'forms', then display below
 
-# Display complete list of entities & forms to be filled
-print("List of entities/forms to be filled in this session:")
+# Display a complete list of up to 10 entities & forms to be filled
+print(f"List of entities/forms to be filled in this session: ")
 for i, form in enumerate(forms):
     print(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
 
@@ -267,7 +317,17 @@ populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f
 # Merge the original form and text PDF
 merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'completed_forms/{jurisdiction}-{entity_name}_-_{form_key}_Filled.pdf')
 
-# Show success message
-print(f"PDF for {entity_name} Successfully Filled. Thank you for using FormWizard. Your session ID is: {session_id}.")
+# Print all collected entity data for confirmation
+for i, data in enumerate(entity_data_list):
+    print(f"PDF for: {data['entity_name']} - {data['jurisdiction']} {data['residency']} 
+          {data['entity_type']},) {data['filing_type']}.")
+
+# Show success message & goodbye
+print(f"Total: {num_forms} PDFs were filled. Successfully finished session.
+      Errors: 0.
+    Thank you for using FormWizard. Your session ID is: {session_id}.
+    Have a great day and come back soon!")
+
+# prompt for text file export function
 
 # Done! For now...
