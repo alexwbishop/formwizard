@@ -51,6 +51,17 @@ except Exception as e:
     logging.error(f"An error occurred:", {e}")
     # Here you could also log the error or take corrective measures
 
+# JSON - load configuration
+def load_json_config(file_path):
+    try:
+        with open(file_path, 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        logging.error(f"Error decoding JSON configuration: {e}")
+    except FileNotFoundError as e:
+        logging.error(f"JSON file not found: {e}")
+    return {}
+
 # Function to collect signer's name
 def get_signer_name():
     signer_first = input("Enter the signer's first name: ")
@@ -142,16 +153,18 @@ def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):
     with open(output_pdf_path, 'wb') as f:
         pdf_writer.write(f)
     
-# Load JSON configuration
-try:
-    with open('field_coordinates.json', 'r') as f:
-        form_config = json.load(f)
-except json.JSONDecodeError as e:
-    logging.error(f"Error decoding JSON configuration: {e}")
-except FileNotFoundError as e:
-    logging.error(f"JSON file not found: {e}")
+# Load JSON configurations
+config = load_json_config('config.json')
+form_config = load_json_config('field_coordinates.json')
+
+VALID_STATES = config.get('VALID_STATES', {})
+ENTITY_TYPES = config.get('ENTITY_TYPES', [])
+FILING_TYPES = config.get('FILING_TYPES', [])
+MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
+VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
 
 ## PHASE 1 = Basic command line prompt usage:
+
 user_id = "alexander.bishop"
 # Greet and Confirm that User is Alex
 #while True:
