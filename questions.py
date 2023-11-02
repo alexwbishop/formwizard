@@ -7,6 +7,8 @@ from responsibleparty import ResponsibleParty
 from address import Address
 import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+with open('form_wizard_config.json', 'r') as f:
+    CONFIG_DATA = json.load(f)
 
 from responsibleparty import ResponsibleParty
 from address import Address
