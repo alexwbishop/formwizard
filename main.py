@@ -30,20 +30,20 @@ from questions import (ask_yes_no, get_signer_name, confirm_filing_type, ask_tot
 from session_utils import generate_session_id
 from classes.Jurisdiction.jurisdiction import Jurisdiction
 from classes.BaseForm.base_form import BaseForm
-
-def setup_config():
-    config = load_json_config("config.json")
-    FILING_TYPES = config['FILING_TYPES']
-    MAX_FORM_QUANTITY = config['MAX_FORM_QUANTITY']
-    VALID_STATES = config['VALID_STATES']
-    ENTITY_TYPES = config['ENTITY_TYPES']
-    ALL_STATES = config['ALL STATES']
+def main():
+    def setup_config():
+        config = load_json_config("config.json")
+        FILING_TYPES = config['FILING_TYPES']
+        MAX_FORM_QUANTITY = config['MAX_FORM_QUANTITY']
+        VALID_STATES = config['VALID_STATES']
+        ENTITY_TYPES = config['ENTITY_TYPES']
+        ALL_STATES = config['ALL STATES']
     return FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
 
-def main():
-    FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES = setup_config()
+# For Jurisdiction Handling:
+jurisdiction_value = get_jurisdiction()  # Assuming get_jurisdiction() returns the jurisdiction value
 
-# begin line of questioning by for filing jurisdiction
+# begin line of questioning for filing jurisdiction
 if Jurisdiction == "CA":
     question_obj = CAQuestion()
 elif Jurisdiction == "DE":
@@ -57,7 +57,7 @@ if Jurisdiction in ["CA", "DE"]:
 
 # message logging function
 message_logging()
-
+get_signer_name()
 
 # Validation Function for Confirmation Checks
 get_confirmation()
@@ -162,16 +162,15 @@ def get_entity_info(num_forms):  # <-- note the argument here
         entities.append(entity_name)
     return entities  # or whatever data structure you want to use to store this information
 
-# Confirm state of filing
-get_jurisdiction()
 # Create an instance of the Jurisdiction class based on user input
 jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
+
 # Confirm agent name
 confirm_agent_name()
 # Collect Signer's Name
 get_signer_name()
 # Confirm Signer's Name
-get_signer_name()
+confirm_signer()
 # Initialize list to store form instances
 forms = []
 
