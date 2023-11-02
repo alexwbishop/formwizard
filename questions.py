@@ -2,11 +2,7 @@
 # Questions and State Form Handling
 
 # Imports
-import re
 import json
-import os
-import PyPDF2
-import uuid
 import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
@@ -60,7 +56,6 @@ def confirm_filing_type():
         else:
             logging.warning("Only Change of Agent filing type is currently supported.\n Please check back later for more filing types in the future or enter 'COA' to proceed.")
 
-
 # Ask for number of forms to complete
 def ask_total_forms():
     while True:
@@ -82,7 +77,7 @@ def confirm_limited_states():
         logging.warning("Sorry, we currently only support filings for Delaware (DE) and California (CA). Please check back later for more states.")
             return state_code
 # Confirm agent name
-def confirm_agent_name(VALID_AGENT_NAMES):
+def confirm_agent_name():
     while True:
         logging.info("Please select the agent name from the list of valid options:")
         for i, name in enumerate(VALID_AGENT_NAMES, 1):
@@ -99,9 +94,9 @@ def confirm_agent_name(VALID_AGENT_NAMES):
     logging.info(f"You've selected {agent_name} as the agent.")
 
 # Confirm Signer's Name
-def confirm_signer():
+def confirm_signer(signer_name):
     while True:
-        signer_name = collect_signer_name()
+        signer_name = get_signer_name()
         if get_confirmation(f"Signer's full name is {signer_name}. Is this correct? (Y/N): "):
             logging.info(f"Signer's name confirmed as {signer_name}")
             break
@@ -109,20 +104,19 @@ def confirm_signer():
             logging.warning("Signer's name not confirmed. Asking for re-entry.")
 
 # Collect entity info
-def get_entity_info(entity_name):
+def get_entity_info(num_forms, ENTITY_TYPES):
     entities = []
     for i in range(num_forms):
         # Entity Name
         entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")
-        entities.append((entity_name, entity_type))
-    return entities
-        # Entity Type -  # add action to attempt to guess at the entity_type by scanning through the entity_name
+        while True:
+            entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
             if entity_type in ENTITY_TYPES:
                 break
-                while True:
-            entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
-                else:
-                    logging.warning("Invalid entity type, or type is not supported. Please select from the approved list (LLC/Corp/LP) again.")
+            else:
+                logging.warning("Invalid entity type, or type is not supported. Please select from the approved list (LLC/Corp/LP) again.")
+        entities.append((entity_name, entity_type))
+    return entities
 
 # Domestic State
 def get_domestic_state():
