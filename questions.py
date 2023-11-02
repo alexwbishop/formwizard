@@ -3,6 +3,8 @@
 
 # Imports
 import json
+import re
+import date
 import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
@@ -126,6 +128,7 @@ def get_domestic_state():
             logging.warning("Invalid state. Please enter again.")
     
 # Filing State
+# Modify the get_jurisdiction function to accept entity_name as a parameter
 def get_jurisdiction(entity_name: str) -> str:
     while True:
         jurisdiction = input(f"Enter the state that {entity_name} will file in (i.e. DE, CA): ").upper()
@@ -134,17 +137,85 @@ def get_jurisdiction(entity_name: str) -> str:
         else:
             logging.warning(f"Sorry, we currently only support filings for {', '.join(VALID_STATES)}. Please enter a valid state.")
 
+# Modify the main function to retrieve entity_name and pass it to get_jurisdiction
+def main():
+    # Assuming the first entity for simplicity; you can modify this based on your requirements
+    entity_name = entities[0][0]  
+    jurisdiction = get_jurisdiction(entity_name)
 
-# example / template lines of questioning
+# NEW line of questioning
 class BaseQuestion:
     def common_questions(self):
-        # Code for questions that are common across all states
-        pass
+        # Common questions for all states
+        self.signer_name = get_signer_name()
+        self.filing_type = confirm_filing_type()
+        self.num_forms = ask_total_forms()
+        self.entities = get_entity_info(self.num_forms, ENTITY_TYPES)
+        self.domestic_state = get_domestic_state()
+        self.jurisdiction = get_jurisdiction(self.entity_name)
 
 class CAQuestion(BaseQuestion):
     def state_specific_questions(self):
-        # California specific questions
-        pass
+    # California specific questions #
+        import re
+from datetime import date
+
+class FormWizard:
+    def __init__(self):
+        self.ca_entity_name = input("What is the entity name?")
+        
+        # Ensure state_id is numeric and up to 15 characters
+        while True:
+            self.ca_state_id = input("What is the state ID (numeric up to 15 characters)?")
+            if self.ca_state_id.isdigit() and len(self.ca_state_id) <= 15:
+                break
+            print("Invalid input. Please enter a numeric state ID up to 15 characters.")
+        
+        # Ensure domestic_state is 2 characters and valid
+        valid_states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", 
+                        "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
+                        "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", 
+                        "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", 
+                        "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"]
+        while True:
+            self.ca_domestic_state = input("What is the domestic state (2 digit US state or DC)?").upper()
+            if self.ca_domestic_state in valid_states:
+                break
+            print("Invalid input. Please enter a valid 2 digit US state or DC.")
+        
+        # Ensure business_purpose is under 50 characters
+        while True:
+            self.ca_business_purpose = input("What is the business purpose?")
+            if len(self.ca_business_purpose) <= 50:
+                break
+            print("Invalid input. Business purpose must be under 50 characters.")
+        
+        self.ca_CAlabor_yes = input("Is CA labor compliance met? (yes/no)").lower() == "yes"
+        self.ca_CAlabor_no = not self.ca_CAlabor_yes
+        
+        # Validate email format
+        email_pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        while True:
+            self.ca_company_email = input("What is the company email?")
+            if re.match(email_pattern, self.ca_company_email):
+                break
+            print("Invalid input. Please enter a valid email format.")
+        
+        self.ca_signed_on_date = date.today().strftime('%Y-%m-%d')
+        print(f"Signed on Date: {self.ca_signed_on_date}")
+        
+        self.ca_signer_name = input("What is the signer's first and last name?")
+        
+        # Ensure signer_title is alpha and up to 50 characters
+        while True:
+            self.ca_signer_title = input("What is the signer's title (alpha only up to 50 characters)?")
+            if self.ca_signer_title.isalpha() and len(self.ca_signer_title) <= 50:
+                break
+            print("Invalid input. Signer title should be alpha only and up to 50 characters.")
+
+
+
+
 
     def all_questions(self):
         self.common_questions()
@@ -153,11 +224,25 @@ class CAQuestion(BaseQuestion):
 class DEQuestion(BaseQuestion):
     def state_specific_questions(self):
         # Delaware specific questions
+        # Add any DE-specific questions here
         pass
 
     def all_questions(self):
         self.common_questions()
         self.state_specific_questions()
+
+
+def main():
+    jurisdiction = get_jurisdiction(entity_name)
+    if jurisdiction == "CA":
+        question_obj = CAQuestion()
+    elif jurisdiction == "DE":
+        question_obj = DEQuestion()
+    else:
+        print("Unexpected jurisdiction value entered.")
+        return
+    question_obj.all_questions()
+
 
 if __name__ == "__main__":
     main()
