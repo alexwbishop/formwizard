@@ -8,13 +8,25 @@ import os
 import PyPDF2
 import uuid
 import logging
-from questions import CAQuestion, DEQuestion
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-from reportlab.pdfgen import canvas
-from PyPDF2 import PdfReader, PdfWriter
 from classes.BaseForm.base_form import BaseForm
 from classes.Jurisdiction.jurisdiction import Jurisdiction
+def load_json_config(config.json):
+    with open(filename, 'r') as f:
+        return json.load(f)
+# JSON configuration function
+def main():
+    # Load configs
+    config = load_json_config("config.json")
+    form_config = load_json_config('field_coordinates.json')
+    VALID_STATES = config.get('VALID_STATES', [])
+    ENTITY_TYPES = config.get('ENTITY_TYPES', [])
+    FILING_TYPES = config.get('FILING_TYPES', [])
+    ALL_STATES = config.get('ALL STATES', [])
+    MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
+    VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
+    DEFAULTS = config.get('DEFAULTS', [])
+from main import FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
+
 
 def ask_yes_no(prompt):
     while True:
@@ -29,7 +41,7 @@ def ask_yes_no(prompt):
 # functions moved in from main.py #
 
 # Collect signer's name
-def get_signer_name():
+def get_entity_info():
     signer_first = input("Enter the signer's first name: ")
     signer_mid = input("Enter the signer's middle name or initial, if any: ")
     signer_last = input("Enter the signer's last name: ")
@@ -66,7 +78,7 @@ def confirm_limited_states():
         logging.warning("Sorry, we currently only support filings for Delaware (DE) and California (CA). Please check back later for more states.")
 
 # Confirm agent name
-def confirm_agent_name():
+def confirm_agent_name(VALID_AGENT_NAMES):
     while True:
         logging.info("Please select the agent name from the list of valid options:")
         for i, name in enumerate(VALID_AGENT_NAMES, 1):
@@ -101,7 +113,7 @@ def confirm_signer():
             logging.warning("Signer's name not confirmed. Asking for re-entry.")
 
 # Collect entity info
-def get_entity_info():
+def get_entity_info(num_forms):
     for i in range(num_forms):
         # Entity Name
         entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")

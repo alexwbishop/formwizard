@@ -10,7 +10,7 @@ from logging_utils import message_logging, validate_timestamp
 from pdf_utils import form_key, clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
 from questions import ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction, confirm_filings
 from session_utils import generate_session_id
-
+from constants import FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
 # Imports
 import re
 import json
@@ -19,43 +19,28 @@ import PyPDF2
 import uuid
 import logging
 from questions import CAQuestion, DEQuestion
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-from reportlab.pdfgen import canvas
 from PyPDF2 import PdfReader, PdfWriter
 from classes.BaseForm.base_form import BaseForm
 from classes.Jurisdiction.jurisdiction import Jurisdiction
-
+if __name__ == "__main__":
+    main()
 ## Call functions
 
 # begin line of questioning by state
-if state == "CA":
+if Jurisdiction == "CA":
     question_obj = CAQuestion()
-elif state == "DE":
+elif Jurisdiction == "DE":
     question_obj = DEQuestion()
 question_obj.all_questions()
 
 # message logging function
 message_logging()
 
-# JSON configuration function
-def main():
-    # Load configs
-    config = load_json_config("config.json")
-    form_config = load_json_config('field_coordinates.json')
-    VALID_STATES = config.get('VALID_STATES', [])
-    
-ENTITY_TYPES = config.get('ENTITY_TYPES', [])
-FILING_TYPES = config.get('FILING_TYPES', [])
-ALL_STATES = config.get('ALL STATES', [])
-MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
-VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
-DEFAULTS = config.get('DEFAULTS', [])
 
 # Validation Function for Confirmation Checks
 get_confirmation()
 # Validate if target file exists
-form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
+form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
 check_file_path(form_template_path)
 # Function to get PDF dimensions
 get_pdf_dimensions(pdf_path)
@@ -138,7 +123,25 @@ logging.info(f"Thank you for authenticating, {user_id},! \n Form prep session in
 # Confirm filing type (currently COA only)
 confirm_filing_type()
 # Ask for number of forms to complete
-ask_total_forms()
+def ask_total_forms():
+    while True:
+        try:
+            num_forms = int(input(f"How many forms would you like to prepare for this session? (Up to 10): "))
+            if 1 <= num_forms <= MAX_FORM_QUANTITY:
+                return num_forms
+            logging.warning(f"Please enter a number between 1 and {MAX_FORM_QUANTITY}.")
+        except ValueError:
+            logging.warning("Invalid input. Please enter a number.")
+
+def get_entity_info(num_forms):  # <-- note the argument here
+    entities = []
+    for i in range(num_forms):
+        # Entity Name
+        entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")
+        entities.append(entity_name)
+        # ... rest of the code ...
+    return entities  # or whatever data structure you want to use to store this information
+
 # Confirm state of filing
 get_jurisdiction()
 # Create an instance of the Jurisdiction class based on user input
@@ -289,8 +292,7 @@ clear_temp_folder()
 
 ### END OF PHASE 2 ###
 
-if __name__ == "__main__":
-    main()
+
 
 # Done
 
