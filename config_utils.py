@@ -21,7 +21,7 @@ from classes.Jurisdiction.jurisdiction import Jurisdiction
 # JSON configuration function
 def load_json_config(file_path):
     try:
-    with open('config.json', 'r') as file:
+    with open('file_path', 'r') as file:
         config = json.load(file)
 except FileNotFoundError:
     print("Error: config.json file not found!")
