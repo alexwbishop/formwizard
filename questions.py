@@ -242,19 +242,34 @@ class FormWizard:
                 break
             print("Invalid input. Signer title should be alpha only and up to 50 characters.")
 
-#SCARLET - Help with building code for new CA prompts below #
-
 # ask for principal business address #
     # ask if same as mailing, if any #
     # ask if same as local office in CA, if any
     # if no, prompt for mailing address
-# ask for street address of local office in California
+principal_address = input("Enter the principal business address: ")
+same_as_mailing = input("Is this the same as the mailing address? (yes/no): ").lower()
+if same_as_mailing == 'no':
+    mailing_address = input("Enter the mailing address: ")
+else:
+    mailing_address = principal_address
+    # ask for street address of local office in California
     # if no, proceed
     # if yes, prompt for in-state address
     # validate address
+same_as_local_CA = input("Is this the same as the local office in CA? (yes/no): ").lower()
+if same_as_local_CA == 'yes':
+    local_CA_address = input("Enter the street address of the local office in California: ")
+else:
+    local_CA_address = principal_address
 
 #SCARLET - prompt for 3 officers with specified titles: Chief Executive Officer, Secretary, Chief Financial Officer, and 1 Director. #
-  
+  titles = ["Chief Executive Officer", "Secretary", "Chief Financial Officer", "Director"]
+officers = {}
+for title in titles:
+    officer_name = input(f"Enter the name for the {title}: ")
+    officers[title] = officer_name
+
+
 for obj_name, attributes in address_attributes.items():
     inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
     if "state" in attributes:
@@ -290,7 +305,6 @@ class DEQuestion(BaseQuestion):
         self.common_questions()
         self.state_specific_questions()
         
-# return to entering info for next entity in the list
 def main():
     jurisdiction = get_jurisdiction(entity_name)
     if jurisdiction == "CA":
