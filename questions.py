@@ -54,16 +54,24 @@ chosen_agent = confirm_agent_name('DE')
 def raise_error(message):
     raise ValueError(message)
 
-# Moved functions outside of the BaseQuestion class
-def get_confirmation(prompt):
-    while True:
-        answer = input(f"{prompt} (y/n): ").strip().lower()
-        if answer in ['y', 'yes']:
-            return True
-        elif answer in ['n', 'no']:
-            return False
-        else:
-            print("Invalid response. Please enter 'y' or 'n'.")
+# Modify the main function to retrieve entity_name and pass it to get_jurisdiction
+def main():
+    # Assuming the first entity for simplicity; you can modify this based on your requirements
+    entity_name = entities[0][0]  
+    jurisdiction = get_jurisdiction(entity_name)
+
+# Classes
+class BaseQuestion:
+    # Moved core universal form questions functions inside of the BaseQuestion class
+    def get_confirmation(prompt):
+        while True:
+            answer = input(f"{prompt} (y/n): ").strip().lower()
+            if answer in ['y', 'yes']:
+                return True
+            elif answer in ['n', 'no']:
+                return False
+            else:
+                print("Invalid response. Please enter 'y' or 'n'.")
 
 # Collect signer's name
 def get_signer_name():
@@ -170,15 +178,9 @@ def get_jurisdiction(entity_name: str) -> str:
         else:
             logging.warning(f"Sorry, we currently only support filings for {', '.join(VALID_STATES)}. Please enter a valid state.")
 
-# Modify the main function to retrieve entity_name and pass it to get_jurisdiction
-def main():
-    # Assuming the first entity for simplicity; you can modify this based on your requirements
-    entity_name = entities[0][0]  
-    jurisdiction = get_jurisdiction(entity_name)
 
-# Classes
-class BaseQuestion:
-    def common_questions(self):
+
+def common_questions(self):
         # Common questions for all states
         self.signer_name = get_signer_name()
         self.filing_type = confirm_filing_type()
