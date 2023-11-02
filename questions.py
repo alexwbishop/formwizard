@@ -270,12 +270,22 @@ for title in titles:
     officer_name = input(f"Enter the name for the {title}: ")
     officers[title] = officer_name
 
-for obj_name, attributes in address_attributes.items():
+# address input
+def get_address_details(attributes):
     inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
     if "state" in attributes:
-        address = Address(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], inputs[attributes[3]])
+        return Address(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], inputs[attributes[3]])
     else:
-        address = Address(inputs[attributes[0]], inputs[attributes[1]], None, inputs[attributes[2]])
+        return Address(inputs[attributes[0]], inputs[attributes[1]], None, inputs[attributes[2]])
+
+for obj_name, attributes in address_attributes.items():
+    address = get_address_details(attributes)
+
+for obj_name, attributes in address_attributes.items():
+    address = get_address_details(attributes)
+
+for obj_name, attributes in address_attributes.items():
+    address = get_address_details(attributes)
     # Store address instances wherever required
 
 for obj_name, attributes in responsible_party_attributes.items():
