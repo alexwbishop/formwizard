@@ -9,10 +9,12 @@ import PyPDF2
 import uuid
 import logging
 from classes.BaseForm.base_form import BaseForm
+form_instance = BaseForm()
 from classes.Jurisdiction.jurisdiction import Jurisdiction
 def load_json_config(config.json):
     with open(filename, 'r') as f:
         return json.load(f)
+
 # JSON configuration function
 def main():
     # Load configs
@@ -28,7 +30,7 @@ def main():
 from main import FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
 
 
-def ask_yes_no(prompt):
+def get_confirmation(prompt):
     while True:
         answer = input(f"{prompt} (y/n): ").strip().lower()
         if answer in ['y', 'yes']:
@@ -55,7 +57,8 @@ def confirm_filing_type():
             form_instance.filing_type = filing_type
             break
         else:
-            logging.warning("Only Change of Agent filing type is currently supported.\n Please check back later for more filing types in the future.")
+            logging.warning("Only Change of Agent filing type is currently supported.\n Please check back later for more filing types in the future or enter 'COA' to proceed.")
+
 
 # Ask for number of forms to complete
 def ask_total_forms():
@@ -100,7 +103,7 @@ def get_signer_name():
     signer_mid = input("Enter the signer's middle name or initial, if any: ")
     signer_last = input("Enter the signer's last name: ")
     signer_name = f"{signer_first} {signer_mid} {signer_last}"
-    sig_conformed = f"/s/{signer_name}"
+    return signer_name, sig_conformed
 
 # Confirm Signer's Name
 def confirm_signer():
@@ -113,11 +116,13 @@ def confirm_signer():
             logging.warning("Signer's name not confirmed. Asking for re-entry.")
 
 # Collect entity info
-def get_entity_info(num_forms):
+def get_entity_info(entity_name):
+    entities = []
     for i in range(num_forms):
         # Entity Name
         entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")
-        
+        entities.append((entity_name, entity_type))
+    return entities
         # Entity Type -  # add action to attempt to guess at the entity_type by scanning through the entity_name
         while True:
             entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
@@ -169,6 +174,8 @@ class DEQuestion(BaseQuestion):
         self.common_questions()
         self.state_specific_questions()
 
+if __name__ == "__main__":
+    main()
 
 
 
