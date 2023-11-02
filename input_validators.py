@@ -7,11 +7,30 @@ import json
 import os
 import uuid
 import logging
+import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
 # functions
+
+# Validate date and time
+def validate_date_time(date_time_str, format_str='%Y-%m-%d %H:%M:%S'):
+    """
+    Validates if the provided string conforms to the specified date and time format.
+    
+    Parameters:
+    - date_time_str (str): The date and time string to validate.
+    - format_str (str, optional): The format against which to validate the string. Default is '%Y-%m-%d %H:%M:%S'.
+
+    Returns:
+    - bool: True if the string is a valid date and time. False otherwise.
+    """
+    try:
+        datetime.datetime.strptime(date_time_str, format_str)
+        return True
+    except ValueError:
+        return False
 
 # Validation Function for Confirmation Checks
 def get_confirmation(prompt: str, error_msg: str = "Invalid input. Please try again.") -> bool:
@@ -38,23 +57,24 @@ def file_exists(filepath):
         logging.error(f"An error occurred:", {e}")
         return False
 
-# Entity & Filing Info Confirmation - Individual
+# Entity & Filing Info Prompt
 def collect_entity_info():
     while True:
-        entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction = gather_entity_details()
+        entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction = get_entity_info()
+# Confirmation - Individual entity/form info
         if get_confirmation(f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} to {agent_name} in {jurisdiction}. Is this correct? (Y/N): "):
             return entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction
         else:
             logging.warning("Please re-enter the entity details.")
 
-# Entity & Filing Info Confirmation - Complete List
-for i, data in enumerate(entity_data_list):
-    logging.info(f"Entity {i+1}: {data['entity_name']} (a {data['domestic_state']} {data['entity_type']},)
-           is filing a {data['residency']} {data['filing_type']} in {data['jurisdiction']}.")
-
+# Confirmation - group entity/form info
+def display_form_list():
+    logging.info(f"List of entities/forms to be filled in this session: ")
+    for i, form in enumerate(forms):
+        logging.info(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
 
 # Ask user to confirm info provided for all filings is correct, proceed
-def prepare_filings():
+def confirm_filings():
     while True:
         num_forms, form_list = gather_filing_details()
         if get_confirmation(f"All information for form preparation request has been obtained, we are ready to complete {num_forms} forms now. Proceed? (Y/N): "):
@@ -62,7 +82,8 @@ def prepare_filings():
         else:
             logging.warning("Please restart the session with the correct information.")
 
-# Print quicklist of all forms/entities that were filled out in current session
+# Display a list of all forms/entities that were filled out in current session
+def display_complete_list():
 for i, data in enumerate(entity_data_list):
     logging.info(f"PDF for: {data['entity_name']} - {data['jurisdiction']} {data['residency']} 
           {data['entity_type']},) {data['filing_type']}.")

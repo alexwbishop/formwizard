@@ -49,8 +49,6 @@ def get_pdf_dimensions(pdf_path):
         logging.error(f"An error occurred while reading PDF", {e}")
         return None, None
       
-# Construct the PDF file path dynamically
-form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
 
 # Function to populate form fields
 def populate_form(form_template_path, output_pdf_path, field_coordinates, field_values):
@@ -70,8 +68,7 @@ def populate_form(form_template_path, output_pdf_path, field_coordinates, field_
 form_key = f"{jurisdiction}-{entity_type}-{residency}-{filing_type}"
 
 # Function to merge text PDF onto blank form
-from PyPDF2 import PdfReader, PdfWriter
-
+# do we need this?
 
 # Merge overlay and form PDFs together
 def merge_pdfs(form_pdf_path, text_pdf_path, output_pdf_path):

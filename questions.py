@@ -1,15 +1,5 @@
 # questions.py
-# Questions and State Handling
-
-#Steps to Populate questions.py:
-    #Identify Question Points: Scan your current codebase to identify where you're asking for user input. This can be as simple as calls to input() or more complex UI components.
-    #Generalize Questions: If you notice that you're asking similar types of questions across the board, you could generalize them into a single function.
-#For example, if you have multiple Yes/No questions, you could have a general ask_yes_no_question() function.
-    #Validation Functions: If you have validation logic right next to the question prompt, consider abstracting these into separate functions and moving them into questions.py.
-    #State-Specific Questions: Since you have a hierarchy that goes from BaseForm up to Jurisdiction and FilingType,
-  #consider adding methods in your Question class (or its subclasses) that generate state or filing type-specific questions.
-    #Inheritance and Overriding: If different jurisdictions have slightly different requirements for the same kind of question,
-#use inheritance to create a base version of the question in the Question class, and override it in each state-specific subclass as needed.
+# Questions and State Form Handling
 
 # Imports
 import re
@@ -36,15 +26,14 @@ def ask_yes_no(prompt):
         else:
             print("Invalid response. Please enter 'y' or 'n'.")
 
-
 # functions moved in from main.py #
+
 # Collect signer's name
 def get_signer_name():
     signer_first = input("Enter the signer's first name: ")
     signer_mid = input("Enter the signer's middle name or initial, if any: ")
     signer_last = input("Enter the signer's last name: ")
     return f"{signer_first} {signer_mid} {signer_last}"
-
 
 # Confirm filing type (currently COA only)
 def confirm_filing_type():
@@ -125,7 +114,7 @@ def get_entity_info():
                 break
             else:
                 logging.warning("Invalid entity type, or type is not supported. Please select from the approved list (LLC/Corp/LP) again.")
-    
+
 # Domestic State
 def get_domestic_state():
     while True:

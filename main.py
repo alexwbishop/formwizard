@@ -3,12 +3,12 @@
 # Purpose: Automate the process of filling out Change of Agent forms (Corp, LLC, LP), Domestic and Foreign. in DE and CA.
 # main.py
 
-# load external functions: state, datetime, state_name, state_code, entity_name
+# load external functions: (still need to add: state, datetime, state_name, state_code, entity_name)
 from config_utils import load_json_config
-from input_validators import get_confirmation, validate_zip, get_residency, calculate_residency, file_exists, collect_entity_info, log_entity_data_list, prepare_filings, print_quicklist, load_agent_address
-from logging_utils import message_logging, display_complete_list, validate_timestamp
-from pdf_utils import clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
-from questions import ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction
+from input_validators import validate_date_time, collect_entity_info, display_form_list, get_confirmation, validate_zip, get_residency, calculate_residency, file_exists, log_entity_data_list, prepare_filings, print_quicklist, load_agent_address
+from logging_utils import message_logging, validate_timestamp
+from pdf_utils import form_key, clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
+from questions import ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction, confirm_filings
 from session_utils import generate_session_id
 
 # Imports
@@ -28,18 +28,17 @@ from classes.Jurisdiction.jurisdiction import Jurisdiction
 
 ## Call functions
 
-# line of questioning by state
+# begin line of questioning by state
 if state == "CA":
     question_obj = CAQuestion()
 elif state == "DE":
     question_obj = DEQuestion()
 question_obj.all_questions()
 
-# message logging function - Moved
+# message logging function
+message_logging()
 
-# date & time validation - Moved
-
-# JSON configuration function - Moved
+# JSON configuration function
 def main():
     # Load configs
     config = load_json_config("config.json")
@@ -53,17 +52,17 @@ MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
 VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
 DEFAULTS = config.get('DEFAULTS', [])
 
-
-# Validation Function for Confirmation Checks - Moved
-
-# Validate if target file exists - Moved
-
-# Function to get PDF dimensions - Moved
-
-# Function to populate form fields - Moved
-
-# Function to merge text PDF onto blank form - Moved
-
+# Validation Function for Confirmation Checks
+get_confirmation()
+# Validate if target file exists
+form_template_path = f"StateForms/{jurisdiction}/{jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
+check_file_path(form_template_path)
+# Function to get PDF dimensions
+get_pdf_dimensions(pdf_path)
+# Function to populate form fields
+populate_form()
+# Function to merge text PDF onto blank form
+merge_overlay_pdf()
 # Create an instance of the Jurisdiction class
 current_jurisdiction = Jurisdiction.create_jurisdiction(state_name_mapping[state], state)
 #de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
@@ -78,15 +77,23 @@ form_instance = BaseForm(
     jurisdiction_instance=de_jurisdiction,
 )
 
-# Overwrite attributes as necessary
+# date & time validation - not used
+#date_time_input = input("Enter date and time (format: YYYY-MM-DD HH:MM:SS): ")
+#
+#if validate_date_time(date_time_input):
+#    print("Valid date and time!")
+#else:
+#    print("Invalid date and time format!")
+
+# Overwrite form instance attributes as necessary
 if some_condition:
     form_instance.domestic_state = "DE"
-)
 
 # Now that form_instance is defined, you can update de_jurisdiction with it if needed
 de_jurisdiction.jurisdiction_instance = form_instance
 
 # Merge overlay and form PDFs together - Moved
+merge_pdfs()
 
 # Use the defaults
 form_instance = BaseForm(
@@ -98,6 +105,7 @@ form_instance = BaseForm(
 )
 ## PHASE 1 = Basic command line prompt usage:
 
+# user login with password - disabled
 user_id = "alexander.bishop"
 # Greet and Confirm that User is Alex
 #while True:
@@ -127,21 +135,20 @@ form_instance.session_id = session_id
 form_instance.session_timestamp = datetime.now()
 logging.info(f"Thank you for authenticating, {user_id}! \n Form prep session initialized. \n Username: {user.id} | Session ID: {session_id}") | Timestamp: {session_timestamp}")
 
-# Confirm filing type (currently COA only) - Moved
-
-# Ask for number of forms to complete - Moved
-
-# Confirm state of filing - Moved
-
+# Confirm filing type (currently COA only)
+confirm_filing_type()
+# Ask for number of forms to complete
+ask_total_forms()
+# Confirm state of filing
+get_jurisdiction()
 # Create an instance of the Jurisdiction class based on user input
 jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
-
-# Confirm agent name - Moved
-
-# Collect Signer's Name - Moved
-
-# Confirm Signer's Name - Moved
-
+# Confirm agent name
+confirm_agent_name()
+# Collect Signer's Name
+get_signer_name()
+# Confirm Signer's Name
+get_signer_name()
 # Initialize list to store form instances
 forms = []
 
@@ -165,13 +172,13 @@ form_instance.sig_typed = signer_name
 # Initialize a list to store entity data
 entity_data_list = []
 
-# Collect entity info - Moved
+# Collect entity info
+collect_entity_info()
+get_domestic_state()
+get_jurisdiction(entity_name)
     
-# Ask Domestic State - Moved
-    
-# Ask Filing State - Moved
-    
-# Calculate Domestic or Foreign Residency (only for this form/filing) - Moved
+# Calculate Domestic or Foreign Residency (only for this form/filing)
+get_residency()
 
 # Store entity data in a dictionary
 entity_data = {
@@ -208,9 +215,8 @@ if jurisdiction == 'CA':
     # Add to list
     entity_data_list.append(entity_data)
     
-# Entity & Filing Info Confirmation (Individual) - Moved
-
-# Entity & Filing Info Confirmation (Complete List) - Moved
+# Entity & Filing Info Confirmation
+display_form_list()
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
     form_instance.signer_first = signer_first
@@ -218,9 +224,8 @@ if jurisdiction == 'CA':
     form_instance.signer_last = signer_last
     form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
 
-# Construct the PDF file path dynamically - Moved
-
-# Check if PDF files exist - Moved
+# Check if PDF files exist
+check_file_path()
 
 # store the data into the form class
 form_instance.entity_name = entity_name,
@@ -233,9 +238,12 @@ form_instance.filing_type = filing_type,
 # Loop through the total # of filings requested (up to 10) and store each data set into 'forms', then display list
 forms.append(form_instance)
 
-# Display a complete list of up to 10 entities & forms to be filled - Moved
+# Display confirmation list of up to 10 entities & forms to be filled
+display_form_list()
 
-# Ask user to confirm info provided for all filings is correct, proceed to next phase - Moved
+# Ask user to confirm info provided for all filings is correct, proceed to next phase
+confirm_filings()
+
 ### END PHASE 1 ###
 
 ### PHASE 2: DOCUMENT PREPARATION ###
@@ -253,8 +261,6 @@ if agent_name in ["CT", "NRAI"]:
     agent_address = load_agent_address(agent_name)
     form_data['agent_address'] = agent_address
 
-# define the form key for labeling PDF files being processed, e.g. DE-Corp-Dom-COA - Moved
-
 # Run the populate function on the form
 populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', f'StateForms/{jurisdiction}/output_{form_key}.pdf', form_config.get(form_key, {}), form_data)
 
@@ -268,9 +274,10 @@ populate_form(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f
 merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'completed_forms/{jurisdiction}-{entity_name}_-_{form_key}_Filled.pdf')
 
 # Print quicklist of all forms/entities that were filled out in current session - Moved
+display_complete_list()
 
 # Show success message & goodbye
-ging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
+logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
 \n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
 
 # prompt user to delete the temp file folder contents (with confirmation)
