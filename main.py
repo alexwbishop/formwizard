@@ -162,7 +162,11 @@ def get_entity_info(num_forms):  # <-- note the argument here
         entities.append(entity_name)
     return entities  # or whatever data structure you want to use to store this information
 
+def main():
+    FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES = setup_config()
+
 # Create an instance of the Jurisdiction class based on user input
+jurisdiction_value = get_jurisdiction()
 jurisdiction_instance = Jurisdiction.create_jurisdiction(state_name, state_code)
 
 # Confirm agent name
@@ -304,9 +308,31 @@ logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully c
 # prompt user to delete the temp file folder contents (with confirmation)
 clear_temp_folder()
 
-#SCARLET# help me to add a session  txt file export - confirm with user
+# session  txt file export - confirm with user
+def export_session_to_txt(session_id, user_id, session_timestamp, num_forms):
+    with open(f'session_{session_id}.txt', 'w') as file:
+        file.write(f"Username: {user_id}\n")
+        file.write(f"Session ID: {session_id}\n")
+        file.write(f"Timestamp: {session_timestamp}\n")
+        file.write(f"Total PDFs filled: {num_forms}\n")
+    print("Session details exported to txt file.")
+    # Confirm with user
+    confirmation = input("Do you want to view the exported session details? (yes/no): ")
+    if confirmation.lower() == 'yes':
+        with open(f'session_{session_id}.txt', 'r') as file:
+            print(file.read())
 
-#SCARLET# prompt for user feedback of experience 1-10
+# prompt for user feedback of experience 1-10
+def get_user_feedback():
+    while True:
+        try:
+            feedback = int(input("On a scale of 1-10, how would you rate your experience? "))
+            if 1 <= feedback <= 10:
+                return feedback
+            print("Please enter a number between 1 and 10.")
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 and 10.")
+
 
 if __name__ == "__main__":
     main()
