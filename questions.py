@@ -10,6 +10,20 @@ from address import Address
 import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
+from responsibleparty import ResponsibleParty
+from address import Address
+address_attributes = {
+    "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip"],
+    "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip"],
+    "domestic": ["domestic_street1", "domestic_city", "domestic_zip"]
+}
+responsible_party_attributes = {
+    "officer1": ["officer1_first", "officer1_mid", "officer1_last", "officer1_street1", "officer1_city", "officer1_state", "officer1_zip"],
+    "officer2": ["officer2_first", "officer2_mid", "officer2_last", "officer2_street1", "officer2_city", "officer2_state", "officer2_zip"],
+    "officer3": ["officer3_first", "officer3_mid", "officer3_last", "officer3_street1", "officer3_city", "officer3_state", "officer3_zip"],
+    "director1": ["director1_first", "director1_mid", "director1_last", "director1_street1", "director1_city", "director1_state", "director1_zip"],
+    "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip"]
+}
 # set up address dictionary
 address_attributes = {
     "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip", "phys_county"],
@@ -23,20 +37,6 @@ responsible_party_attributes = {
     "director1": ["director1_first", "director1_mid", "director1_last", "director1_street1", "director1_city", "director1_state", "director1_zip"],
     "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip"]
 }
-
-for obj_name, attributes in address_attributes.items():
-    inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
-    if "state" in attributes:
-        address = Address(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], inputs[attributes[3]])
-    else:
-        address = Address(inputs[attributes[0]], inputs[attributes[1]], None, inputs[attributes[2]])
-    # Store address instances wherever required
-
-for obj_name, attributes in responsible_party_attributes.items():
-    inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
-    address = Address(inputs[attributes[3]], inputs[attributes[4]], inputs[attributes[5]], inputs[attributes[6]])
-    responsible_party = ResponsibleParty(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], address)
-    # Store responsible_party instances wherever required
 
 from classes.BaseForm.base_form import BaseForm
 form_instance = BaseForm()
@@ -242,44 +242,55 @@ class FormWizard:
                 break
             print("Invalid input. Signer title should be alpha only and up to 50 characters.")
 
+#SCARLET - Help with building code for new CA prompts below #
+
 # ask for principal business address #
-
-# ask to confirm if mailing is the same as physical #
-
+    # ask if same as mailing, if any #
+    # ask if same as local office in CA, if any
     # if no, prompt for mailing address
 # ask for street address of local office in California
     # if no, proceed
     # if yes, prompt for in-state address
-
-# prompt for 3 officers with specified titles: Chief Executive Officer, Secretary, Chief Financial Officer, and 1 Director. #
-    # ask if address is same as principal office #
-    # ask if same as mailing, if any #
-    # ask if same as local office in CA, if any
-    # prompt for custom address
     # validate address
-    # DOMESTIC ONLY: number of vacancies on board of directors, if any
+
+#SCARLET - prompt for 3 officers with specified titles: Chief Executive Officer, Secretary, Chief Financial Officer, and 1 Director. #
+  
+for obj_name, attributes in address_attributes.items():
+    inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
+    if "state" in attributes:
+        address = Address(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], inputs[attributes[3]])
+    else:
+        address = Address(inputs[attributes[0]], inputs[attributes[1]], None, inputs[attributes[2]])
+    # Store address instances wherever required
+
+for obj_name, attributes in responsible_party_attributes.items():
+    inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
+    address = Address(inputs[attributes[3]], inputs[attributes[4]], inputs[attributes[5]], inputs[attributes[6]])
+    responsible_party = ResponsibleParty(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], address)
+    # Store responsible_party instances wherever required
+
+#SCARLET -    
+    # DOMESTIC ENTITY ONLY: number of vacancies on board of directors, if any
     # confirm CT is to be the agent
     # prompt for business purpose (50 chars)
-    # ask labor judgement question (Y/N)
-    # optional email address entry
+    # ask labor judgement question (Y/N) - Default to N
+    # optional email address entry - validate email
     # confirm if any of the newly added officers will sign this form
     # if no, default to default signer previously specified
-    
-    def all_questions(self):
-        self.common_questions()
-        self.state_specific_questions()
+    # questioning complete
 
+# ask DE specific questions #
 class DEQuestion(BaseQuestion):
     def state_specific_questions(self):
-        # Delaware specific questions
         # Add any DE-specific questions here
         pass
-
+        
+# ask standard questions for all entities
     def all_questions(self):
         self.common_questions()
         self.state_specific_questions()
-
-
+        
+# return to entering info for next entity in the list
 def main():
     jurisdiction = get_jurisdiction(entity_name)
     if jurisdiction == "CA":
@@ -291,7 +302,7 @@ def main():
         return
     question_obj.all_questions()
 
-
+# closing
 if __name__ == "__main__":
     main()
 
