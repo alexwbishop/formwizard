@@ -17,24 +17,11 @@ with open('form_wizard_config.json', 'r') as f:
 
 # Dictionaries for Attributes
 address_attributes = {
-    "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip", "phys_county"],
-    "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip", "mail_county"],
-    "domestic": ["domestic_street1", "domestic_city", "domestic_zip", "domestic_county"]
+    "phys": ["phys_street1", "phys_street2", "phys_city", "phys_state", "phys_zip", "phys_county"],
+    "mail": ["mail_street1", "mail_street2", "mail_city", "mail_state", "mail_zip", "mail_county"],
+    "domestic": ["domestic_street1", "domestic_street2", "domestic_city", "domestic_zip", "domestic_county"]
 }
 
-responsible_party_attributes = {
-    "officer1": ["officer1_first", "officer1_mid", "officer1_last", "officer1_street1", "officer1_city", "officer1_state", "officer1_zip"],
-    "officer2": ["officer2_first", "officer2_mid", "officer2_last", "officer2_street1", "officer2_city", "officer2_state", "officer2_zip"],
-    "officer3": ["officer3_first", "officer3_mid", "officer3_last", "officer3_street1", "officer3_city", "officer3_state", "officer3_zip"],
-    "director1": ["director1_first", "director1_mid", "director1_last", "director1_street1", "director1_city", "director1_state", "director1_zip"],
-    "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip", "agenthuman_county"]
-}
-# set up address dictionary
-address_attributes = {
-    "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip", "phys_county"],
-    "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip", "mail_county"],
-    "domestic": ["domestic_street1", "domestic_city", "domestic_zip", domestic_county"]
-}
 responsible_party_attributes = {
     "officer1": ["officer1_first", "officer1_mid", "officer1_last", "officer1_street1", "officer1_city", "officer1_state", "officer1_zip"],
     "officer2": ["officer2_first", "officer2_mid", "officer2_last", "officer2_street1", "officer2_city", "officer2_state", "officer2_zip"],
@@ -90,7 +77,6 @@ def confirm_filing_type():
     while True:
         filing_type = input(f"Note: FormWizard only supports form completion for 'Change of Agent' at this time. Please confirm (COA): ")
         if filing_type in FILING_TYPES:
-            form_instance.filing_type = filing_type
             break
         else:
             logging.warning("Only Change of Agent filing type is currently supported.\n Please check back later for more filing types in the future or enter 'COA' to proceed.")
@@ -125,7 +111,7 @@ def confirm_agent_name(state):
 
     while True:
         logging.info("Please select the agent name from the list of valid options:")
-        for i, name in enumerate(valid_agent_names, 1):
+        for i, name in enumerate(config["VALID_AGENT_NAMES"], 1):
             logging.info(f"{i}. {name}")
         try:
             selection = int(input("Enter the number corresponding to your choice: "))
@@ -207,8 +193,9 @@ class CAQuestion(BaseQuestion):
         import re
 from datetime import date
 
-class FormWizard:
+class CAForm:
     def __init__(self):
+        #SCARLET - Please make this refer to the already designated entity_name and ask if ca_entity_name is the same as it (Y/N).
         self.ca_entity_name = input("What is the entity name?")
         
         # Ensure state_id is numeric and up to 15 characters
