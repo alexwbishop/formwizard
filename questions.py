@@ -8,10 +8,13 @@ import os
 import PyPDF2
 import uuid
 import logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
 from classes.BaseForm.base_form import BaseForm
 form_instance = BaseForm()
+
 from classes.Jurisdiction.jurisdiction import Jurisdiction
-def load_json_config(config.json):
+def load_json_config(filename):
     with open(filename, 'r') as f:
         return json.load(f)
 
@@ -27,8 +30,6 @@ def main():
     MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
     VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
     DEFAULTS = config.get('DEFAULTS', [])
-from main import FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
-
 
 def get_confirmation(prompt):
     while True:
@@ -43,7 +44,7 @@ def get_confirmation(prompt):
 # functions moved in from main.py #
 
 # Collect signer's name
-def get_entity_info():
+def get_signer_name():
     signer_first = input("Enter the signer's first name: ")
     signer_mid = input("Enter the signer's middle name or initial, if any: ")
     signer_last = input("Enter the signer's last name: ")
@@ -70,7 +71,7 @@ def ask_total_forms():
             logging.warning(f"Please enter a number between 1 and {MAX_FORM_QUANTITY}.")
         except ValueError:
             logging.warning("Invalid input. Please enter a number.")
-
+        return num_forms
 # Confirm limited # of states are currently supported
 def confirm_limited_states():
     while True:
@@ -79,7 +80,7 @@ def confirm_limited_states():
             state_name = VALID_STATES[state_code]
             break
         logging.warning("Sorry, we currently only support filings for Delaware (DE) and California (CA). Please check back later for more states.")
-
+            return state_code
 # Confirm agent name
 def confirm_agent_name(VALID_AGENT_NAMES):
     while True:
@@ -97,18 +98,10 @@ def confirm_agent_name(VALID_AGENT_NAMES):
             logging.warning("Invalid input. Please enter a number.")
     logging.info(f"You've selected {agent_name} as the agent.")
 
-# Collect Signer's Name
-def get_signer_name():
-    signer_first = input("Enter the signer's first name: ")
-    signer_mid = input("Enter the signer's middle name or initial, if any: ")
-    signer_last = input("Enter the signer's last name: ")
-    signer_name = f"{signer_first} {signer_mid} {signer_last}"
-    return signer_name, sig_conformed
-
 # Confirm Signer's Name
 def confirm_signer():
     while True:
-        signer_name = get_signer_name()
+        signer_name = collect_signer_name()
         if get_confirmation(f"Signer's full name is {signer_name}. Is this correct? (Y/N): "):
             logging.info(f"Signer's name confirmed as {signer_name}")
             break
@@ -124,12 +117,12 @@ def get_entity_info(entity_name):
         entities.append((entity_name, entity_type))
     return entities
         # Entity Type -  # add action to attempt to guess at the entity_type by scanning through the entity_name
-        while True:
-            entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
             if entity_type in ENTITY_TYPES:
                 break
-            else:
-                logging.warning("Invalid entity type, or type is not supported. Please select from the approved list (LLC/Corp/LP) again.")
+                while True:
+            entity_type = input(f"Enter the entity type for {entity_name}: (LLC/Corp/LP): ")
+                else:
+                    logging.warning("Invalid entity type, or type is not supported. Please select from the approved list (LLC/Corp/LP) again.")
 
 # Domestic State
 def get_domestic_state():
