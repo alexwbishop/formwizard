@@ -3,8 +3,6 @@
 
 # Imports
 import json
-import re
-import date
 from responsibleparty import ResponsibleParty
 from address import Address
 import logging
@@ -15,27 +13,27 @@ from address import Address
 address_attributes = {
     "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip"],
     "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip"],
-    "domestic": ["domestic_street1", "domestic_city", "domestic_zip"]
+    "domestic": ["domestic_street1", "domestic_city", "domestic_zip", "domestic_county"]
 }
 responsible_party_attributes = {
     "officer1": ["officer1_first", "officer1_mid", "officer1_last", "officer1_street1", "officer1_city", "officer1_state", "officer1_zip"],
     "officer2": ["officer2_first", "officer2_mid", "officer2_last", "officer2_street1", "officer2_city", "officer2_state", "officer2_zip"],
     "officer3": ["officer3_first", "officer3_mid", "officer3_last", "officer3_street1", "officer3_city", "officer3_state", "officer3_zip"],
     "director1": ["director1_first", "director1_mid", "director1_last", "director1_street1", "director1_city", "director1_state", "director1_zip"],
-    "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip"]
+    "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip", "agenthuman_county"]
 }
 # set up address dictionary
 address_attributes = {
     "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip", "phys_county"],
     "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip", "mail_county"],
-    "domestic": ["domestic_street1", "domestic_city", "domestic_zip", domestic_county]
+    "domestic": ["domestic_street1", "domestic_city", "domestic_zip", domestic_county"]
 }
 responsible_party_attributes = {
     "officer1": ["officer1_first", "officer1_mid", "officer1_last", "officer1_street1", "officer1_city", "officer1_state", "officer1_zip"],
     "officer2": ["officer2_first", "officer2_mid", "officer2_last", "officer2_street1", "officer2_city", "officer2_state", "officer2_zip"],
     "officer3": ["officer3_first", "officer3_mid", "officer3_last", "officer3_street1", "officer3_city", "officer3_state", "officer3_zip"],
     "director1": ["director1_first", "director1_mid", "director1_last", "director1_street1", "director1_city", "director1_state", "director1_zip"],
-    "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip"]
+    "agenthuman": ["agenthuman_first", "agenthuman_mid", "agenthuman_last", "agenthuman_street1", "agenthuman_city", "agenthuman_zip", "agenthuman_county"]
 }
 
 from classes.BaseForm.base_form import BaseForm
