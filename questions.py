@@ -59,6 +59,11 @@ ALL_STATES = config.get('ALL STATES', [])
 MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
 VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
 DEFAULTS = config.get('DEFAULTS', [])
+chosen_agent = confirm_agent_name('DE')
+
+# centralized error handling function
+def raise_error(message):
+    raise ValueError(message)
 
 # Moved functions outside of the BaseQuestion class
 def get_confirmation(prompt):
@@ -109,21 +114,29 @@ def confirm_limited_states():
         logging.warning("Sorry, we currently only support filings for Delaware (DE) and California (CA). Please check back later for more states.")
             return state_code
 # Confirm agent name
-def confirm_agent_name():
+def get_registered_agent_name(state):
+    return CONFIG_DATA['CT_REGISTERED_AGENT_NAMES'].get(state)
+
+def confirm_agent_name(state):
+    # Fetch agent names dynamically based on the state
+    valid_agent_names = CONFIG_DATA['VALID_AGENT_NAMES'].get(state, [])
+
     while True:
         logging.info("Please select the agent name from the list of valid options:")
-        for i, name in enumerate(VALID_AGENT_NAMES, 1):
+        for i, name in enumerate(valid_agent_names, 1):
             logging.info(f"{i}. {name}")
         try:
             selection = int(input("Enter the number corresponding to your choice: "))
-            if 1 <= selection <= len(VALID_AGENT_NAMES):
-                agent_name = VALID_AGENT_NAMES[selection - 1]
+            if 1 <= selection <= len(valid_agent_names):
+                agent_name = valid_agent_names[selection - 1]
                 break
             else:
                 logging.warning("Invalid selection. Please choose a number from the list.")
         except ValueError:
             logging.warning("Invalid input. Please enter a number.")
     logging.info(f"You've selected {agent_name} as the agent.")
+    return agent_name  # Optionally return the agent name for future use
+
 
 # Confirm Signer's Name
 def confirm_signer(signer_name):
@@ -204,16 +217,12 @@ class FormWizard:
             print("Invalid input. Please enter a numeric state ID up to 15 characters.")
         
         # Ensure domestic_state is 2 characters and valid
-        valid_states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", 
-                        "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
-                        "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", 
-                        "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", 
-                        "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"]
+        valid_states = CONFIG_DATA['VALID_STATES']
         while True:
             self.ca_domestic_state = input("What is the domestic state (2 digit US state or DC)?").upper()
-            if self.ca_domestic_state in valid_states:
-                break
-            print("Invalid input. Please enter a valid 2 digit US state or DC.")
+            if state not in CONFIG_DATA['VALID_STATES']:
+                raise ValueError(f"{state} is not a valid state")
+
         # prompt for business purpose (50 chars)
         # Ensure business_purpose is under 50 characters
         while True:
@@ -260,6 +269,10 @@ else:
     # if no, proceed
     # if yes, prompt for in-state address
     # validate address
+def validate_agent_zip(agent_zip):
+    pattern = CONFIG_DATA['VALIDATION_RULES']['agent_zip']
+    if not re.match(pattern, agent_zip):
+        raise ValueError(f"{agent_zip} is not a valid ZIP code")
 same_as_local_CA = input("Is this the same as the local office in CA? (yes/no): ").lower()
 if same_as_local_CA == 'yes':
     local_CA_address = input("Enter the street address of the local office in California: ")
