@@ -47,14 +47,14 @@ def get_confirmation(prompt: str, error_msg: str = "Invalid input. Please try ag
             logging.error(str(e))
 
 # Calculate Domestic or Foreign Residency (only for this form/filing)
-def get_residency() = 'Dom' if jurisdiction == domestic_state else 'For'
+def get_residency() : 'Dom' if jurisdiction == domestic_state else 'For'
 
 # Validate if target file exists
 def file_exists(filepath):
     try:
         return os.path.isfile(filepath)
     except Exception as e:
-        logging.error(f"An error occurred:", {e}")
+        logging.error(f"An error occurred:, {e}")
         return False
 
 # Entity & Filing Info Prompt
@@ -84,8 +84,8 @@ def confirm_filings():
 
 # Display a list of all forms/entities that were filled out in current session
 def display_complete_list():
-for i, data in enumerate(entity_data_list):
-    logging.info(f"PDF for: {data['entity_name']} - {data['jurisdiction']} {data['residency']} 
+    for i, data in enumerate(entity_data_list):
+        logging.info(f"PDF for: {data['entity_name']} - {data['jurisdiction']} {data['residency']} 
           {data['entity_type']},) {data['filing_type']}.")
 
 # ZIP code validation (not yet being used)

@@ -133,7 +133,7 @@ if __name__ == "__main__":
 form_instance.user_id = user_id
 form_instance.session_id = session_id
 form_instance.session_timestamp = datetime.now()
-logging.info(f"Thank you for authenticating, {user_id}! \n Form prep session initialized. \n Username: {user.id} | Session ID: {session_id}") | Timestamp: {session_timestamp}")
+logging.info(f"Thank you for authenticating, {user_id},! \n Form prep session initialized. \n Username: {user.id},\n Session ID:{session_id} Timestamp: {session_timestamp}")
 
 # Confirm filing type (currently COA only)
 confirm_filing_type()
@@ -219,10 +219,10 @@ if jurisdiction == 'CA':
 display_form_list()
 
 # Store each set of inputted entity data from the list (up to 10) into the previously initialized BaseForm instance:
-    form_instance.signer_first = signer_first
-    form_instance.signer_mid = signer_mid
-    form_instance.signer_last = signer_last
-    form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
+form_instance.signer_first = signer_first
+form_instance.signer_mid = signer_mid
+form_instance.signer_last = signer_last
+form_instance.signer_name = f"{signer_first} {signer_mid} {signer_last}"
 
 # Check if PDF files exist
 check_file_path()

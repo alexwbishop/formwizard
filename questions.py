@@ -39,12 +39,11 @@ def get_signer_name():
 def confirm_filing_type():
     while True:
         filing_type = input(f"Note: FormWizard only supports form completion for 'Change of Agent' at this time. Please confirm (COA): ")
-        if filing_type in FILING TYPES:
+        if filing_type in FILING_TYPES:
             form_instance.filing_type = filing_type
             break
         else:
-            logging.warning("Only Change of Agent filing type is currently supported.\n
-            Please check back later for more filing types in the future.")
+            logging.warning("Only Change of Agent filing type is currently supported.\n Please check back later for more filing types in the future.")
 
 # Ask for number of forms to complete
 def ask_total_forms():

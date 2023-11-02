@@ -46,7 +46,7 @@ def get_pdf_dimensions(pdf_path):
         media_box = page.mediabox
         return media_box.width, media_box.height  
     except Exception as e:
-        logging.error(f"An error occurred while reading PDF", {e}")
+        logging.error(f"An error occurred while reading PDF, {e}")
         return None, None
       
 
