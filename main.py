@@ -20,10 +20,8 @@ ALL_STATES = config['ALL STATES']
 
 # Imports
 import re
-import json
 import os
 import PyPDF2
-import uuid
 import logging
 from questions import CAQuestion, DEQuestion
 from PyPDF2 import PdfReader, PdfWriter
@@ -38,7 +36,12 @@ if Jurisdiction == "CA":
     question_obj = CAQuestion()
 elif Jurisdiction == "DE":
     question_obj = DEQuestion()
-question_obj.all_questions()
+else:
+    print("Unexpected jurisdiction value entered.")
+    # You can handle the unexpected input here, such as raising an exception or providing a default behavior.
+
+if Jurisdiction in ["CA", "DE"]:
+    question_obj.all_questions()
 
 # message logging function
 message_logging()
@@ -119,8 +122,7 @@ user_id = "alexander.bishop"
 #    logging.error(f"Access denied. Please check your username and password.")
 
 # Create a session_id for the form prep session
-if __name__ == "__main__":
-    session_id = generate_session_id()
+session_id = generate_session_id()
 #  assign the user_id and timestamp to the session markers
 form_instance.user_id = user_id
 form_instance.session_id = session_id
