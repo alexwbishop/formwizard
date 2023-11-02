@@ -3,17 +3,19 @@
 
 # Imports
 import json
+import logging
 from responsibleparty import ResponsibleParty
 from address import Address
-import logging
+from classes.BaseForm.base_form import BaseForm
+from classes.Jurisdiction.jurisdiction import Jurisdiction
+
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
+# Load configuration data
 with open('form_wizard_config.json', 'r') as f:
     CONFIG_DATA = json.load(f)
 
-from responsibleparty import ResponsibleParty
-from address import Address
-# Corrected address_attributes dictionary
+# Dictionaries for Attributes
 address_attributes = {
     "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip", "phys_county"],
     "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip", "mail_county"],
@@ -188,7 +190,7 @@ def main():
     entity_name = entities[0][0]  
     jurisdiction = get_jurisdiction(entity_name)
 
-# NEW line of questioning
+# Classes
 class BaseQuestion:
     def common_questions(self):
         # Common questions for all states
@@ -347,7 +349,7 @@ def main():
         return
     question_obj.all_questions()
 
-# closing
+# Execution starts here
 if __name__ == "__main__":
     main()
 
