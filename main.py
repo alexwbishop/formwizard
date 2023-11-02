@@ -1,37 +1,49 @@
 # FormWizard by Alex Bishop - incyde@riseup.net
-# Version 1.0.0.2
+# Version 1.0.0.3
 # Purpose: Automate the process of filling out Change of Agent forms (Corp, LLC, LP), Domestic and Foreign. in DE and CA.
 # main.py
 
-# load external functions: (still need to add: state, datetime, state_name, state_code, entity_name)
-from config_utils import load_json_config
-from input_validators import validate_date_time, collect_entity_info, display_form_list, get_confirmation, validate_zip, get_residency, calculate_residency, file_exists, log_entity_data_list, prepare_filings, print_quicklist, load_agent_address
-from logging_utils import message_logging, validate_timestamp
-from pdf_utils import form_key, clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
-from questions import ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction, confirm_filings
-from session_utils import generate_session_id
-
-config = load_json_config("config.json")
-FILING_TYPES = config['FILING_TYPES']
-MAX_FORM_QUANTITY = config['MAX_FORM_QUANTITY']
-VALID_STATES = config['VALID_STATES']
-ENTITY_TYPES = config['ENTITY_TYPES']
-ALL_STATES = config['ALL STATES']
+#Here's a breakdown of the current structure:
+#1. Imports: Various utility functions and classes are imported.
+#2. Configuration Loading: The config.json is loaded, and several global constants are set up.
+#3. Main Function: An empty main() function is defined.
+#4. Jurisdiction Questioning: Depending on the jurisdiction (CA or DE), the appropriate set of questions is triggered.
+#5. Logging: A message logging function is called.
+#6. Confirmation and Validation: Various functions are called to confirm and validate the user's input.
+#7. Form Population: The form is populated based on the user's input.
+#8. PDF Manipulation: Functions are called to manipulate the PDFs, such as merging them.
+#9. Session Initialization: A session ID is generated, and various session-related attributes are set.
+#10. Data Collection and Validation: A series of questions are asked to collect and validate the data for the form.
+#11. Document Preparation: The form is prepared based on the collected data.
 
 # Imports
 import re
 import os
-import PyPDF2
+import json
 import logging
-from questions import CAQuestion, DEQuestion
-from PyPDF2 import PdfReader, PdfWriter
-from classes.BaseForm.base_form import BaseForm
+from datetime import datetime
+from config_utils import load_json_config
+from input_validators import (validate_date_time, collect_entity_info, display_form_list, get_confirmation, validate_zip, get_residency, calculate_residency, file_exists, log_entity_data_list, prepare_filings, print_quicklist, load_agent_address)
+from logging_utils import message_logging, validate_timestamp
+from pdf_utils import form_key, clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
+from questions import (ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction, confirm_filings)
+from session_utils import generate_session_id
 from classes.Jurisdiction.jurisdiction import Jurisdiction
-if __name__ == "__main__":
-    main()
-## Call functions
+from classes.BaseForm.base_form import BaseForm
 
-# begin line of questioning by state
+def setup_config():
+    config = load_json_config("config.json")
+    FILING_TYPES = config['FILING_TYPES']
+    MAX_FORM_QUANTITY = config['MAX_FORM_QUANTITY']
+    VALID_STATES = config['VALID_STATES']
+    ENTITY_TYPES = config['ENTITY_TYPES']
+    ALL_STATES = config['ALL STATES']
+    return FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
+
+def main():
+    FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES = setup_config()
+
+# begin line of questioning by for filing jurisdiction
 if Jurisdiction == "CA":
     question_obj = CAQuestion()
 elif Jurisdiction == "DE":
@@ -148,7 +160,6 @@ def get_entity_info(num_forms):  # <-- note the argument here
         # Entity Name
         entity_name = input(f"Enter the full name of entity {i+1} of {num_forms}, including corporate indicator: ")
         entities.append(entity_name)
-        # ... rest of the code ...
     return entities  # or whatever data structure you want to use to store this information
 
 # Confirm state of filing
@@ -289,8 +300,7 @@ merge_pdfs(f'StateForms/{jurisdiction}/{form_key}.pdf', temp_text_pdf_path, f'co
 display_complete_list()
 
 # Show success message & goodbye
-logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!
-\n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
+logging.info(f"Total PDFs filled: {num_forms}. Total errors: 0 \n Successfully completed session.  \n Thank you for using FormWizard!\n Your session ID is: {session_id}. \n Time Completed: {session_timestamp} \n Have a great day, {user_id}!")
 
 # prompt user to delete the temp file folder contents (with confirmation)
 clear_temp_folder()
@@ -299,6 +309,9 @@ clear_temp_folder()
 
 #SCARLET# prompt for user feedback of experience 1-10
 
+if __name__ == "__main__":
+    main()
+    
 ### END OF PHASE 2 ###
 
 
