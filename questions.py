@@ -211,18 +211,19 @@ class FormWizard:
             if self.ca_domestic_state in valid_states:
                 break
             print("Invalid input. Please enter a valid 2 digit US state or DC.")
-        
+        # prompt for business purpose (50 chars)
         # Ensure business_purpose is under 50 characters
         while True:
             self.ca_business_purpose = input("What is the business purpose?")
             if len(self.ca_business_purpose) <= 50:
                 break
             print("Invalid input. Business purpose must be under 50 characters.")
-        
+            
+         # ask labor judgement question (Y/N) - Default to N
         self.ca_CAlabor_yes = input("Is CA labor compliance met? (yes/no)").lower() == "yes"
         self.ca_CAlabor_no = not self.ca_CAlabor_yes
-        
-        # Validate email format
+
+        # optional email address entry - validate email
         email_pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
         while True:
             self.ca_company_email = input("What is the company email?")
@@ -262,13 +263,12 @@ if same_as_local_CA == 'yes':
 else:
     local_CA_address = principal_address
 
-#SCARLET - prompt for 3 officers with specified titles: Chief Executive Officer, Secretary, Chief Financial Officer, and 1 Director. #
+# prompt for 3 officers with specified titles: Chief Executive Officer, Secretary, Chief Financial Officer, and 1 Director. #
   titles = ["Chief Executive Officer", "Secretary", "Chief Financial Officer", "Director"]
 officers = {}
 for title in titles:
     officer_name = input(f"Enter the name for the {title}: ")
     officers[title] = officer_name
-
 
 for obj_name, attributes in address_attributes.items():
     inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
@@ -283,16 +283,22 @@ for obj_name, attributes in responsible_party_attributes.items():
     address = Address(inputs[attributes[3]], inputs[attributes[4]], inputs[attributes[5]], inputs[attributes[6]])
     responsible_party = ResponsibleParty(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], address)
     # Store responsible_party instances wherever required
+   
+# DOMESTIC ENTITY ONLY: number of vacancies on board of directors, if any
+num_vacancies = int(input("Enter the number of vacancies on the board of directors (if any, else enter 0): "))
+    
+# confirm CT is to be the agent
+is_ct_agent = get_confirmation("Confirm if CT is to be the agent:")
 
-#SCARLET -    
-    # DOMESTIC ENTITY ONLY: number of vacancies on board of directors, if any
-    # confirm CT is to be the agent
-    # prompt for business purpose (50 chars)
-    # ask labor judgement question (Y/N) - Default to N
-    # optional email address entry - validate email
     # confirm if any of the newly added officers will sign this form
-    # if no, default to default signer previously specified
-    # questioning complete
+signing_officer = input("Which officer will sign this form? (Enter the title or 'default' for the default signer): ")
+if signing_officer.lower() == 'default':
+    # Use the default signer
+elif signing_officer in officers:
+    # Use the officer specified
+      # if no, default to default signer previously specified
+else:
+    print("Invalid input. Please enter a valid officer title or 'default'.")
 
 # ask DE specific questions #
 class DEQuestion(BaseQuestion):
@@ -304,6 +310,11 @@ class DEQuestion(BaseQuestion):
     def all_questions(self):
         self.common_questions()
         self.state_specific_questions()
+
+# questioning complete
+print("Questioning complete. Proceeding with form completion...")
+
+
         
 def main():
     jurisdiction = get_jurisdiction(entity_name)
