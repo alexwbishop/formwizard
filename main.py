@@ -10,7 +10,14 @@ from logging_utils import message_logging, validate_timestamp
 from pdf_utils import form_key, clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
 from questions import ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction, confirm_filings
 from session_utils import generate_session_id
-from constants import FILING_TYPES, MAX_FORM_QUANTITY, VALID_STATES, ENTITY_TYPES, ALL_STATES
+
+config = load_json_config("config.json")
+FILING_TYPES = config['FILING_TYPES']
+MAX_FORM_QUANTITY = config['MAX_FORM_QUANTITY']
+VALID_STATES = config['VALID_STATES']
+ENTITY_TYPES = config['ENTITY_TYPES']
+ALL_STATES = config['ALL STATES']
+
 # Imports
 import re
 import json
