@@ -7,16 +7,19 @@ from responsibleparty import ResponsibleParty
 from address import Address
 import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
 with open('form_wizard_config.json', 'r') as f:
     CONFIG_DATA = json.load(f)
 
 from responsibleparty import ResponsibleParty
 from address import Address
+# Corrected address_attributes dictionary
 address_attributes = {
-    "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip"],
-    "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip"],
+    "phys": ["phys_street1", "phys_city", "phys_state", "phys_zip", "phys_county"],
+    "mail": ["mail_street1", "mail_city", "mail_state", "mail_zip", "mail_county"],
     "domestic": ["domestic_street1", "domestic_city", "domestic_zip", "domestic_county"]
 }
+
 responsible_party_attributes = {
     "officer1": ["officer1_first", "officer1_mid", "officer1_last", "officer1_street1", "officer1_city", "officer1_state", "officer1_zip"],
     "officer2": ["officer2_first", "officer2_mid", "officer2_last", "officer2_street1", "officer2_city", "officer2_state", "officer2_zip"],
@@ -57,7 +60,7 @@ MAX_FORM_QUANTITY = config.get('MAX_FORM_QUANTITY', 10)
 VALID_AGENT_NAMES = config.get('VALID_AGENT_NAMES', [])
 DEFAULTS = config.get('DEFAULTS', [])
 
-
+# Moved functions outside of the BaseQuestion class
 def get_confirmation(prompt):
     while True:
         answer = input(f"{prompt} (y/n): ").strip().lower()
@@ -270,19 +273,13 @@ for title in titles:
     officer_name = input(f"Enter the name for the {title}: ")
     officers[title] = officer_name
 
-# address input
+ Refactored address input
 def get_address_details(attributes):
     inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
     if "state" in attributes:
         return Address(inputs[attributes[0]], inputs[attributes[1]], inputs[attributes[2]], inputs[attributes[3]])
     else:
         return Address(inputs[attributes[0]], inputs[attributes[1]], None, inputs[attributes[2]])
-
-for obj_name, attributes in address_attributes.items():
-    address = get_address_details(attributes)
-
-for obj_name, attributes in address_attributes.items():
-    address = get_address_details(attributes)
 
 for obj_name, attributes in address_attributes.items():
     address = get_address_details(attributes)
