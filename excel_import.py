@@ -18,7 +18,9 @@ def get_excel_file_path(default_path: str) -> str:
     else:
         file_path = input("Please enter the new path to your Excel file: ").strip()
         return file_path
-user_provided_file_path = get_excel_file_path(DEFAULT_PATH)
+    
+
+#user_provided_file_path = get_excel_file_path(DEFAULT_PATH) # CAUSING PROBLEM??
 
 def load_excel_file() -> dict:
     file_path = input("Please enter the path to your Excel file: ").strip()
