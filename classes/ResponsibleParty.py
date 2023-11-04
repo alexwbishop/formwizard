@@ -10,4 +10,4 @@ class ResponsibleParty:
         self.last_name = last
         self.address = address
         self.title = title
-        self.is_director = 
+        self.is_director = is_director
