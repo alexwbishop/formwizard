@@ -2,16 +2,15 @@
 #
 # contains parameters for jurisdiction related fields
 
+from constants.signature_block import SignatureType
+from constants.states import State
+
+# currently only DE is defined
 JURISDICTION_RULES = {
-    'E_SIGNATURE_ALLOWED': {
-        'AZ': True,
-        'CA': True,
-        # ... other states
+    State.DELAWARE: {
+        'SIGNATURE_TYPE_ALLOWED': {SignatureType.CONFORMED},
+        'EXPEDITE_AVAILABLE': True,
+        # ... other rules
     },
-    'EXPEDITE_AVAILABLE': {
-        'AL': True,
-        'AK': True,
-        # ... other states
-    },
-    # ... other rules
+    # ... rules for other states
 }

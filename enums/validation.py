@@ -1,6 +1,7 @@
 # validation.py
 #
 # contains functions for validating DE-specific form data
+import re
 from constants.name_restrictions import RESTRICTED_WORDS
 from constants.entity_indicators import VALID_ENTITY_INDICATORS
 from constants.name_restrictions import MAX_PURPOSE_LENGTH
@@ -60,5 +61,32 @@ def is_valid_formation_date(date_str: str) -> bool:
     except ValueError:
         print("Invalid date format. Please use 'YYYY-MM-DD'.")
         return False
-    
+
+# validates WK login username is correct format
+def is_valid_username(username: str) -> bool:
+    pattern = r"^[a-zA-Z]+\.[a-zA-Z]+$"
+    return bool(re.match(pattern, username))
+
+# basic password placeholder
+def get_password():
+    password = input("Enter password: ")
+    return password
+
+# prompts user for login credentials and validates them
+def login():
+    username = input("Enter username (format: firstname.lastname): ")
+    if not is_valid_username(username):
+        print("Invalid username format. Please use 'firstname.lastname'.")
+        return False
+
+    password = get_password()
+    # Here you would typically check the username and password against a database or a stored value.
+    # For placeholder purposes, we'll just check against a hardcoded value.
+    hardcoded_password = "placeholderPassword"
+    if password == hardcoded_password:
+        print("Login successful!")
+        return True
+    else:
+        print("Incorrect password.")
+        return False
     

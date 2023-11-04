@@ -158,7 +158,7 @@ class BaseForm:
         self.form_status = form_status
 
         # date the form/template version was last updated
-        self.last_updated_timestamp = "10.1.2023"
+        self.last_updated_timestamp = "10.1.2023" # MAKE DYNAMIC
         # want to replace None above with datetime.now() as old forms are updated with new versions
 
         # attachments 

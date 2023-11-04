@@ -16,3 +16,4 @@ class Domestic(Residency):
 
 class Foreign(Residency):
     pass
+

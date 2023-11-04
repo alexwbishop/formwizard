@@ -1,44 +1,47 @@
 # filingtype.py
 
 # FilingType: Subclasses for each filing type (e.g., Change of Agent, Incorporation) under each Jurisdiction.
-	#- Attributes: Fields specific to the filing type.
-	#- Methods: Logic specific to the filing type.
+# - Attributes: Fields specific to the filing type.
+# - Methods: Logic specific to the filing type.
 
-#Inherits from Residency (i.e. Domestic or Foreign).
+# Inherits from Residency (i.e. Domestic or Foreign).
 from ..Residency.residency import Residency
+from ..Jurisdiction.jurisdiction import Jurisdiction
 
-class FilingType(Residency):
+# Base class for all filing types
+class BaseFilingType(Residency):
     pass
 
-class ChangeOfAgent(FilingType):
+# Subclasses for each specific filing type
+class ChangeOfAgent(BaseFilingType):
     pass
 
-class Registration(FilingType):
+class Registration(BaseFilingType):
     pass
 
-class Formation(FilingType):
+class Formation(BaseFilingType):
     pass
 
-class Amendment(FilingType):
+class Amendment(BaseFilingType):
     pass
 
-class AnnualReport(FilingType):
+class AnnualReport(BaseFilingType):
     pass
 
-class Dissolution(FilingType):
+class Dissolution(BaseFilingType):
     pass
 
-class Merger(FilingType):
+class Merger(BaseFilingType):
     pass
 
-class Conversion(FilingType):
+class Conversion(BaseFilingType):
     pass
 
-class MiscInfoUpdate(FilingType):
+class MiscInfoUpdate(BaseFilingType):
     pass
 
-class Reinstatement(FilingType):
+class Reinstatement(BaseFilingType):
     pass
 
-class AssumedName(FilingType):
+class AssumedName(BaseFilingType):
     pass

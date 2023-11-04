@@ -1,6 +1,6 @@
 # questions.py
 # Questions and State Form Handling
-
+'''
 # Imports
 import json
 import logging
@@ -108,7 +108,7 @@ def confirm_limited_states():
             state_name = VALID_STATES[state_code]
             break
         logging.warning("Sorry, we currently only support filings for Delaware (DE) and California (CA). Please check back later for more states.")
-            return state_code
+        return state_code
 # Confirm agent name
 def get_registered_agent_name(state):
     return CONFIG_DATA['CT_REGISTERED_AGENT_NAMES'].get(state)
@@ -271,13 +271,13 @@ else:
     local_CA_address = principal_address
 
 # prompt for 3 officers with specified titles: Chief Executive Officer, Secretary, Chief Financial Officer, and 1 Director. #
-  titles = ["Chief Executive Officer", "Secretary", "Chief Financial Officer", "Director"]
+titles = ["Chief Executive Officer", "Secretary", "Chief Financial Officer", "Director"]
 officers = {}
 for title in titles:
     officer_name = input(f"Enter the name for the {title}: ")
     officers[title] = officer_name
 
- Refactored address input
+#Refactored address input
 def get_address_details(attributes):
     inputs = {attr: input(f"Enter {attr}: ") for attr in attributes}
     if "state" in attributes:
@@ -305,11 +305,11 @@ is_ct_agent = get_confirmation("Confirm if CT is to be the agent:")
 signing_officer = input("Which officer will sign this form? (Enter the title or 'default' for the default signer): ")
 if signing_officer.lower() == 'default':
     # Use the default signer
-elif signing_officer in officers:
+    elif: signing_officer in officers:
     # Use the officer specified
       # if no, default to default signer previously specified
 else:
-    print("Invalid input. Please enter a valid officer title or 'default'.")
+        print("Invalid input. Please enter a valid officer title or 'default'.")
 
 # ask DE specific questions #
 class DEQuestion(BaseQuestion):
@@ -345,3 +345,4 @@ if __name__ == "__main__":
 
 
 
+'''
