@@ -10,10 +10,14 @@ from excel_import import get_excel_file_path, DEFAULT_PATH, load_excel_data
 
 def main():
     # Start by greeting the user and setting up the initial questionnaire
-    initiate_filing_questionnaire()
-    
+
+    print("Starting main function...")  # This line is for debugging purposes
     # After the initial setup, get the data source choice from the user
     choice = get_data_source_choice()
+    initiate_filing_questionnaire()
+    
+    
+    
     
     # Based on the choice, proceed with the Excel import or manual input
     entity_data = get_data(choice)
