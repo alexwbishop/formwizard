@@ -2,7 +2,7 @@
 #
 from enum import Enum, auto
 from constants.name_restrictions import RESTRICTED_WORDS
-from validation import is_valid_entity_name
+from .validation import is_valid_entity_name
 
 class FilingType(Enum):
     CHANGE_OF_AGENT = auto()
@@ -11,8 +11,10 @@ class FilingType(Enum):
     QUALIFICATION = auto()
     WITHDRAWAL = auto()
     CANCELLATION = auto()
+    FORMATION = auto()
     REINSTATEMENT = auto()
     NAME_AMENDMENT = auto()
+    AMENDMENT = auto()
     STOCK_AMENDMENT = auto()
     ANNUAL_REPORT = auto()
     ADDRESS_UPDATE = auto()
@@ -24,6 +26,10 @@ class FilingType(Enum):
     BUSINESS_LICENSE = auto()
     MISC_FILING = auto()
     # ... other enum values ...
+
+# All filing types
+FILING_TYPES = {filing_type.name: filing_type for filing_type in FilingType}
+
 
 # Supplemental docs that apply to filing type combinations
 # currently only true for filings in DE
@@ -42,6 +48,7 @@ def get_supplemental_docs(filing_type: FilingType) -> list:
 
 # Validates amended entity name is different from current entity name
 def is_valid_new_name(current_name: str, new_name: str) -> bool:
+    print(f"Checking: {current_name}")
     if current_name == new_name:
         print("The new name cannot be the same as the current name.")
         return False
@@ -49,6 +56,7 @@ def is_valid_new_name(current_name: str, new_name: str) -> bool:
         if word in new_name:
             print(f"'{word}' is a restricted word for entity names.")
             return False
+        print(f"Entity name has been validated: {new_name}")
     return is_valid_entity_name(new_name)
 
 # Questions associated with each filing type - EXAMPLES

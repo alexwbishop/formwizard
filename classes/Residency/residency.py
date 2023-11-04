@@ -8,8 +8,9 @@
 from ..EntityType.entitytype import EntityType
 
 
-class Residency(EntityType):
-    pass
+class Residency:
+    def __init__(self, domestic_state=None):
+        self.domestic_state = domestic_state
 
 class Domestic(Residency):
     pass

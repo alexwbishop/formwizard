@@ -1,34 +1,28 @@
 # main.py
 #
-# main script
-
-from questionnaire.questionnaire import get_data_source_choice
+# Import necessary modules and functions
 from questionnaire.questionnaire import initiate_filing_questionnaire
+from questionnaire.questionnaire import get_data_source_choice
+from excel_import import get_excel_file_path, load_excel_data
 from questionnaire.questionnaire import get_data
-from excel_import import get_excel_file_path, DEFAULT_PATH, load_excel_data
+from constants.config import DEFAULT_PATH  # 
 
-
+# Define the main function that runs the program
 def main():
-    # Start by greeting the user and setting up the initial questionnaire
+    print("Welcome to the FormWizard Entity Filing Questionnaire!")
 
-    print("Starting main function...")  # This line is for debugging purposes
-    # After the initial setup, get the data source choice from the user
+    # Start the questionnaire or import process based on the user's choice
     choice = get_data_source_choice()
-    initiate_filing_questionnaire()
-    
-    
-    
-    
-    # Based on the choice, proceed with the Excel import or manual input
-    entity_data = get_data(choice)
-    
-    # Continue with the rest of your script processing the entity data
     if choice == 'excel':
+        # If the user chooses to import from Excel, handle the Excel file import and processing
         excel_file_path = get_excel_file_path(DEFAULT_PATH)
-        # Once you have the file path, you can load the data
         excel_data = load_excel_data(excel_file_path)
-        # ... rest of your code to handle the Excel file
+        # ... further processing of excel_data
+    else:
+        # If the user chooses to input data manually, initiate that process
+        data = get_data()
+        # ... further processing of data
 
-# main script function begins here    
+# Ensure that the script only runs when it is not imported as a module
 if __name__ == "__main__":
     main()

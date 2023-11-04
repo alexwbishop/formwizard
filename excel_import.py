@@ -1,11 +1,10 @@
 # excel_import.py
-#
 # functions to import data from excel file
 import os
 import pandas as pd
 
 # Global constants and variables
-DEFAULT_PATH = "/excel/default_template.xlsx"
+
 test_path = "./excel/test_audit.xls"
 
 # Function definitions
@@ -18,9 +17,6 @@ def get_excel_file_path(default_path: str) -> str:
     else:
         file_path = input("Please enter the new path to your Excel file: ").strip()
         return file_path
-    
-
-# user_provided_file_path = get_excel_file_path(DEFAULT_PATH) # CAUSING PROBLEM??
 
 def load_excel_file() -> dict:
     file_path = input("Please enter the path to your Excel file: ").strip()
@@ -100,7 +96,8 @@ def get_entity_data(df, entity_name):
         'Registration Date': registration_date,
         'Filing Type': filing_type
     }
-# Usage
-user_provided_file_path = get_excel_file_path(DEFAULT_PATH)
-run_excel_test = load_excel_data(test_path)
 
+# if __name__ == "__main__":
+#    print("this is the test run of excel import.py")
+#    user_provided_file_path = get_excel_file_path(DEFAULT_PATH)
+#    run_excel_test = load_excel_data(user_provided_file_path)

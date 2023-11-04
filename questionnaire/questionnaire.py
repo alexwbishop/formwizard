@@ -1,17 +1,16 @@
 # questionnaire.py
 
 # Initial Session Questions, Entity & Filing Selection
-from excel_import import load_data_from_excel, get_entity_data, DEFAULT_PATH, get_excel_file_path, load_excel_data
+from excel_import import get_entity_data, get_excel_file_path, load_excel_data, load_excel_file
 import pandas as pd
+from constants.config import DEFAULT_PATH
 from enums.filing_type import FILING_TYPES, is_valid_new_name
-from enums.filing_type import FilingType
+from enums.filing_type import FilingType, FILING_QUESTIONS
 from enums.residency import Residency
 from enums.entity_types import EntityType
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from ..enums.filing_type import FILING_TYPES
-from ..enums.filing_type import FILING_QUESTIONS
 
 # Functions
 def initiate_filing_questionnaire():
@@ -45,7 +44,7 @@ def get_data_source_choice():
 def get_data(choice):
     if choice == 'excel':
         filename = input("Please provide the Excel filename: ")  # Prompt the user for the filename here
-        df = load_data_from_excel(filename)
+        df = load_excel_file(filename)
         entity_name = input("Enter the entity name: ")
         entity_data = get_entity_data(df, entity_name)
         
@@ -93,9 +92,7 @@ def validate_entity_name(entity_name: str, existing_names: list) -> bool:
     # Add more rules as needed
     return True
 
-# You can call initiate_filing_questionnaire() to start the process
-if __name__ == "__main__":
-    initiate_filing_questionnaire()
+
 
 # defines main script function - can import from excel then, ask for missing data via manual input
 def main():
@@ -181,6 +178,7 @@ def handle_reinstatement():
     pass
 
 def handle_nameamendment(current_name: str):
+    print(f"validating {current_name}...")
     new_name = input(FILING_QUESTIONS[FilingType.NAME_AMENDMENT][0])
     while not is_valid_new_name(current_name, new_name):
         new_name = input(FILING_QUESTIONS[FilingType.NAME_AMENDMENT][0])
@@ -323,10 +321,11 @@ def end_or_continue(self):
             print("Thank you for using FormWizard!")
             return
         # If the user wants to continue, redirect them to the starting point or offer other options
-
 #Usage:
 # To start the session:
-wizard = FormWizard()
-wizard.run_session()
-
+#wizard = FormWizard()
+#wizard.run_session()
+# You can call initiate_filing_questionnaire() to start the process
+#if __name__ == "__main__":
+#    initiate_filing_questionnaire()
 #

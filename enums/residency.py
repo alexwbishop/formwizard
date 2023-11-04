@@ -1,17 +1,13 @@
 # residency.py
-#
-from constants import RESIDENCY_OPTIONS
 from enum import Enum, auto
-
 
 class Residency(Enum):
     DOMESTIC = auto()
     FOREIGN = auto()
 
-
-
-def determine_filing_nature(target_domestic_state, filing_state=RESIDENCY_OPTIONS['DELAWARE']):
-    if target_domestic_state == filing_state:
-        return "Domestic"
+def determine_filing_nature(target_state, filing_state='DELAWARE'):
+    # Assuming 'DELAWARE' is the default state for domestic filings and all filings are domestic for now
+    if target_state.upper() == filing_state.upper():
+        return Residency.DOMESTIC.name
     else:
-        return "Foreign"
+        return Residency.FOREIGN.name
