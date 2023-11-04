@@ -1,6 +1,6 @@
 # config.py
 #
-DEFAULT_PATH = "/excel/default_template.xlsx"
+DEFAULT_PATH = "/excel/default_template.xlsx" # not currently accurate
 # Configuration settings
 MAX_PW_RETRY_ATTEMPTS = 3
 

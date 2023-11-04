@@ -22,8 +22,9 @@ def determine_residency(domestic_state):
 # Functions
 def initiate_filing_questionnaire():
     print("Welcome to the Filing Questionnaire Session.")
-    num_forms = ask_quantity_of_filings()
-    entity_names = ask_entity_names(num_forms)
+    num_forms = ask_quantity_of_filings()  # This will return an integer
+    # entity_names = ask_entity_names(num_forms)  # Handle entity names collection elsewhere if needed
+    return num_forms  # Return the number of forms as an integer
     # Continue with additional questions or processing
     return entity_names
 
@@ -39,14 +40,6 @@ def ask_quantity_of_filings() -> int:
         except ValueError:
             print("Invalid input. Please enter a valid number.") 
 
-
-# offer excel import option before manual data entry
-def get_data_source_choice():
-    choice = input("Would you like to import data from an Excel sheet (type 'excel') or input manually (type 'manual')? ")
-    while choice not in ['excel', 'manual']:
-        print("Invalid choice. Please choose 'excel' or 'manual'.")
-        choice = input("Would you like to import data from an Excel sheet or input manually? ")
-    return choice
 
 def get_data(choice):
     if choice == 'excel':
@@ -113,8 +106,20 @@ def validate_entity_name(entity_name: str, existing_names: list) -> bool:
 
 # defines main script function - can import from excel then, ask for missing data via manual input
 def main():
+    print("Welcome to FormWizard!")
     choice = get_data_source_choice()
-    entity_data = get_data(choice)
+
+    if choice == 'manual':
+        num_forms = initiate_filing_questionnaire()  # This should initiate the questionnaire for how many filings
+        for _ in range(num_forms):
+            entity_data = get_data(choice)
+            # Further processing with entity_data such as validation, etc.
+            # ...
+
+    elif choice == 'excel':
+        # If the choice is 'excel', handle the data import and processing once
+        entity_data = get_data(choice)
+
     
     # Determine residency class based on the domestic_state
     domestic_state = entity_data['Domestic State']  # Assuming 'Domestic State' key is used in entity_data
@@ -236,7 +241,6 @@ def handle_miscfiling():
 class FormWizard:
     def run_session(self):
         # Collect the data from the user or from an Excel sheet
-        choice = get_data_source_choice()
         for _ in range(ask_quantity_of_filings()):
             entity_data = get_data(choice)
             # Validate and store entity data
