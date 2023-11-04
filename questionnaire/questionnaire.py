@@ -273,9 +273,6 @@ class FormWizard:
             return
         # If the user wants to continue, redirect them to the starting point or offer other options
 
-    def run_session(self):
-        # Collect the data from the user or from an Excel sheet
-        # ...
 
         valid, error_message = self.validate_data(self.entities_data)
         if not valid:
@@ -327,7 +324,7 @@ def end_or_continue(self):
             return
         # If the user wants to continue, redirect them to the starting point or offer other options
 
-
+#Usage:
 # To start the session:
 wizard = FormWizard()
 wizard.run_session()
