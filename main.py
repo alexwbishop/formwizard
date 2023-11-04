@@ -9,9 +9,16 @@ from excel_import import get_excel_file_path, DEFAULT_PATH, load_excel_data
 
 
 def main():
-    initiate_filing_questionnaire()  # This will print the welcome message
+    # Start by greeting the user and setting up the initial questionnaire
+    initiate_filing_questionnaire()
+    
+    # After the initial setup, get the data source choice from the user
     choice = get_data_source_choice()
     
+    # Based on the choice, proceed with the Excel import or manual input
+    entity_data = get_data(choice)
+    
+    # Continue with the rest of your script processing the entity data
     if choice == 'excel':
         excel_file_path = get_excel_file_path(DEFAULT_PATH)
         # Once you have the file path, you can load the data
