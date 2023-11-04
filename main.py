@@ -25,9 +25,6 @@ def main():
         excel_data = load_excel_data(excel_file_path)
         # ... rest of your code to handle the Excel file
 
-        entity_data = get_data(choice)
-    # Continue with the rest of your script
-
 # main script function begins here    
 if __name__ == "__main__":
     main()
