@@ -1,7 +1,7 @@
 # questionnaire.py
 
 # Initial Session Questions, Entity & Filing Selection
-from excel_import import load_data_from_excel, get_entity_data
+from excel_import import load_data_from_excel, get_entity_data, DEFAULT_PATH, get_excel_file_path, load_excel_data
 import pandas as pd
 from enums.filing_type import FILING_TYPES, is_valid_new_name
 from enums.filing_type import FilingType
@@ -10,6 +10,8 @@ from enums.entity_types import EntityType
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from ..enums.filing_type import FILING_TYPES
+from ..enums.filing_type import FILING_QUESTIONS
 
 # Functions
 def initiate_filing_questionnaire():
@@ -42,8 +44,8 @@ def get_data_source_choice():
 
 def get_data(choice):
     if choice == 'excel':
-        filename = input("Please provide the Excel filename: ")
-        df = load_data_from_excel(filename)
+        filename = get_excel_file_path(DEFAULT_PATH)  # Ensures that the filename follows the flow of getting the path
+        df = load_excel_data(filename)  # Changed to load_excel_data to match your function definition
         entity_name = input("Enter the entity name: ")
         entity_data = get_entity_data(df, entity_name)
         
@@ -112,7 +114,7 @@ main()
 
 # Somewhere in your code, you would determine the entity's domestic state
 domestic_state = Residency.domestic_state  # This would be determined dynamically based on user input or data import
-entity_name = ?EXCELIMPORT?.entity_name # This would be determined dynamically based on user input or data import
+#SCARLET HELP# entity_name = ?EXCEL?IMPORT?.entity_name # This would be determined dynamically based on user input or data import
 
 
 # define filing types available for selected residency/entity type combination (i.e. Domestic LLC)
@@ -150,12 +152,11 @@ def select_filing_types(entity_count):
     return selected_filings
 
 # display confirmation to user question, review, ask for confirmation, if not go back and change selections
-print("Confirmation: " selected_filings) #E X P A N D
+# print("Confirmation: " selected_filings) #E X P A N D
 
 # ONCE CONFIRMED, BEGIN FILING-SPECIFIC QUESTIONS
 def get_questions_for_filing(filing_type: FilingType) -> list:
     return FILING_QUESTIONS.get(filing_type, [])
-
 
 # validation of answers to questions for each filing type
 def handle_changeofagent():
@@ -180,9 +181,11 @@ def handle_reinstatement():
     pass
 
 def handle_nameamendment(current_name: str):
-    new_name = input(FILING_QUESTIONS[FilingType.AMENDMENT][0])
+    new_name = input(FILING_QUESTIONS[FilingType.NAME_AMENDMENT][0])
     while not is_valid_new_name(current_name, new_name):
-        new_name = input(FILING_QUESTIONS[FilingType.AMENDMENT][0])
+        new_name = input(FILING_QUESTIONS[FilingType.NAME_AMENDMENT][0])
+    # Store the new name or process it as needed
+    pass
 
 def handle_stockamendment():
     pass
@@ -216,6 +219,18 @@ def handle_miscfiling():
 
 # review answers to all questions after validation, print to user, ask for confirmation, if not go back and change selections
 class FormWizard:
+    def run_session(self):
+        # Collect the data from the user or from an Excel sheet
+        choice = get_data_source_choice()
+        for _ in range(ask_quantity_of_filings()):
+            entity_data = get_data(choice)
+            # Validate and store entity data
+            valid, error_message = self.validate_data(entity_data)
+            if not valid:
+                self.handle_errors(error_message)
+                continue  # Skip to the next entity if the current one is invalid
+            self.entities_data.append(entity_data)
+
 
     def __init__(self):
         self.entities_data = []
@@ -286,7 +301,6 @@ def generate_summary(self):
         c.drawString(100, height - 100, "FormWizard Summary")
         
         # Loop through entities_data & filing_data and add to the PDF
-        # ...
         
         # Save the PDF
         c.save()

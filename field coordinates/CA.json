@@ -1,47 +1,4 @@
 {
-    "DE-LLC-Dom-COA": {
-      "entity_name": {"x": 100, "y": 225},
-      "agent_name": {"x": 100, "y": 320},
-      "sig_conformed": {"x": 320, "y": 460},
-      "signer_name": {"x": 320, "y": 520}
-    },
-    "DE-LLC-For-COA": {
-      "entity_name": {"x": 100, "y": 225},
-      "agent_name": {"x": 100, "y": 320},
-      "sig_conformed": {"x": 320, "y": 460},
-      "signer_name": {"x": 320, "y": 520}
-    },
-    "DE-Corp-Dom-COA": {
-      "entity_name": {"x": 100, "y": 230},
-      "agent_street1": {"x": 99, "y": 273},
-      "agent_city": {"x": 353, "y": 286},
-      "agent_zip": {"x": 337, "y": 300},
-      "agent_name": {"x": 145, "y": 328},
-      "sig_conformed": {"x": 320, "y": 470},
-      "signer_name": {"x": 320, "y": 524}
-    },
-    "DE-Corp-For-COA": {
-      "entity_name": {"x": 97, "y": 192},
-      "domestic_state": {"x": 114, "y": 246},
-      "agent_name": {"x": 111, "y": 389},
-      "signed_on_day": {"x": 150, "y": 516},
-      "signed_on_month": {"x": 238, "y": 516},
-      "current_year": {"x": 358, "y": 516},
-      "sig_conformed": {"x": 318, "y": 579},
-      "signer_name": {"x": 313, "y": 622}
-    },
-    "DE-LP-Dom-COA": {
-      "entity_name": {"x": 103, "y": 223},
-      "agent_name": {"x": 100, "y": 320},
-      "sig_conformed": {"x": 320, "y": 460},
-      "signer_name": {"x": 320, "y": 520}
-    },
-    "DE-LP-For-COA": {
-      "entity_name": {"x": 103, "y": 223},
-      "agent_name": {"x": 100, "y": 320},
-      "sig_conformed": {"x": 320, "y": 460},
-      "signer_name": {"x": 320, "y": 520}
-    },
     "CA-Corp-All-COA": {
 	"entity_name": {"x": 55, "y": 285},
 	"state_id": {"x": 388, "y": 285},
