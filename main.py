@@ -22,6 +22,7 @@ def main():
         # If the user chooses to input data manually, initiate that process
         data = get_data()
         # ... further processing of data
+        
 
 # Ensure that the script only runs when it is not imported as a module
 if __name__ == "__main__":

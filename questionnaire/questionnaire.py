@@ -56,7 +56,12 @@ def get_data(choice):
     elif choice == 'manual':
         entity_data = get_manual_input_data()
 
+    # Ensure 'Domestic State' is set
+    if 'Domestic State' not in entity_data or not entity_data['Domestic State']:
+        entity_data['Domestic State'] = input("Please provide the domestic state: ")
+
     return entity_data
+
 
 
 def get_manual_input_data():
@@ -68,7 +73,7 @@ def get_manual_input_data():
     data['Current Status'] = input("Enter current status: ")
     data['Registration Date'] = input("Enter registration date: ")
     data['Filing Type'] = input("Enter filing type: ")
-
+    
     return data
 
 
@@ -98,24 +103,24 @@ def validate_entity_name(entity_name: str, existing_names: list) -> bool:
 def main():
     choice = get_data_source_choice()
     entity_data = get_data(choice)
+    
+    # Determine residency class based on the domestic_state
+    domestic_state = entity_data['Domestic State']  # Assuming 'Domestic State' key is used in entity_data
+    residency_class = determine_residency(domestic_state)  # You need to define this function or logic
+    def determine_residency(domestic_state):
+    # Example logic, this will depend on your specific business rules
+        if domestic_state == 'DE':  # Assuming 'TX' for Texas, as an example
+            return Residency.DOMESTIC
+        else:
+            return Residency.FOREIGN
+
     # Continue with the rest of your script
-
-# main script function begins here    
-main()
-
-
 
 # RETURN ENTITY DATA FROM EXCEL HERE? #
 # VALIDATE ENTITY DATA? #
 
-
-# Somewhere in your code, you would determine the entity's domestic state
-domestic_state = Residency.domestic_state  # This would be determined dynamically based on user input or data import
-#SCARLET HELP# entity_name = ?EXCEL?IMPORT?.entity_name # This would be determined dynamically based on user input or data import
-
-
 # define filing types available for selected residency/entity type combination (i.e. Domestic LLC)
-def available_filings(domestic_state, filing_state=Residency.DELAWARE):
+def available_filings(domestic_state, filing_state=Residency.DOMESTIC):
     if domestic_state == filing_state:
         # Exclude 'FORMATION' for domestic entities, as they already exist in the state
         return [filing for filing in FilingType if filing != FilingType.FORMATION]
