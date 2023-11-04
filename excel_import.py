@@ -10,8 +10,9 @@ test_path = "./excel/test_audit.xls"
 # Function definitions
 def get_excel_file_path(default_path: str) -> str:
     print(f"The default path for the Excel file is: {default_path}")
-    use_default = input("Would you like to use the default path? (yes/no): ").strip().lower()
-
+    use_default = input("Would you like to use the default path, custom input, or the test path? (yes/no/test): ").strip().lower()
+    if use_default == 'test': 
+        return test_path
     if use_default == 'yes':
         return default_path
     else:
