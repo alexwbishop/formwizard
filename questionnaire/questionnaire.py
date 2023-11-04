@@ -1,6 +1,70 @@
 # questionnaire.py
 
 # Initial Session Questions, Entity & Filing Selection
+import pandas as pd
+from enums.filing_type import FILING_TYPES, is_valid_new_name
+from enums.filing_type import FilingType, FILING_QUESTIONS
+from enums.residency import Residency
+from enums.entity_types import EntityType
+import os
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+# Define determine_residency as a top-level function
+def determine_residency(domestic_state):
+    # Example logic, this will depend on your specific business rules
+    if domestic_state == 'DE':  # Assuming 'DE' for Delaware, as an example
+        return Residency.DOMESTIC
+    else:
+        return Residency.FOREIGN
+
+# Functions
+def initiate_filing_questionnaire():
+    print("Welcome to the Filing Questionnaire Session.")
+    num_forms = ask_quantity_of_filings()  # This will return an integer
+    return num_forms  # Return the number of forms as an integer
+
+# asks for number of forms to fill out in current session
+def ask_quantity_of_filings() -> int:
+    while True:
+        try:
+            num_forms = int(input("How many forms do you want to fill out today? (max 10): "))
+            if 1 <= num_forms <= 10:
+                return num_forms
+            else:
+                print("Please enter a number between 1 and 10.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.") 
+
+def get_manual_input_data():
+    print("Please provide the following info: ")
+    data = {}
+    data['Target'] = input("Enter target: ")
+    data['CT Order Number'] = input("Enter CT Order Number: ")
+    data['Domestic State'] = input("Enter the domestic state: ")
+    data['Current Registered Agent'] = input("Enter current registered agent: ")
+    data['Current Status'] = input("Enter current status: ")
+    data['Registration Date'] = input("Enter registration date: ")
+    data['Filing Type'] = input("Enter filing type: ")
+    
+    return data
+
+def get_data():
+    print("Welcome to the FormWizard Manual Info Questionnaire!")
+    entity_data = get_manual_input_data()
+
+    # Ensure 'Domestic State' is set
+    if 'Domestic State' not in entity_data or not entity_data['Domestic State']:
+        entity_data['Domestic State'] = input("Please provide the domestic state: ")
+
+    # Now that entity_data is fully populated, determine the residency class
+    entity_data['Residency Class'] = determine_residency(entity_data['Domestic State'])
+
+    return entity_data
+
+'''# questionnaire.py
+
+# Initial Session Questions, Entity & Filing Selection
 from excel_import import get_entity_data, get_excel_file_path, load_excel_data, load_excel_file
 import pandas as pd
 from constants.config import DEFAULT_PATH
@@ -348,4 +412,4 @@ def end_or_continue(self):
 #wizard.run_session()
 # You can call initiate_filing_questionnaire() to start the process
 if __name__ == "__main__":
-    main()
+    main()'''
