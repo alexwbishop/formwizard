@@ -5,14 +5,20 @@ from questionnaire.questionnaire import initiate_filing_questionnaire
 from questionnaire.questionnaire import get_data
 from excel_import import get_excel_file_path, load_excel_data
 from constants.config import DEFAULT_PATH
-from residency import determine_filing_nature  # Import the function from residency.py
+from enums.residency import determine_filing_nature  # Import the function from residency.py
 
 # Define the main function that runs the program
+def get_data_source_choice():
+    choice = input("Would you like to import data from an Excel sheet (type 'excel') or input manually (type 'manual')? ")
+    while choice not in ['excel', 'manual']:
+        print("Invalid choice. Please choose 'excel' or 'manual'.")
+        choice = input("Would you like to import data from an Excel sheet or input manually? ")
+    return choice
+
 def main():
     print("Welcome to FormWizard!")
     # Get the choice once at the beginning
     choice = get_data_source_choice() 
-
     if choice == 'excel':
         # If the user chooses to import from Excel, handle the Excel file import and processing
         excel_file_path = get_excel_file_path(DEFAULT_PATH)
