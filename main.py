@@ -9,8 +9,10 @@ from constants.config import DEFAULT_PATH  #
 
 # Define the main function that runs the program
 def main():
-    print("Welcome to the FormWizard Entity Filing Questionnaire!")
-
+    print("Welcome to FormWizard!")
+    choice = input("Would you like to import data from an Excel sheet (type 'excel') or input manually (type 'manual')? ")
+    data = get_data(choice)  # Now you pass the user's choice to the function
+    
     # Start the questionnaire or import process based on the user's choice
     choice = get_data_source_choice()
     if choice == 'excel':

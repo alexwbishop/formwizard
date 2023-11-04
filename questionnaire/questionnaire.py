@@ -11,6 +11,13 @@ from enums.entity_types import EntityType
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+# Define determine_residency as a top-level function
+def determine_residency(domestic_state):
+    # Example logic, this will depend on your specific business rules
+    if domestic_state == 'DE':  # Assuming 'DE' for Delaware, as an example
+        return Residency.DOMESTIC
+    else:
+        return Residency.FOREIGN
 
 # Functions
 def initiate_filing_questionnaire():
@@ -54,17 +61,22 @@ def get_data(choice):
                 entity_data[key] = input(f"Please provide the {key}: ")
 
     elif choice == 'manual':
+        print("Welcome to the FormWizard Manual Info Questionnaire!")
         entity_data = get_manual_input_data()
 
     # Ensure 'Domestic State' is set
     if 'Domestic State' not in entity_data or not entity_data['Domestic State']:
         entity_data['Domestic State'] = input("Please provide the domestic state: ")
 
+    # Now that entity_data is fully populated, determine the residency class
+    entity_data['Residency Class'] = determine_residency(entity_data['Domestic State'])
+
     return entity_data
 
 
 
 def get_manual_input_data():
+    print("Please provide the following info: ")
     data = {}
     data['Target'] = input("Enter target: ")
     data['CT Order Number'] = input("Enter CT Order Number: ")
@@ -150,7 +162,7 @@ def select_filing_types(entity_count):
 
 
     # Then you call available_filings with the entity's domestic state
-    selected_filings = available_filings(domestic_state)
+    selected_filings = available_filings(domestic_state=['Domestic State'])
     return selected_filings
 
 # display confirmation to user question, review, ask for confirmation, if not go back and change selections
@@ -331,6 +343,5 @@ def end_or_continue(self):
 #wizard = FormWizard()
 #wizard.run_session()
 # You can call initiate_filing_questionnaire() to start the process
-#if __name__ == "__main__":
-#    initiate_filing_questionnaire()
-#
+if __name__ == "__main__":
+    main()
