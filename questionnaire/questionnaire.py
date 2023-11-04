@@ -44,8 +44,8 @@ def get_data_source_choice():
 
 def get_data(choice):
     if choice == 'excel':
-        filename = get_excel_file_path(DEFAULT_PATH)  # Ensures that the filename follows the flow of getting the path
-        df = load_excel_data(filename)  # Changed to load_excel_data to match your function definition
+        filename = input("Please provide the Excel filename: ")  # Prompt the user for the filename here
+        df = load_data_from_excel(filename)
         entity_name = input("Enter the entity name: ")
         entity_data = get_entity_data(df, entity_name)
         
@@ -55,10 +55,10 @@ def get_data(choice):
                 entity_data[key] = input(f"Please provide the {key}: ")
 
     elif choice == 'manual':
-        # Here, you can use the existing code you've written to get input for each data field
         entity_data = get_manual_input_data()
 
     return entity_data
+
 
 def get_manual_input_data():
     data = {}
