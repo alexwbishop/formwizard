@@ -1,4 +1,4 @@
-# filing_types.py
+# residency.py
 #
 from enum import Enum, auto
 class FilingStatus(Enum):
