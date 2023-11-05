@@ -4,10 +4,42 @@
 	#- Methods: Logic specific to the jurisdiction.
 
 #Inherits from FilingType - need to import/define FilingType
-from ..Utilities.FormUtility import FormUtility
-from ..FilingType.filingtype import FilingType
+# # DALIA'S TIPS:
+'''
+Redundant Instance of FormUtility:
+The FormUtility instance is created both in the BaseForm and Jurisdiction classes. Unless there's a specific need for each jurisdiction to have its own utility instance, you could just use the instance from BaseForm. This is especially relevant if FormUtility methods are stateless.
 
-class Jurisdiction(FilingType):
+Duplicate Methods:
+The some_method seems to be duplicated outside the Jurisdiction class scope, which would cause a syntax error. Make sure that methods are defined within the class body.
+
+Inheritance Clarity:
+It's not clear why Jurisdiction inherits from FilingType if FilingType isn't provided. The hierarchy should be logical: if Jurisdiction is a type of FilingType, the inheritance makes sense. Otherwise, reconsider the relationship.
+
+Use of super().__init__:
+The super().__init__ call appears to be passing a jurisdiction_instance, which implies that FilingType (and, by extension, BaseForm) expects such a parameter. Ensure that the parent class’s __init__ is designed to receive this.
+
+Class Method Utility:
+The create_jurisdiction class method is a factory method to create Jurisdiction objects, but currently, it only allows setting the name and abbreviation attributes. If you have defaults for other attributes or need to process input data before creating an instance, this method is useful. Otherwise, it might be redundant, as you can create instances directly.
+
+Subclasses:
+The subclasses for each state are empty and inherit everything from Jurisdiction without modification. If this is the intended behavior, then it's fine as placeholders. However, if each state has unique rules, these should be encoded into the respective subclasses.
+
+Comments and Documentation:
+Comments should be updated to reflect the current code. Any placeholder like # ... (rest of your code for subclasses) should either be filled with actual code or removed.
+
+Code Consistency:
+Ensure that naming conventions are consistent (e.g., Jurisdiction vs. FilingType and other classes). Consistent naming makes code more readable and maintainable.
+
+Exception Handling:
+Consider adding error handling for cases where invalid data might be passed to __init__.
+
+Dynamic Last Updated Timestamp:
+The last_updated_timestamp attribute should not be hard-coded. Instead, it should be dynamically generated based on when the form or template is updated. If it’s meant to be static, consider moving it to a class variable rather than an instance variable, assuming it’s shared across instances.
+'''
+
+from questionnaire import Filing_Type # DALIA HELP # - does this look right??
+
+class Jurisdiction(Filing_Type):
     def __init__(self, name, abbreviation, signature_type_allowed=None, hard_copy_required=None, poa_allowed=None, tax_clearance_req=None, annual_reports_must_be_current=None, signer_must_be_on_record=None, signer_titles_restricted=None, jurisdiction_instance=None):
         super().__init__(jurisdiction_instance=jurisdiction_instance)  # Pass the required argument to BaseForm
         self.name = name
@@ -19,175 +51,17 @@ class Jurisdiction(FilingType):
         self.annual_reports_must_be_current = annual_reports_must_be_current
         self.signer_must_be_on_record = signer_must_be_on_record
         self.signer_titles_restricted = signer_titles_restricted
-        self.form_utility = FormUtility()  # Now this should work
+        #self.form_utility = FormUtility() # DALIA HELP # - is this necessary, or can we just use the instance from BaseForm or FormWizard class?
 
-    @classmethod
-    def create_jurisdiction(cls, name, abbreviation):
-        # Here you can add default values for the other attributes if needed
-        return cls(name, abbreviation, None, None, None, None, None, None, None, None)
+    # ... (Methods specific to jurisdiction)
 
-    def some_method(self):
-        self.form_utility.method_requiring_jurisdiction(self)
-
-
-def some_method(self):
-        self.form_utility.method_requiring_jurisdiction(self)
-
-# ... (rest of your code for subclasses)
-
-
-# Subclasses for each state and district
-class Alabama(Jurisdiction):
-    pass
-
-class Alaska(Jurisdiction):
-    pass
-
-class Arizona(Jurisdiction):
-    pass
-
-class Arkansas(Jurisdiction):
-    pass
-
-class California(Jurisdiction):
-    pass
-
-class Colorado(Jurisdiction):
-    pass
-
-class Connecticut(Jurisdiction):
-    pass
-
+# Subclass example
 class Delaware(Jurisdiction):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__('Delaware', 'DE', *args, **kwargs)
+        # Texas-specific initialization
 
-class DistrictOfColumbia(Jurisdiction):
-    pass
-
-class Florida(Jurisdiction):
-    pass
-
-class Georgia(Jurisdiction):
-    pass
-
-class Hawaii(Jurisdiction):
-    pass
-
-class Idaho(Jurisdiction):
-    pass
-
-class Illinois(Jurisdiction):
-    pass
-
-class Indiana(Jurisdiction):
-    pass
-
-class Iowa(Jurisdiction):
-    pass
-
-class Kansas(Jurisdiction):
-    pass
-
-class Kentucky(Jurisdiction):
-    pass
-
-class Louisiana(Jurisdiction):
-    pass
-
-class Maine(Jurisdiction):
-    pass
-
-class Maryland(Jurisdiction):
-    pass
-
-class Massachusetts(Jurisdiction):
-    pass
-
-class Michigan(Jurisdiction):
-    pass
-
-class Minnesota(Jurisdiction):
-    pass
-
-class Mississippi(Jurisdiction):
-    pass
-
-class Missouri(Jurisdiction):
-    pass
-
-class Montana(Jurisdiction):
-    pass
-
-class Nebraska(Jurisdiction):
-    pass
-
-class Nevada(Jurisdiction):
-    pass
-
-class NewHampshire(Jurisdiction):
-    pass
-
-class NewJersey(Jurisdiction):
-    pass
-
-class NewMexico(Jurisdiction):
-    pass
-
-class NewYork(Jurisdiction):
-    pass
-
-class NorthCarolina(Jurisdiction):
-    pass
-
-class NorthDakota(Jurisdiction):
-    pass
-
-class Ohio(Jurisdiction):
-    pass
-
-class Oklahoma(Jurisdiction):
-    pass
-
-class Oregon(Jurisdiction):
-    pass
-
-class Pennsylvania(Jurisdiction):
-    pass
-
-class RhodeIsland(Jurisdiction):
-    pass
-
-class SouthCarolina(Jurisdiction):
-    pass
-
-class SouthDakota(Jurisdiction):
-    pass
-
-class Tennessee(Jurisdiction):
-    pass
-
-class Texas(Jurisdiction):
-    pass
-
-class Utah(Jurisdiction):
-    pass
-
-class Vermont(Jurisdiction):
-    pass
-
-class Virginia(Jurisdiction):
-    pass
-
-class Washington(Jurisdiction):
-    pass
-
-class WestVirginia(Jurisdiction):
-    pass
-
-class Wisconsin(Jurisdiction):
-    pass
-
-class Wyoming(Jurisdiction):
-    pass
-
-
+# ... (Other subclasses)
+# Ensure each subclass for the states has meaningful differentiation; 
+# otherwise, consider if the subclasses are necessary at all.
+#  If they're only placeholders for now, it's okay to keep them as they are.
