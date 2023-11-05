@@ -55,6 +55,20 @@ def is_valid_purpose(purpose: str) -> bool:
 # checks for the presence of valid entity indicators and restricted words, which is great. 
 # Consider implementing case-insensitive checks to enhance robustness. 
 # Right now, it might miss a word if it's capitalized differently.
+
+# validates that entity name is not empty or a duplicate
+def validate_entity_name(entity_name: str, existing_names: list) -> bool:
+    # Check for empty string or only whitespace
+    if not entity_name.strip():
+        return False
+    # Check for duplicates
+    if entity_name in existing_names:
+        return False
+    # Include additional rules if necessary
+    return True
+
+
+# validates that entity name contains a valid entity indicator and does not contain restricted words
 def is_valid_entity_name(entity_name: str) -> bool:
     if not any(indicator in entity_name for indicator in VALID_ENTITY_INDICATORS):
         print("Entity name must include a valid entity indicator (e.g., LLC, Inc., Corp.).")

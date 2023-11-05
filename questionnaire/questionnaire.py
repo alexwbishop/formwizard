@@ -43,11 +43,21 @@ def get_manual_input_data():
     #data['Target'] = input("Enter target: ")
     #data['CT Order Number'] = input("Enter CT Order Number: ")
     data['Domestic State'] = input("Enter the domestic state: ")
-    #data['Current Registered Agent'] = input("Enter current registered agent: ")
+    #data['Current Registered Agent'] = input("Enter current registered agent: ") # make this into a selection from a list
     #data['Current Status'] = input("Enter current status: ")
     #data['Registration Date'] = input("Enter registration date: ")
     data['Filing Type'] = input("Enter filing type: ")
-    
+
+    # Confirm agent name - # NEED TO TEST - JUST ADDED
+    confirm_agent_name()
+    # Collect Signer's Name
+    get_signer_name()    # NEED TO TEST - JUST ADDED
+    # Confirm Signer's Name
+    confirm_signer() # NEED TO TEST - JUST ADDED
+    # Initialize list to store form instances
+    forms = []
+
+    # Loop through the number of forms specified
     return data
 
 def get_data():
@@ -67,6 +77,7 @@ def get_data():
 # define the core data collection and form assembly process (FormWizard)
 class FormWizard:
     def run_session(self):
+        print("Initializing FormWizard session...")
         # Collect the data for each entity from the user
         for _ in range(ask_quantity_of_filings()):
             entity_data = get_data(choice) # NOT DEFINED? Waze
@@ -159,26 +170,73 @@ class FormWizard:
         return True, ""
     
 
-    # Display the collected data to the user for review
-    def display_data_for_confirmation(self):
-        for entity in self.entities_data:
-            print(entity)
-        for filing in self.filing_data:
-            print(filing)
-        # Get user confirmation
-        confirmation = input("Do you confirm the provided data? (Yes/No): ")
-        if confirmation.lower() == 'yes':
-            return True
-        return False
-
+    # # Display the collected data to the user for review
+    #     def display_data_for_confirmation(self):
+    #         for entity in self.entities_data:
+    #             print(entity)
+    #         for filing in self.filing_data:
+    #             print(filing)
+    #         # Get user confirmation
+    #         confirmation = input("Do you confirm the provided data? (Yes/No): ")
+    #         if confirmation.lower() == 'yes':
+    #             return True
+    #         return False
+    
+   # Since you mentioned that the coordinates JSON files have moved, you'll need to update the paths to these files in your code once you integrate the PDF generation functionality.
     def generate_forms(self):
-        # Use the collected and validated data to generate the forms
-        # This could involve interacting with predefined templates or other mechanisms
-        pass
+        form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
+check_file_path(form_template_path)
+# Function to get PDF dimensions
+get_pdf_dimensions(pdf_path)
+# Function to populate form fields
+populate_form()
+# Function to merge text PDF onto blank form
+merge_overlay_pdf()
+# Create an instance of the Jurisdiction class
+current_jurisdiction = Jurisdiction.create_jurisdiction(state_name_mapping[state], state)
+#de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
+#ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
+
+# Create a single BaseForm instance with defaults
+form_instance = BaseForm(
+    domestic_state=DEFAULTS.get('domestic_state', 'DE'), 
+    form_status=DEFAULTS.get('form_status', 'Blank'), 
+    session_timestamp=datetime.now(), 
+    signed_on_date=datetime.now(),
+    jurisdiction_instance=de_jurisdiction,
+)
+
+# date & time validation - not used
+#date_time_input = input("Enter date and time (format: YYYY-MM-DD HH:MM:SS): ")
+#
+#if validate_date_time(date_time_input):
+#    print("Valid date and time!")
+#else:
+#    print("Invalid date and time format!")
+
+# Overwrite form instance attributes as necessary
+if some_condition:
+    form_instance.domestic_state = "DE"
+
+# Now that form_instance is defined, you can update de_jurisdiction with it if needed
+de_jurisdiction.jurisdiction_instance = form_instance
+
+# Merge overlay and form PDFs together - Moved
+merge_pdfs()
+
+# Use the defaults
+form_instance = BaseForm(
+    domestic_state=DEFAULTS.get('domestic_state', 'DE'), 
+    form_status=DEFAULTS.get('form_status', 'Blank'), 
+    session_timestamp=datetime.now(), 
+    signed_on_date=datetime.now(),
+    jurisdiction_instance=de_jurisdiction,
+)
  
-    def handle_errors(self, error):
-        print(f"An error occurred: {error}")
-        # Additional error handling can be implemented here
+def handle_errors(self, error):
+    print(f"An error occurred: {error}")
+    # Additional error handling can be implemented here
+## END OF FORM GENERATION PROCESS ##
 
     def end_or_continue(self):
         choice = input("Would you like to end the session or continue with another task? (End/Continue): ")

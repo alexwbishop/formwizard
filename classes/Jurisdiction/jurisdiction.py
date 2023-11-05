@@ -59,8 +59,34 @@ class Jurisdiction(Filing_Type):
 class Delaware(Jurisdiction):
     def __init__(self, *args, **kwargs):
         super().__init__('Delaware', 'DE', *args, **kwargs)
-        # Texas-specific initialization
+        # State-specific initialization
+class California(Jurisdiction):
+    def __init__(self, *args, **kwargs):
+        super().__init__('California', 'CA', *args, **kwargs)
+        # State-specific initialization
+'''
+## BEGIN CALIFORNIA ONLY QUESTIONS ##
 
+# init state-specific questioning as applicable for filings requested
+if jurisdiction == 'CA':
+    try:
+        # Get the regular expression for business_purpose validation
+        business_purpose_regex = config['VALIDATION_RULES']['CA_business_purpose']
+
+        # Assuming user_input is the data you want to validate
+        user_input = "CA business purpose must be less than 50 characters."
+
+        # Perform the validation
+        if re.match(business_purpose_regex, user_input):
+            print("Valid input.")
+        else:
+            print("Invalid input. Must be 1-50 characters.")
+
+    except KeyError:
+        logging.error("CA_business_purpose not found in the JSON configuration.")
+        
+## END CALIFORNIA ONLY QUESTIONS ##
+'''
 # ... (Other subclasses)
 # Ensure each subclass for the states has meaningful differentiation; 
 # otherwise, consider if the subclasses are necessary at all.

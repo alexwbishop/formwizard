@@ -97,6 +97,18 @@ def get_entity_data(df, entity_name):
         'Registration Date': registration_date,
         'Filing Type': filing_type
     }
+def review_and_confirm_data(df): ## DALIA HELP - IS THIS THE RIGHT WAY TO DO THIS?
+    # df is a pandas DataFrame containing the loaded Excel data.
+    # Iterate confirmation qury for each row in the DataFrame
+    for index, row in df.iterrows():
+        print(f"\nReviewing record {index + 1}/{len(df)}:")
+        print(row)  # This prints the entire row for the user to review.
+        confirmation = input("Is this information correct? (yes/no): ").strip().lower()
+        if confirmation != 'yes':
+            print("Please correct the data...")
+            # Implement data correction logic here
+        else:
+            print("Data confirmed.")
 
 # if __name__ == "__main__":
 #    print("this is the test run of excel import.py")
