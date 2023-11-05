@@ -54,9 +54,8 @@ def get_manual_input_data():
     get_signer_name()    # NEED TO TEST - JUST ADDED
     # Confirm Signer's Name
     confirm_signer() # NEED TO TEST - JUST ADDED
-    # Initialize list to store form instances
+    # Initialize list to store form instances also went through and
     forms = []
-
     # Loop through the number of forms specified
     return data
 
