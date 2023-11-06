@@ -13,7 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from PyPDF2 import PdfReader, PdfWriter
 from classes.BaseForm.BaseForm import BaseForm
-from classes.Jurisdiction.jurisdiction import Jurisdiction
+from classes.Jurisdiction.Jurisdiction import Jurisdiction
 
 # functions
 

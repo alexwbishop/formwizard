@@ -1,6 +1,12 @@
 # form_generation.py
 #
 # Functions relating to generating forms based on user input
+from classes.Utilities.PDFUtils import PDFUtils
+from constants.config import DEFAULT_PATH
+import pandas as pd
+import json
+import os
+
 
 #functions relating to PDF generation - these are not defined - why?
 print("Checking file path...", form_template_path, "...")

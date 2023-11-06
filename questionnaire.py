@@ -14,8 +14,8 @@ from user_input import ask_quantity_of_filings, get_manual_input_data, choice
 from data_preparation import get_data
 from constants.states import State
 from validation import validate_data
-from utils import handle_errors
-from enums.residency import determine_filing_nature
+from classes.Utilities.ValidationUtils.ValidationUtils import handle_errors
+from enums.residency import determine_residency
 #
 # Create a single BaseForm instance with defaults
 # this will be instantiated for each form, and additonal requirements

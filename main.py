@@ -18,7 +18,7 @@ from questionnaire import initiate_filing_questionnaire
 from questionnaire import get_data
 from excel_import import get_excel_file_path, load_excel_data
 from constants.config import DEFAULT_PATH
-from enums.residency import determine_filing_nature
+from enums.residency import determine_residency
 
 # Function to ask the user to choose the data input method (Excel or Manual)
 def get_data_source_choice():
@@ -71,7 +71,7 @@ def main():
             # Determine and assign residency status based on the domestic state provided
             print("Determining residency based on data provided...")
             domestic_state = entity_data['Domestic State']
-            entity_data['Residency'] = determine_filing_nature(domestic_state)
+            entity_data['Residency'] = determine_residency(domestic_state)
             print("Residency determined successfully: " + entity_data['Residency'])
             # Additional steps to process each manually entered 'entity_data' can be done here
 

@@ -19,7 +19,9 @@ from datetime import datetime
 from enums.filing_rules import FILING_TYPES, is_valid_new_name
 from enums.filing_rules import FilingType, FILING_QUESTIONS
 from enums.residency import Residency
+from enums.jurisdiction import Jurisdiction
 from enums.entity_types import EntityType
+import classes.BaseForm.BaseForm
 
 # Dalia's tips: 
 #Error Handling: Add try-except blocks where appropriate to handle unexpected input.
@@ -28,7 +30,7 @@ from enums.entity_types import EntityType
 
 
 # Calculate Domestic or Foreign Residency (only for this form/filing)
-def get_residency() : 'Dom' if jurisdiction == domestic_state else 'For'
+def get_residency() : 'Dom' if Jurisdiction == domestic_state else 'For'
 
 # Entity & Filing Info Prompt
 def collect_entity_info():

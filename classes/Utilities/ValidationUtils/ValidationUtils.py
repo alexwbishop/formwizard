@@ -1,6 +1,18 @@
 # utils.py
+import re
+import json
+import os
+import uuid
+import logging
+import datetime
+from constants.config import DEFAULT_PATH
+from constants.states import State
+from classes.BaseForm.BaseForm import DomesticState
 
-# various utility functions
+# various utility functions for validation and error handling
+# Load configuration from a JSON file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
 
 # basic error handling function - needs to be expanded
 def handle_errors(self, error):
@@ -43,8 +55,8 @@ def validate_timestamp():
 
 ## checks if the address being provided is within the state being filed (jurisdiction).
 def instate_address(address: str) -> bool:
-    if Domestic_State not in address: # need to make this a variable for the jurisdiction abbreviation
-        print("Address must be in the state of ", Domestic_State, ".")
+    if DomesticState not in address: # need to make this a variable for the jurisdiction abbreviation
+        print("Address must be in the state of ", DomesticState, ".")
         return False
     # Other address validations can be added here
     return True
