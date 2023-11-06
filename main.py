@@ -14,8 +14,8 @@
 #11. Document Preparation: The form is prepared based on the collected data.
 #
 #1. Import necessary modules and functions
-from questionnaire.questionnaire import initiate_filing_questionnaire
-from questionnaire.questionnaire import get_data
+from questionnaire import initiate_filing_questionnaire
+from questionnaire import get_data
 from excel_import import get_excel_file_path, load_excel_data
 from constants.config import DEFAULT_PATH
 from enums.residency import determine_filing_nature

@@ -1,7 +1,7 @@
 # responsibleparty.py
 #
 #
-from address import Address
+from classes.address_format import Address
 
 class ResponsibleParty:
     def __init__(self, first, mid, last, title, is_director, address: Address):
