@@ -2,7 +2,7 @@
 #
 from enum import Enum, auto
 from constants.name_restrictions import RESTRICTED_WORDS
-from .validation import is_valid_entity_name
+from ..validation import is_valid_entity_name
 
 class FilingType(Enum):
     CHANGE_OF_AGENT = auto()

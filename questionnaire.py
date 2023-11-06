@@ -2,8 +2,8 @@
 
 # Initial Session Questions, Entity & Filing Selection
 import pandas as pd
-from enums.filing_type import FILING_TYPES, is_valid_new_name
-from enums.filing_type import FilingType, FILING_QUESTIONS
+from enums.filing_rules import FILING_TYPES, is_valid_new_name
+from enums.filing_rules import FilingType, FILING_QUESTIONS
 from enums.residency import Residency
 from enums.entity_types import EntityType
 import os
