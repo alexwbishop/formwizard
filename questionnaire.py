@@ -1,43 +1,40 @@
 # questionnaire.py
 
 # Initial Session Questions, Entity & Filing Selection
+import json
 import pandas as pd
-from enums.filing_rules import FILING_TYPES, is_valid_new_name
+from datetime import datetime
 from enums.filing_rules import FilingType, FILING_QUESTIONS
-from classes.Residency import Residency
+from classes.ResidencyBase import Residency
+from main import get_data_source_choice # this needs syntax correction
 from enums.entity_types import EntityType
-import os
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from main import choice
-from user_input import ask_quantity_of_filings, get_manual_input_data
+from classes.Jurisdiction import Jurisdiction  
+from classes.BaseForm import BaseForm  
+from user_input import ask_quantity_of_filings, get_manual_input_data, choice
 from data_preparation import get_data
-
-# Define 'determine_residency' as a top-level function - because it drives the logic of other class-based functions
-# this was refactored to ./classes/Residency/residency.py
-
-# Create an instance of the Jurisdiction class
-current_jurisdiction = Jurisdiction.create_jurisdiction(state_name_mapping[state], state)
-de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
-ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
-
-# Overwrite form instance attributes as necessary - Not currently implemented
-#if some_condition:
-#    form_instance.domestic_state = "DE"
-
-# Now that form_instance is defined, you can update de_jurisdiction with it if needed
-de_jurisdiction.jurisdiction_instance = form_instance
-
+from constants.states import State
+from validation import validate_data
+from utils import handle_errors
+from enums.residency import determine_filing_nature
+#
 # Create a single BaseForm instance with defaults
 # this will be instantiated for each form, and additonal requirements
 #  are loaded in from higher classes in the hierarchy
+# Load configuration from a JSON file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
 form_instance = BaseForm(
-    domestic_state=DEFAULTS.get('domestic_state', 'DE'), 
-    form_status=DEFAULTS.get('form_status', 'Blank'), 
-    session_timestamp=datetime.now(), 
+    domestic_state=config.get('DEFAULTS', {}).get('domestic_state', Jurisdiction.create_jurisdiction("Delaware", "DE")),
+    session_timestamp=datetime.now(),
     signed_on_date=datetime.now(),
-    jurisdiction_instance=de_jurisdiction,
+    jurisdiction_instance=config.get('DEFAULTS', {}).get('jurisdiction_instance', Jurisdiction.create_jurisdiction("Delaware", "DE")),
 )
+
+# Create an instance of the Jurisdiction class which allows it to be changed from default (DE)
+current_jurisdiction = Jurisdiction.create_jurisdiction(State.full[State.abbrev])
+de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
+ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 
 # Functions
 
@@ -50,26 +47,45 @@ def initiate_filing_questionnaire():
 
 # define the core data collection and form assembly process (FormWizard)
 class FormWizard:
+    def __init__(self):
+        self.entities_data = []
+        self.filing_data = []    
+        
     def run_session(self):
         print("Initializing FormWizard session...")
         # Collect the data for each entity from the user
         for _ in range(ask_quantity_of_filings()):
-            entity_data = get_data(choice) # NOT DEFINED? Waze
+            entity_data = get_data(choice)
             # Validate and store entity data
             valid, error_message = self.validate_data(entity_data)
             if not valid:
                 self.handle_errors(error_message)
                 continue  # Skip to the next entity if the current one is invalid
             self.entities_data.append(entity_data)
+        
+        # Loop for confirming data
+        while True:
+            self.display_data_for_confirmation()
+            if self.confirm_data():
+                break
+            else:
+                self.correct_data()  # You will need to define how to correct data
+        
+        ## FORM GENERATION PROCESS OCCURS ##
+        self.generate_forms()
+
             # user could be given option to skip data entry of missing fields, then fill post-session manually,
             # but we would want to build in a reminder feature for that.
-            
-    def __init__(self):
-        self.entities_data = []
-        self.filing_data = []
+    def confirm_data(self):
+        confirmation = input("Do you confirm the provided data? (Yes/No): ")
+        return confirmation.lower() == 'yes'
 
-# # Display the collected data to the user for review - Newly implemented
-        def display_data_for_confirmation(self):
+    def correct_data(self):
+    # Logic for correcting data goes here
+        pass
+
+# Display the collected data to the user for review - Newly implemented
+    def display_and_confirm_data(self):
              for entity in self.entities_data:
                  print(entity)
              for filing in self.filing_data:
@@ -79,14 +95,11 @@ class FormWizard:
              if confirmation.lower() == 'yes':
                  return True
              return False
-    
-   # Since you mentioned that the coordinates JSON files have moved, you'll need to update the paths to these files in your code once you integrate the PDF generation functionality.
     def generate_forms(self):
-        print("Generating forms...")
-        form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
-        print("Loaded file: ", form_template_path)  
-
-## FORM GENERATION PROCESS OCCURS ##
+        print("Initiating form generation process...")
+        form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{EntityType}-{Residency}-{FilingType}.pdf"
+        print("Loaded form: ", form_template_path)  
+        # USE PDF FUNCTIONS FROM pdf_utils.py - not being used yet?
 
     def end_or_continue(self):
         choice = input("Would you like to end the session or continue with another task? (End/Continue): ")
@@ -101,35 +114,16 @@ class FormWizard:
             self.handle_errors(error_message)
             return
 
-        if not self.display_data_for_confirmation():
-            # If the user doesn't confirm the data, give them a chance to modify it
-            # ...
+        if not self.display_and_confirm_data():
+            #if the user says 'no', there should be a mechanism to go back and allow data correction.
             return
-
+        ## FORM GENERATION PROCESS OCCURS ##
         self.generate_forms()
 
-
-
-# give user opportunity to exit or restart a new session
-def end_or_continue(self):
-        self.generate_summary()
-        self.collect_feedback()
-        
-        choice = input("Would you like to end the session or continue with another task? (End/Continue): ")
-        if choice.lower() == 'end':
-            print("Thank you for using FormWizard! Have a great day.")
-            return
-        # If the user wants to continue, redirect them to the starting point or offer other options
-        # IS THIS DEFINED YET? #
-        # self.run_session()     ????
-
-#Usage:
-# To start the session:
-#wizard = FormWizard()
-#wizard.run_session()
-# You can call initiate_filing_questionnaire() to start the process
-# You can call get_data() to get the data for a single entity
+# Usage
 if __name__ == "__main__":
+    print("questionnaire.py initiated as main.")
     wizard = FormWizard()
-    print("this is the test run of questionnaire.py")
+    print("Initializing FormWizard session...")
     wizard.run_session()
+    print("Session complete.")

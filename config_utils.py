@@ -11,11 +11,11 @@ import logging
 # JSON configuration function
 def load_json_config(file_path):
     try:
-    with open('file_path', 'r') as file:
-        config = json.load(file)
-except FileNotFoundError:
-    print("Error: config.json file not found!")
-    # Handle the error, e.g., exit the application
-except json.JSONDecodeError:
-    print("Error: Invalid JSON format in config.json!")
-    # Handle the error
+        with open('file_path', 'r') as file:
+            config = json.load(file)
+    except FileNotFoundError:
+        print("Error: config.json file not found!")
+        # Handle the error, e.g., exit the application
+    except json.JSONDecodeError:
+        print("Error: Invalid JSON format in config.json!")
+        # Handle the error

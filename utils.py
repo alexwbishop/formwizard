@@ -31,6 +31,15 @@ def validate_date_time(date_time_str, format_str='%Y-%m-%d %H:%M:%S'):
         return True
     except ValueError:
         return False
+    
+# date & time validation
+def validate_timestamp():
+    from datetime import datetime
+    try:
+        current_time = datetime.now()
+        logging.info(f"Current time: {current_time}")
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
 
 ## checks if the address being provided is within the state being filed (jurisdiction).
 def instate_address(address: str) -> bool:

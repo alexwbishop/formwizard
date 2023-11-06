@@ -19,8 +19,7 @@
   "ALL_STATES": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"],
   "ALL_MONTHS": ["January", "February"],
   "VALID_YEAR_RANGE": [1900, 2023],
-  "MAX_FORM_QUANTITY": 10
-  },
+  "MAX_FORM_QUANTITY": 10,
   "FORM_COMPLETION_STATUS": ["Blank", "Incomplete", "Complete & Unsigned", "Complete & Signed", "Error", "Exported"],
   "CT_REGISTERED_AGENT_NAMES": {
     "CA": "C T Corporation System",
@@ -53,4 +52,5 @@
   "VALID_FILE_EXTENSIONS": [".pdf", ".docx", ".doc"],
   "COUNTRIES": ["USA", "Canada", "UK"],
   "USER_ROLES": ["Admin", "Editor", "Viewer"]
+  }
 }

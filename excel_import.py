@@ -80,22 +80,17 @@ def get_entity_data(df, entity_name):
     Get data for a specific entity from the DataFrame.
     """
     entity_data = df[df['Entity Name'] == entity_name].iloc[0]
-    target = entity_data['Target']
-    ct_order_number = entity_data['CT Order Number']
+    #target = entity_data['Target']
+    #ct_order_number = entity_data['CT Order Number']
     domestic_state = entity_data['Domestic State']
     current_registered_agent = entity_data['Current Registered Agent']
-    current_status = entity_data['Current Status']
     registration_date = entity_data['Registration Date']
-    filing_type = entity_data['Filing Type']
 
     return {
-        'Target': target,
-        'CT Order Number': ct_order_number,
+        'Entity Name': entity_name,
         'Domestic State': domestic_state,
         'Current Registered Agent': current_registered_agent,
-        'Current Status': current_status,
         'Registration Date': registration_date,
-        'Filing Type': filing_type
     }
 def review_and_confirm_data(df): ## DALIA HELP - IS THIS THE RIGHT WAY TO DO THIS?
     # df is a pandas DataFrame containing the loaded Excel data.

@@ -5,8 +5,8 @@
 # - Methods: Logic specific to the filing type.
 
 # Inherits from Residency (i.e. Domestic or Foreign).
-from ..Residency.residency import Residency
-from ..Jurisdiction.jurisdiction import Jurisdiction
+from ..ResidencyBase.ResidencyBase import Residency
+from ..Jurisdiction.Jurisdiction import Jurisdiction
 
 # Base class for all filing types
 class BaseFilingType(Residency):
