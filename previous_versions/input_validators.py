@@ -1,5 +1,7 @@
 # input validators.py
 # User Inputs and Validations
+'''
+THIS HAS BEEN MOVED TO ./validation.py
 
 # Imports
 import re
@@ -94,3 +96,4 @@ def validate_zip():
     agent_zip = input("Enter the agent's ZIP code: ")
   while not agent_zip.isdigit() or len(agent_zip) != 5:
     agent_zip = input("Enter a valid ZIP code: ")
+'''

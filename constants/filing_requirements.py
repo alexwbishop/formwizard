@@ -1,3 +1,0 @@
-# filing_requirements.py
-#
-#

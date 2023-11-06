@@ -27,7 +27,7 @@ from input_validators import (validate_date_time, collect_entity_info, display_f
 from logging_utils import message_logging, validate_timestamp
 from pdf_utils import form_key, clear_temp_folder, check_file_path, get_pdf_dimensions, populate_form, merge_pdfs
 from questions import (ask_yes_no, get_signer_name, confirm_filing_type, ask_total_forms, confirm_limited_states, confirm_agent_name, confirm_signer, get_entity_info, get_domestic_state, get_jurisdiction, confirm_filings)
-from session_utils import generate_session_id
+from previous_versions.session_utils import generate_session_id
 from classes.jurisdiction.jurisdiction import Jurisdiction
 from classes.BaseForm.base_form import BaseForm
 def main():

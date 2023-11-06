@@ -1,5 +1,5 @@
 # amendment.py
-# Description: This file contains the FilingType class, which represents different types of filings.
+# Description: This file contains the FilingType/Amendment class, which represents amendments.
 
 # inherits from BaseForm.
 # (this subclass is inheriting from BaseForm. This means that it will have access to all the attributes and methods defined in BaseForm)
@@ -47,4 +47,17 @@ class Amendment(BaseForm):
         self.instate_county = kwargs.get('instate_county', None)
 
 
-    # Additional methods specific to FilingType
+    # Additional methods specific to FilingType:
+
+    # Validates amended entity name is different from current entity name
+def is_valid_new_name(current_name: str, new_name: str) -> bool:
+    print(f"Checking: {current_name}")
+    if current_name == new_name:
+        print("The new name cannot be the same as the current name.")
+        return False
+    for word in RESTRICTED_WORDS:
+        if word in new_name:
+            print(f"'{word}' is a restricted word for entity names.")
+            return False
+        print(f"Entity name has been validated: {new_name}")
+    return is_valid_entity_name(new_name)

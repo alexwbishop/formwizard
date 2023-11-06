@@ -46,19 +46,6 @@ def get_supplemental_docs(filing_type: FilingType) -> list:
     return FILING_TYPE_SUPPLEMENTAL_DOCS.get(filing_type, [])
 
 
-# Validates amended entity name is different from current entity name
-def is_valid_new_name(current_name: str, new_name: str) -> bool:
-    print(f"Checking: {current_name}")
-    if current_name == new_name:
-        print("The new name cannot be the same as the current name.")
-        return False
-    for word in RESTRICTED_WORDS:
-        if word in new_name:
-            print(f"'{word}' is a restricted word for entity names.")
-            return False
-        print(f"Entity name has been validated: {new_name}")
-    return is_valid_entity_name(new_name)
-
 # Questions associated with each filing type - EXAMPLES
 FILING_QUESTIONS = {
     FilingType.FORMATION: ["General Question 1", "General Question 2"],
