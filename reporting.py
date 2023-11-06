@@ -1,6 +1,8 @@
 # reporting.py
 
 # functions for reporting on the session
+import logging
+import uuid
 
 # Define creation of session id#
 def generate_session_id():

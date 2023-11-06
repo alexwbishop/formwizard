@@ -22,15 +22,20 @@ from enums.residency import Residency
 from enums.jurisdiction import Jurisdiction
 from enums.entity_types import EntityType
 import classes.BaseForm.BaseForm
+from questionnaire import FormWizard
 
 # Dalia's tips: 
 #Error Handling: Add try-except blocks where appropriate to handle unexpected input.
 #Case Sensitivity: Functions like is_valid_entity_name and is_valid_purpose should ideally handle words in a case-insensitive manner.
 #Modularity: Consider breaking down some functions further if they start to handle too complex logic.
 
+# Load configuration from a JSON file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
 
 # Calculate Domestic or Foreign Residency (only for this form/filing)
-def get_residency() : 'Dom' if Jurisdiction == domestic_state else 'For'
+def get_residency() : 'Dom' if config.Jurisdiction == config.Domestic_State else 'For'
 
 # Entity & Filing Info Prompt
 def collect_entity_info():
@@ -45,7 +50,7 @@ def collect_entity_info():
 # Confirmation - group entity/form info
 def display_form_list():
     logging.info(f"List of entities/forms to be filled in this session: ")
-    for i, form in enumerate(forms):
+    for i, FILING_TYPES in enumerate(FILING_TYPES):
         logging.info(f"{i+1}) form.entity_name - form.entity_type - form.filing_type")
 
 # Ask user to confirm info provided for all filings is correct, proceed

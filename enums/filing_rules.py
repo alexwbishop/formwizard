@@ -1,4 +1,4 @@
-# filing_type.py
+# filing_rules.py
 #
 from enum import Enum, auto
 from constants.name_restrictions import RESTRICTED_WORDS
