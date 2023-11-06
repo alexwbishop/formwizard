@@ -183,18 +183,23 @@ class FormWizard:
     
    # Since you mentioned that the coordinates JSON files have moved, you'll need to update the paths to these files in your code once you integrate the PDF generation functionality.
     def generate_forms(self):
+        print("Generating forms...")
         form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{entity_type}-{residency}-{filing_type}.pdf"
+        print("Loaded file: ", form_template_path)  
 check_file_path(form_template_path)
 # Function to get PDF dimensions
+print("Getting PDF dimensions...")
 get_pdf_dimensions(pdf_path)
 # Function to populate form fields
+print("Populating form fields for: ", entity_name) 
 populate_form()
 # Function to merge text PDF onto blank form
+print("Merging responses onto blank form fields...")
 merge_overlay_pdf()
 # Create an instance of the Jurisdiction class
 current_jurisdiction = Jurisdiction.create_jurisdiction(state_name_mapping[state], state)
-#de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
-#ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
+de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
+ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 
 # Create a single BaseForm instance with defaults
 form_instance = BaseForm(
@@ -219,22 +224,11 @@ if some_condition:
 
 # Now that form_instance is defined, you can update de_jurisdiction with it if needed
 de_jurisdiction.jurisdiction_instance = form_instance
-
-# Merge overlay and form PDFs together - Moved
-merge_pdfs()
-
-# Use the defaults
-form_instance = BaseForm(
-    domestic_state=DEFAULTS.get('domestic_state', 'DE'), 
-    form_status=DEFAULTS.get('form_status', 'Blank'), 
-    session_timestamp=datetime.now(), 
-    signed_on_date=datetime.now(),
-    jurisdiction_instance=de_jurisdiction,
-)
  
 def handle_errors(self, error):
     print(f"An error occurred: {error}")
     # Additional error handling can be implemented here
+
 ## END OF FORM GENERATION PROCESS ##
 
     def end_or_continue(self):
@@ -308,88 +302,5 @@ def end_or_continue(self):
 # You can call get_data() to get the data for a single entity
 if __name__ == "__main__":
     wizard = FormWizard()
+    print("this is the test run of questionnaire.py")
     wizard.run_session()
-    
-'''
-REDUNDANT - more or less REPLACED BY FormWizard session handling process - PROBABLY WILL REMOVE ALL AFTER THIS LINE.
-
-# begin collecting manually entered entity names for the # of entities selected
-def ask_entity_names(num_forms: int) -> list:
-    entity_names = []
-    for i in range(num_forms):
-        while True:
-            entity_name = input(f"Enter entity name for form {i+1}: ").strip()
-            # Validate the entity name
-            if validate_entity_name(entity_name, entity_names):
-                entity_names.append(entity_name)
-                break
-            else:
-                print("Invalid or duplicate entity name. Please try again.")
-    # Return the list of entity names as a list
-    return entity_names
-
-    
-# all entity names should be validated at this point if not prior, including those imported from excel.
-# entity name validation
-def validate_entity_name(entity_name: str, existing_names: list) -> bool:
-    # Add your entity name validation logic here
-    if entity_name in existing_names:
-        return False
-    return True    
-
-# define filing types available for selected residency/entity type combination (i.e. Domestic LLC)
-def available_filings(domestic_state, filing_state=Residency.DOMESTIC):
-    if domestic_state == filing_state:
-        # Exclude 'FORMATION' for domestic entities, as they already exist in the state
-        return [filing for filing in FilingType if filing != FilingType.FORMATION]
-    else:
-        # Return all filing types for foreign entities
-        return list(FilingType)
-
-
-# begin selecting filings for the entities selected
-def select_filing_types(entity_count):
-    selected_filings = {}
-    # Ask for filing type for each entity
-    for i in range(entity_count):
-        # Display the available filing types
-        print(f"\nSelect filing type for entity {i+1}:")
-        for idx, filing in enumerate(FILING_TYPES, 1):
-            # Display the filing types with a number for the user to select
-            print(f"{idx}. {filing}")
-    
-        while True:
-            try: # Ask for user input and validate it
-                choice = int(input("Enter choice: "))
-                # Validate the choice
-                if 1 <= choice <= len(FILING_TYPES):
-                    # Store the selected filing type
-                    selected_filings[f"Entity {i+1}"] = FILING_TYPES[choice-1]
-                    break
-                else:
-                    print("Invalid choice. Please try again.")
-            except ValueError:
-                print("Please enter a number.")
-
-# Then you call available_filings with the entity's domestic state
-selected_filings = available_filings(domestic_state=['Domestic State'])
-return selected_filings
-
-# display list of selected filings/entities - for confirmation to user.
-# maybe for later: offer the option to go back to change filing selection, without returning to the beginning of the phase
-
-## ONCE ENTITY (aka TARGET) and FILING PAIRING HAVE BEEN REVIEWED BY USER AND CONFIRMED, BEGIN FILING-SPECIFIC QUESTION PHASE ##
-
-# define filing-specific questions (ex. for Name Amendment, ask for new name, COA - ask for new agent, etc.)
-def get_questions_for_filing(filing_type: FilingType) -> list:
-    # Return the list of questions for the filing type
-    return FILING_QUESTIONS.get(filing_type, [])
-
-
-# ask filing-specific questions
-# IS THERE A FUNCTION TO RUN TO PULL ANY FILING-SPECIFIC QUESTIONS? #
-
-
-
-
-'''
