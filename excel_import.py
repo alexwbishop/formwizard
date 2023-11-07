@@ -3,11 +3,27 @@
 import os
 import pandas as pd
 import json
+from constants.config import DEFAULT_PATH
 # Global constants and variables
 
 test_path = "./excel/test_audit.xls"
 
 # Function definitions
+def import_from_excel(): 
+    print("You have chosen to import data from an Excel sheet. Please have your file path name ready to enter.")
+    # Retrieve the path to the Excel file based on a default or user-provided path
+    excel_file_path = get_excel_file_path(DEFAULT_PATH)
+    # Load the data from the Excel file into 'entity_data'
+    print("Loading data from Excel file...")
+    entity_data = load_excel_data(excel_file_path)
+    print("Data loaded. Validating...")
+    # Send data to LOG FILE with import & Validation details?
+    #entity_data = validate_entity_data(entity_data) 
+    # Need to set up validate_entity_data function to check for completeness and correctness of the data.
+    if not entity_data:  # If validation fails, handle it appropriately
+                print("Invalid data found in Excel. Please correct the data and try again.")        
+        # Additional processing of the data from the Excel file can occur here
+
 def get_excel_file_path(default_path: str) -> str:
     print(f"The default path for the Excel file is: {default_path}")
     use_default = input("Would you like to use the default path, custom input, or the test path? (yes/no/test): ").strip().lower()
