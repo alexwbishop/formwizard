@@ -33,7 +33,6 @@ from questionnaire import FormWizard
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
-
 # Calculate Domestic or Foreign Residency (only for this form/filing)
 def get_residency() : 'Dom' if config.Jurisdiction == config.Domestic_State else 'For'
 
