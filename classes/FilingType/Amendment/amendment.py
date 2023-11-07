@@ -5,6 +5,7 @@
 # (this subclass is inheriting from BaseForm. This means that it will have access to all the attributes and methods defined in BaseForm)
 
 from BaseForm import BaseForm
+from constants import RESTRICTED_WORDS
 
 class Amendment(BaseForm):
     def __init__(self, entity_name, jurisdiction_instance, user_id, **kwargs):
@@ -60,4 +61,4 @@ def is_valid_new_name(current_name: str, new_name: str) -> bool:
             print(f"'{word}' is a restricted word for entity names.")
             return False
         print(f"Entity name has been validated: {new_name}")
-    return is_valid_entity_name(new_name)
+    return True

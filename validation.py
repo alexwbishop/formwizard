@@ -15,12 +15,20 @@ from reportlab.pdfgen import canvas
 from constants.name_restrictions import RESTRICTED_WORDS
 from constants.entity_indicators import VALID_ENTITY_INDICATORS
 from constants.name_restrictions import MAX_PURPOSE_LENGTH
+from questionnaire import FILING_QUESTIONS
 from datetime import datetime
 from enums.residency import Residency
 from enums.entity_types import EntityType
 import classes.BaseForm.BaseForm
 from questionnaire import FormWizard
 import questionnaire
+from user_input import get_user_choice
+from user_input import get_confirmation
+from user_input import gather_filing_details
+from user_input import entity_data_list
+from user_input import FilingType
+from constants.signature_block import ENTITY_TITLE_MATCH
+from classes.FilingType.Amendment.amendment import is_valid_new_name
 
 # Dalia's tips: 
 #Error Handling: Add try-except blocks where appropriate to handle unexpected input.
@@ -37,7 +45,7 @@ def get_residency() : 'Dom' if config.Jurisdiction == config.Domestic_State else
 # Entity & Filing Info Prompt
 def collect_entity_info():
     while True:
-        entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction = get_entity_info()
+        entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction = get_residency()
 # Confirmation - Individual entity/form info
         if get_confirmation(f"Entity info entered: {entity_name} (a {domestic_state} {entity_type}) is filing a {filing_type} to {agent_name} in {jurisdiction}. Is this correct? (Y/N): "):
             return entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction
