@@ -23,7 +23,6 @@ def get_data_source(choice):
             print("Invalid choice. Please choose 'excel' or 'manual'.")
             choice = input("Would you like to import data from an Excel sheet or input manually? ")
         # Return the user's choice to the calling function
-        print("Data source selected: " + choice)
         return choice
         if choice == 'Excel':
         # Handle the Excel input method
