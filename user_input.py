@@ -14,19 +14,31 @@ from excel_import import import_from_excel
 # Load configuration from a JSON file
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
+try:
+    with open('config.json', 'r') as config_file:
+        config = json.load(config_file)
+except FileNotFoundError:
+    logging.error("config.json file not found.")
+    exit(1)
+except json.JSONDecodeError:
+    logging.error("config.json is not a valid JSON file.")
+    exit(1)
 
-def get_data_source(choice):
-        # Prompt user for data import method, store the response in 'choice'
-        choice = input("Would you like to import data from an Excel sheet (type 'excel') or input manually (type 'manual')? ")
+def get_user_choice(choice):
+    input("Would you like to import data from an Excel sheet (type 'excel') or input manually (type 'manual')? ")
         # Loop to ensure a valid response is entered
-        while choice not in ['excel', 'manual']:
-            print("Invalid choice. Please choose 'excel' or 'manual'.")
-            choice = input("Would you like to import data from an Excel sheet or input manually? ")
+    while choice not in ['excel', 'manual']:
+        print("Invalid choice. Please choose 'excel' or 'manual'.")
+        choice = input("Would you like to import data from an Excel sheet or input manually? ")
+
+def get_data_source():
+        # Prompt user for data import method, store the response in 'choice'
+        get_user_choice()
         # Return the user's choice to the calling function
-        if choice == 'excel':
+        if get_user_choice == 'excel':
         # Handle the Excel input method
             import_from_excel()
-        elif choice == 'manual':
+        elif get_user_choice == 'manual':
         # Handle the manual input method
             print("You have chosen to input data manually.")
             # Launch the questionnaire to determine the number of forms to process
@@ -44,8 +56,8 @@ def get_data_source(choice):
             # Additional steps to process each manually entered 'entity_data' can be done here
         else:
         # Handle other cases or raise an error
-            print("Invalid choice. Please choose 'Excel' or 'Manual'.")
-        return choice
+            print("Invalid choice. Please choose 'excel' or 'manual'.")
+        return get_user_choice
 # asks for number of forms to fill out in current session
 def ask_quantity_of_filings() -> int:
     while True:
@@ -81,14 +93,24 @@ def confirm_signer():
 def confirm_filing_type():
     while True:
         filing_type = input(f"Note: FormWizard only supports form completion for 'Change of Agent' at this time. Please confirm (COA): ")
-        if filing_type in config.FILING_TYPES:
-            break
+        if filing_type == 'COA':
+            return filing_type
         else:
-            #ADD: provide a clear message to the user about what was correct or incorrect.
-            logging.warning("Only Change of Agent filing type is currently supported.\n Please check back later for more filing types in the future or enter 'COA' to proceed.")
+            print("Invalid input. Currently, only 'Change of Agent' (COA) is supported.")
+
 
 # Confirm limited # of states are currently supported
 def confirm_limited_states():
+    while True:
+        state_code = input("FormWizard currently supports filings for Delaware (DE) only. Please enter the corresponding state code (DE/CA): ").upper()
+        if state_code == 'DE':
+            return state_code
+        else:
+            print("Invalid input. Currently, only filings for Delaware (DE) are supported.")
+
+    
+# use this once other states are added besides DE #
+'''def confirm_limited_states():
     while True:
         state_code = input("FormWizard currently supports filings for Delaware (DE) only. Please enter the corresponding state code (DE/CA): ").upper()
         if state_code in config.ALL_STATES:
@@ -97,17 +119,19 @@ def confirm_limited_states():
         #ADD: provide a clear message to the user about what was correct or incorrect.
         logging.warning("Sorry, we currently only support filings for Delaware (DE). Please check back later for more states.")
         return state_code
-    
+'''    
 # Confirm agent name
 def get_registered_agent_name(state):
     return config.VALID_AGENTS['VALID_AGENTS'].get(state)
 
 # FIX: confirm_agent_name, ensure that the dynamic data such as valid agent names are fetched and presented correctly.
+
 # The current code snippet seems to be incomplete as it does not show how the VALID_AGENT_NAMES is structured within the configuration.
 def confirm_agent_name(state):
     # Fetch agent names dynamically based on the state
-    valid_agent_names = config.VALID_AGENT_NAMES['VALID_AGENT_NAMES'].get(state, [])
-
+    valid_agent_names = config['VALID_AGENT_NAMES'][state]  # Assuming this returns a list of names
+    for i, name in enumerate(valid_agent_names, 1):
+        print(f"{i}. {name}")
     while True:
         logging.info("Please select the agent name from the list of valid options:")
         for i, name in enumerate(config["VALID_AGENT_NAMES"], 1):
@@ -124,7 +148,7 @@ def confirm_agent_name(state):
     logging.info(f"You've selected {agent_name} as the agent.")
     return agent_name  # Optionally return the agent name for future use
 
-
+# can add a helper function that can be used for both the agent and the address
 def get_manual_input_data():
     print("Please provide the following info: ")
     data = {}
