@@ -7,7 +7,6 @@ from constants.config import DEFAULT_PATH
 # Global constants and variables
 
 test_path = "./excel/test_audit.xls"
-
 # Function definitions
 def import_from_excel(): 
     print("You have chosen to import data from an Excel sheet. Please have your file path name ready to enter.")

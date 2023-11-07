@@ -9,7 +9,7 @@ from enums.residency import Residency
 from enums.entity_types import EntityType
 from classes.Jurisdiction import Jurisdiction  
 from classes.BaseForm import BaseForm
-from user_input import ask_quantity_of_filings, choice
+from user_input import ask_quantity_of_filings, get_user_choice
 from data_preparation import get_data
 from constants.states import State
 from validation import validate_data
@@ -59,7 +59,7 @@ class FormWizard:
         print("Initializing FormWizard session...")
         # Collect the data for each entity from the user
         for _ in range(ask_quantity_of_filings()):
-            entity_data = get_data(choice)
+            entity_data = get_data(get_user_choice)
             # Validate and store entity data
             valid, error_message = self.validate_data(entity_data)
             if not valid:
