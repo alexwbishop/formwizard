@@ -1,0 +1,56 @@
+{
+  "VALID_STATES": {
+    "DE": "Delaware",
+    "CA": "California"
+  },
+  "VALIDATION_RULES": {
+    "agent_zip": "^[0-9]{5}(?:-[0-9]{4})?$",
+    "state_id": "^[a-zA-Z0-9]{1,50}$",
+    "CA_business_purpose": "^.{1,50}$"
+  },
+  "USER_ID": ["alexander.bishop", "guest"],
+  "ENTITY_TYPES": ["LLC", "Corp", "LP"],
+  "RESIDENCY": ["Domestic", "Foreign"],
+  "FILING_TYPES": ["COA"],
+  "INACTIVE_FILING_TYPES": ["Formation", "Withdrawal", "Annual Report", "Registration", "Qualification", "Merger", "Conversion", "Amendment", "Officials Update", "Address Update"],
+  "SIGNATURE_METHODS": ["E-Sign", "Conformed", "Typed In", "PDF Scan", "Hard Copy"],
+  "BOOLEAN_OPTIONS": ["True", "False", "NA"],
+  "ATTACHMENTS_DOCS_NEEDED": ["Certificate of Good Standing/Existence", "Certified Copy from Domestic", "Cert Re from Domestic", "Officer/Director List", "Tax Clearance Certificate", "NA"],
+  "ALL_STATES": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"],
+  "ALL_MONTHS": ["January", "February"],
+  "VALID_YEAR_RANGE": [1900, 2023],
+  "MAX_FORM_QUANTITY": 10,
+  "FORM_COMPLETION_STATUS": ["Blank", "Incomplete", "Complete & Unsigned", "Complete & Signed", "Error", "Exported"],
+  "CT_REGISTERED_AGENT_NAMES": {
+    "CA": "C T Corporation System",
+    "DE": "The Corporation Trust Company"
+  },
+  "REGISTERED_AGENT_ADDRESSES": {
+    "DE": ["Corporation Trust Center", "1209 Orange Street", "Wilmington", "19801", "New Castle"],
+    "CA": ["330 N Brand Blvd", "STE 700", "Glendale", "91203", "Sacramento"],
+  "VALID_AGENTS": ["CT", "NRAI", "Custom Entry"],
+  "VALID_AGENT_NAMES": {
+    "CT": ["C T Corporation System", "The Corporation Trust Company"],
+    "NRAI": ["National Registered Agents, Inc."]
+  },
+  "DEFAULTS": {
+    "domestic_state": "DE",
+    "jurisdiction": "DE",
+    "form_status": "Blank",
+    "other_defaults": "value_here"
+  },
+  "JURISDICTIONS": {
+    "DE": "Jurisdiction.create_jurisdiction('Delaware', 'DE')",
+    "CA": "Jurisdiction.create_jurisdiction('California', 'CA')"
+  },
+  "CUSTOM_FIELDS": ["Custom_Agent_Name", "Custom_Agent_Address"],
+  "VERSION_LAST_UPDATED": "10-1-2023",
+  "CONTACT_FIELDS": ["Phone", "Email", "Address"],
+  "DATE_FORMAT": ["MM-DD-YYYY", "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YY"],
+  "AUTHORIZATION_LEVELS": ["Admin", "User", "Guest"],
+  "CORPORATE_POSITIONS": ["CEO", "CFO", "Secretary", "President"],
+  "VALID_FILE_EXTENSIONS": [".pdf", ".docx", ".doc"],
+  "COUNTRIES": ["USA", "Canada", "UK"],
+  "USER_ROLES": ["Admin", "Editor", "Viewer"]
+  }
+}

@@ -1,0 +1,13 @@
+Class Name (CamelCase),Description/Usage,Attributes (Count),Methods (Count),Comments
+BaseForm,"Parent class containing common methods and attributes for all forms.",6,2,"Main class for form attributes and methods."
+CAForm,"California-specific form details.",10,3,"Child class of BaseForm. Specific to CA jurisdiction."
+DEForm,"Delaware-specific form details.",8,3,"Child class of BaseForm. Specific to DE jurisdiction."
+EntityType,"Defines the type of entity (e.g., LLC, Corporation, Partnership).",4,2,"Used to categorize entities."
+Filing,"Attributes and methods related to a filing.",12,4,"Main class for filing details."
+FilingType,"Defines the type of filing (e.g., Change of Agent, Incorporation).",14,3,"Used to categorize filings."
+Jurisdiction,"Defines the jurisdiction (e.g., US states, DC).",51,5,"Used to categorize jurisdictions."
+OrderDetails,"Attributes related to CT order processing.",8,3,"Specific to CT order details."
+Residency,"Defines the type of residency (Domestic, Foreign).",3,2,"Used to categorize residency types."
+ResponsibleParty,"Details of an official – Name, address, title.",4,2,"Used for official details."
+SignatureBlock,"Attributes related to the signature block, title, signer authority.",6,3,"Specific to signature details."
+Utilities,"Contains methods requiring Jurisdiction.",0,3,"Utility methods for various tasks."

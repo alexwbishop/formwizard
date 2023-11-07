@@ -1,0 +1,129 @@
+ClassName,Method Name,Parameters,Return Type,Description/Usage
+,clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays.
+,check_file_path,None,form_template_path (string),Checks if a blank PDF template exists and prompts the user for a custom path if not found.
+,get_pdf_dimensions,pdf_path (string),width, height (tuple),Retrieves the dimensions of a PDF.
+,populate_form,form_template_path (string), output_pdf_path (string), field_coordinates (dict), field_values (dict),None,Populates form fields in a PDF based on given coordinates and values.
+,merge_pdfs,form_pdf_path (string), text_pdf_path (string), output_pdf_path (string),None,Merges overlay and form PDFs together.
+Jurisdiction,__init__,name, abbreviation, signature_type_allowed=None, hard_copy_required=None, poa_allowed=None, tax_clearance_req=None, annual_reports_must_be_current=None, signer_must_be_on_record=None, signer_titles_restricted=None, jurisdiction_instance=None,None,Constructor method for the Jurisdiction class. Initializes various attributes based on the provided arguments.
+Jurisdiction,create_jurisdiction,name, abbreviation,cls(name, abbreviation, None, None, None, None, None, None, None, None),Class method to create a new jurisdiction instance with default values for other attributes.
+Jurisdiction,some_method,None,None,Calls a method that requires jurisdiction from the form_utility object.
+,clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays.
+,check_file_path,None,form_template_path (string),Checks if a blank PDF template exists and prompts the user for a custom path if not found.
+,get_pdf_dimensions,pdf_path (string),width, height (tuple),Retrieves the dimensions of a PDF.
+,populate_form,form_template_path (string), output_pdf_path (string), field_coordinates (dict), field_values (dict),None,Populates form fields in a PDF based on given coordinates and values.
+,merge_pdfs,form_pdf_path (string), text_pdf_path (string), output_pdf_path (string),None,Merges overlay and form PDFs together.
+FormUtility,method_requiring_jurisdiction,jurisdiction,None,Placeholder or template method; logic not yet implemented.
+FormUtility,,,,No specific methods are defined for this class.
+Utils,pdf_related_method,None,None,Placeholder or template method for handling a specific PDF-related task.
+Utils,validation_related_method,None,None,Placeholder or template method for handling a specific validation task.
+PDFUtils,,,,No specific methods are defined for this class.
+ValidationUtils,,,,No specific methods are defined for this class.
+BaseForm,__init__,jurisdiction_instance, residency=None, filing_type=None, entity_type=None, jurisdiction=None, form_status=None, attachments=None, line_number=None, signer_midinit=None, order_number=None, entity_name=None, domestic_state=None, agent_name=None, agent_street1=None, agent_street2=None, agent_city=None, agent_state=None, agent_zip=None, agent_county=None, session_id=None, session_timestamp=None, signer_name=None, signer_first=None, signer_mid=None, signer_last=None, signer_title=None, signer_title_ext=None, sig_conformed=None, sig_typed=None, signed_on_date=None, state_id=None, business_purpose=None, phys_street1=None, phys_street2=None, phys_city=None, phys_state=None, phys_zip=None, phys_county=None, mail_street1=None, mail_street2=None, mail_city=None, mail_state=None, mail_zip=None, mail_county=None, domestic_street1=None, domestic_street2=None, domestic_city=None, domestic_zip=None, domestic_county=None, user_id=None,None,Constructor method for the BaseForm class. Initializes various attributes based on the provided arguments.
+BaseForm,validate_data,None,None,Placeholder for data validation logic.
+BaseForm,generate_pdf,None,None,Placeholder for PDF generation logic.
+BaseForm,save_draft,None,None,Placeholder method to save the current state of the form as a draft.
+BaseForm,load_draft,None,None,Placeholder method to load a saved draft of the form.
+,generate_session_id,None,session_id (string),Generates a unique session ID using the UUID library and returns the first 6 characters in uppercase.
+,ask_yes_no,prompt,bool,Asks a yes/no question based on the provided prompt and returns a boolean value.
+,get_signer_name,None,str,Collects the signer's first, middle, and last name and returns the full name.
+,confirm_filing_type,None,None,Confirms the filing type, currently only supports 'Change of Agent'.
+,ask_total_forms,None,None,Asks the user for the number of forms they'd like to prepare.
+,confirm_limited_states,None,None,Confirms that only limited states are currently supported.
+,confirm_agent_name,None,None,Confirms the agent's name from a list of valid options.
+,confirm_signer,None,None,Confirms the signer's name.
+,get_entity_info,None,None,Collects entity information.
+,get_domestic_state,None,None,Asks the user for the domestic state of the entity.
+,get_jurisdiction,entity_name,str,Asks the user for the state in which the entity will file.
+ClassName,Method Name,Parameters,Return Type,Description/Usage
+,,main,args: Optional[List[str]] = None,int,Primary application entrypoint.
+Jurisdiction,__init__,name, abbreviation, signature_type_allowed=None, hard_copy_required=None, poa_allowed=None, tax_clearance_req=None, annual_reports_must_be_current=None, signer_must_be_on_record=None, signer_titles_restricted=None, jurisdiction_instance=None,None,Constructor method for the Jurisdiction class. Initializes various attributes based on the provided arguments.
+Jurisdiction,create_jurisdiction,name, abbreviation,Instance of Jurisdiction,Class method that creates a new Jurisdiction instance with the provided name and abbreviation.
+Jurisdiction,some_method,None,None,Calls a method from the FormUtility class that requires a jurisdiction.
+,pdf_utils.clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays after confirming with the user.
+,pdf_utils.check_file_path,None,form_template_path (str),Checks if the blank PDF template exists and prompts the user for a custom path if not found.
+,pdf_utils.get_pdf_dimensions,pdf_path,width, height (tuple of floats),Retrieves the dimensions of a PDF.
+,pdf_utils.populate_form,form_template_path, output_pdf_path, field_coordinates, field_values,None,Populates the form fields in a PDF based on provided coordinates and values.
+,pdf_utils.merge_pdfs,form_pdf_path, text_pdf_path, output_pdf_path,None,Merges overlay and form PDFs together.
+,pdf_utils.clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays after confirming with the user.
+,pdf_utils.check_file_path,None,form_template_path (str),Checks if the blank PDF template exists and prompts the user for a custom path if not found.
+,pdf_utils.get_pdf_dimensions,pdf_path,width, height (tuple of floats),Retrieves the dimensions of a PDF.
+,pdf_utils.populate_form,form_template_path, output_pdf_path, field_coordinates, field_values,None,Populates the form fields in a PDF based on provided coordinates and values.
+,pdf_utils.merge_pdfs,form_pdf_path, text_pdf_path, output_pdf_path,None,Merges overlay and form PDFs together.
+FormUtility,method_requiring_jurisdiction,jurisdiction,None,This method requires a jurisdiction parameter, but the exact logic or usage isn't detailed in the provided content.
+,pdf_utils.clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays after confirming with the user.
+,pdf_utils.check_file_path,None,form_template_path (str),Checks if the blank PDF template exists and prompts the user for a custom path if not found.
+,pdf_utils.get_pdf_dimensions,pdf_path,width, height (tuple of floats),Retrieves the dimensions of a PDF.
+,pdf_utils.populate_form,form_template_path, output_pdf_path, field_coordinates, field_values,None,Populates the form fields in a PDF based on provided coordinates and values.
+,pdf_utils.merge_pdfs,form_pdf_path, text_pdf_path, output_pdf_path,None,Merges overlay and form PDFs together.
+FormUtility,method_requiring_jurisdiction,jurisdiction,None,This method requires a jurisdiction parameter, but the exact logic or usage isn't detailed in the provided content.
+Utils,pdf_related_method,None,None,This is an example method that each utility class might have. It's a placeholder for a method in PDFUtils that handles a specific PDF-related task.
+Utils,validation_related_method,None,None,Similarly, this is a placeholder for a method in ValidationUtils that handles a specific validation task.
+,pdf_utils.clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays after confirming with the user.
+,pdf_utils.check_file_path,None,form_template_path (str),Checks if the blank PDF template exists and prompts the user for a custom path if not found.
+,pdf_utils.get_pdf_dimensions,pdf_path,width, height (tuple of floats),Retrieves the dimensions of a PDF.
+,pdf_utils.populate_form,form_template_path, output_pdf_path, field_coordinates, field_values,None,Populates the form fields in a PDF based on provided coordinates and values.
+,pdf_utils.merge_pdfs,form_pdf_path, text_pdf_path, output_pdf_path,None,Merges overlay and form PDFs together.
+FormUtility,method_requiring_jurisdiction,jurisdiction,None,This method requires a jurisdiction parameter, but the exact logic or usage isn't detailed in the provided content.
+Utils,pdf_related_method,None,None,This is an example method that each utility class might have. It's a placeholder for a method in PDFUtils that handles a specific PDF-related task.
+Utils,validation_related_method,None,None,Similarly, this is a placeholder for a method in ValidationUtils that handles a specific validation task.
+BaseForm,validate_data,None,None,Implement your data validation logic here.
+BaseForm,generate_pdf,None,None,Implement your PDF generation logic here.
+BaseForm,save_draft,None,None,To save the current state of the form as a draft.
+BaseForm,load_draft,None,None,To load a saved draft of the form.
+,pdf_utils.clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays after confirming with the user.
+,pdf_utils.check_file_path,None,form_template_path (str),Checks if the blank PDF template exists and prompts the user for a custom path if not found.
+,pdf_utils.get_pdf_dimensions,pdf_path,width, height (tuple of floats),Retrieves the dimensions of a PDF.
+,pdf_utils.populate_form,form_template_path, output_pdf_path, field_coordinates, field_values,None,Populates the form fields in a PDF based on provided coordinates and values.
+,pdf_utils.merge_pdfs,form_pdf_path, text_pdf_path, output_pdf_path,None,Merges overlay and form PDFs together.
+FormUtility,method_requiring_jurisdiction,jurisdiction,None,This method requires a jurisdiction parameter, but the exact logic or usage isn't detailed in the provided content.
+Utils,pdf_related_method,None,None,This is an example method that each utility class might have. It's a placeholder for a method in PDFUtils that handles a specific PDF-related task.
+Utils,validation_related_method,None,None,Similarly, this is a placeholder for a method in ValidationUtils that handles a specific validation task.
+BaseForm,validate_data,None,None,Implement your data validation logic here.
+BaseForm,generate_pdf,None,None,Implement your PDF generation logic here.
+BaseForm,save_draft,None,None,To save the current state of the form as a draft.
+BaseForm,load_draft,None,None,To load a saved draft of the form.
+,generate_session_id,None,session_id (str),Generates a unique session ID using the uuid library and returns the first 6 characters in uppercase.
+,load_json_config,config.json,JSON object,Loads a JSON configuration file.
+,ask_yes_no,prompt,Boolean,Asks a yes/no question based on the provided prompt.
+,get_entity_info,None,String (Signer's full name),Collects the signer's name.
+,confirm_filing_type,None,None,Confirms the filing type (currently supports only COA).
+,ask_total_forms,None,None,Asks for the number of forms to complete.
+,confirm_limited_states,None,None,Confirms that only limited states are currently supported.
+,confirm_agent_name,VALID_AGENT_NAMES,None,Confirms the agent name from a list of valid options.
+,get_signer_name,None,String (Signer's full name),Collects the signer's name.
+,confirm_signer,None,None,Confirms the signer's name.
+,get_entity_info,num_forms,None,Collects entity information.
+,get_domestic_state,None,None,Asks for the domestic state of the entity.
+,get_jurisdiction,entity_name,String (Jurisdiction state code),Asks for the jurisdiction state where the entity will file.
+,pdf_utils.clear_temp_folder,None,None,Deletes temporary folder of unused PDF overlays after confirming with the user.
+,pdf_utils.check_file_path,None,form_template_path (str),Checks if the blank PDF template exists and prompts the user for a custom path if not found.
+,pdf_utils.get_pdf_dimensions,pdf_path,width, height (tuple of floats),Retrieves the dimensions of a PDF.
+,pdf_utils.populate_form,form_template_path, output_pdf_path, field_coordinates, field_values,None,Populates the form fields in a PDF based on provided coordinates and values.
+,pdf_utils.merge_pdfs,form_pdf_path, text_pdf_path, output_pdf_path,None,Merges overlay and form PDFs together.
+,N/A,generate_session_id,None,Unknown,Generates a session ID for the form prep session.
+,N/A,ask_total_forms,None,Number of forms,Asks the user for the number of forms they want to prepare.
+,N/A,get_entity_info,num_forms,List of entity names,Collects entity information based on the number of forms.
+,N/A,display_form_list,None,None,Displays a list of forms/entities that were filled out in the current session.
+,N/A,confirm_filings,None,None,Asks the user to confirm the information provided for all filings.
+,N/A,clear_temp_folder,None,None,Prompts the user to delete the temporary file folder contents.
+,N/A,generate_session_id,None,Unknown,Generates a session ID for the form prep session.
+,N/A,ask_total_forms,None,Number of forms,Asks the user for the number of forms they want to prepare.
+,N/A,get_entity_info,num_forms,List of entity names,Collects entity information based on the number of forms.
+,N/A,display_form_list,None,None,Displays a list of forms/entities that were filled out in the current session.
+,N/A,confirm_filings,None,None,Asks the user to confirm the information provided for all filings.
+,N/A,clear_temp_folder,None,None,Prompts the user to delete the temporary file folder contents.
+,N/A,load_json_config,file_path,JSON object or empty dictionary,Loads a JSON configuration from the provided file path. If there's an error in decoding or the file is not found, it logs the error and returns an empty dictionary.
+,N/A,load_json_config,file_path,JSON object or empty dictionary,Loads a JSON configuration from the provided file path. If there's an error in decoding or the file is not found, it logs the error and returns an empty dictionary.
+,N/A,message_logging,None,None,Configures logging with a specific format and logs messages to 'formwizard.log'.
+,N/A,validate_timestamp,None,None,Validates the current timestamp and logs the current time. If there's an error, it logs the error message.
+,N/A,message_logging,None,None,Configures logging with a specific format and logs messages to 'formwizard.log'.
+,N/A,validate_timestamp,None,None,Validates the current timestamp and logs the current time. If there's an error, it logs the error message.
+,N/A,validate_date_time,date_time_str, format_str='%Y-%m-%d %H:%M:%S',bool,Validates if the provided string conforms to the specified date and time format.
+,N/A,get_confirmation,prompt, error_msg="Invalid input. Please try again.",bool,Gets a confirmation from the user based on the provided prompt.
+,N/A,get_residency,None,'Dom' or 'For',Calculates if the residency is domestic or foreign based on the jurisdiction.
+,N/A,file_exists,filepath,bool,Validates if the target file exists.
+,N/A,collect_entity_info,None,entity_name, domestic_state, entity_type, filing_type, agent_name, jurisdiction,Collects entity information from the user.
+,N/A,display_form_list,None,None,Displays a list of all forms/entities that were filled out in the current session.
+,N/A,confirm_filings,None,num_forms, form_list,Asks the user to confirm the information provided for all filings.
+,N/A,display_complete_list,None,None,Displays a list of all forms/entities that were filled out in the current session.
+,N/A,validate_zip,None,None,Validates the ZIP code provided by the user.
