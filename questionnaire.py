@@ -6,11 +6,10 @@ import pandas as pd
 from datetime import datetime
 from enums.filing_rules import FilingType, FILING_QUESTIONS
 from classes.ResidencyBase import Residency
-from main import get_data_source_choice # this needs syntax correction
 from enums.entity_types import EntityType
 from classes.Jurisdiction import Jurisdiction  
-from classes.BaseForm import BaseForm  
-from user_input import ask_quantity_of_filings, get_manual_input_data, choice
+from classes.BaseForm import BaseForm
+from user_input import ask_quantity_of_filings, choice
 from data_preparation import get_data
 from constants.states import State
 from validation import validate_data
@@ -38,8 +37,13 @@ ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 
 # Functions
 
+#Tips to improve: You can design a data collection function that accepts data from multiple sources, checks if 
+# essential data is missing, and prompts the user only for missing elements.
+#For the data that is not mutually exclusive, consider creating a dictionary that holds all the form data, 
+# then updating it with data from the Excel file first and subsequently filling in the gaps with user input.
+
 # Uses existing function to ask the user to select number of forms to be filled (up to 10), 
-# and sets the number of forms to be filled.
+# and sets the number of forms to be filled. 
 def initiate_filing_questionnaire():
     print("Welcome to the Filing Questionnaire Session.")
     num_forms = ask_quantity_of_filings()  # This will return an integer

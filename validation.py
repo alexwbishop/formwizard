@@ -23,6 +23,7 @@ from enums.jurisdiction import Jurisdiction
 from enums.entity_types import EntityType
 import classes.BaseForm.BaseForm
 from questionnaire import FormWizard
+import questionnaire
 
 # Dalia's tips: 
 #Error Handling: Add try-except blocks where appropriate to handle unexpected input.
