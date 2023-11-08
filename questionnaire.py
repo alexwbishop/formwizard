@@ -10,7 +10,7 @@ from enums.entity_types import EntityType
 from classes.Jurisdiction import Jurisdiction  
 from classes.BaseForm import BaseForm
 from user_input import ask_quantity_of_filings
-from main import get_user_choice
+# If you need to use get_user_choice, pass it as a parameter to the functions that need it
 from data_preparation import get_data
 from constants.states import State
 from validation import validate_data
@@ -45,22 +45,24 @@ ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 
 # Uses existing function to ask the user to select number of forms to be filled (up to 10), 
 # and sets the number of forms to be filled. 
-def initiate_filing_questionnaire():
+def initiate_filing_questionnaire(user_choice):
     print("Welcome to the Filing Questionnaire Session.")
     num_forms = ask_quantity_of_filings()  # This will return an integer
     return num_forms  # Return the number of forms as an integer
 
 # define the core data collection and form assembly process (FormWizard)
 class FormWizard:
-    def __init__(self):
+    def __init__(self, user_choice):
+        self.user_choice = user_choice
         self.entities_data = []
-        self.filing_data = []    
+        self.filing_data = []
         
     def run_session(self):
         print("Initializing FormWizard session...")
         # Collect the data for each entity from the user
+    # Use self.user_choice where you need the user's choice.
         for _ in range(ask_quantity_of_filings()):
-            entity_data = get_data(get_user_choice)
+            entity_data = get_data(self.user_choice)
             # Validate and store entity data
             valid, error_message = self.validate_data(entity_data)
             if not valid:

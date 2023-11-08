@@ -5,6 +5,11 @@ import os
 import logging
 from constants.states import VALID_STATES
 from classes.BaseForm import BaseForm
+from enums.residency import determine_residency
+from excel_import import import_from_excel
+from questionnaire import initiate_filing_questionnaire
+import user_input
+from data_preparation import get_data
 
 # Load configuration from a JSON file
 with open('config.json', 'r') as config_file:
@@ -18,7 +23,33 @@ except FileNotFoundError:
 except json.JSONDecodeError:
     logging.error("config.json is not a valid JSON file.")
     exit(1)
-    
+
+# Function to handle the data input method chosen by the user
+def get_data_source(user_choice):
+    if user_choice == 'excel':
+        # Handle the Excel input method
+        import_from_excel()
+    elif user_choice == 'manual':
+        # Handle the manual input method
+        print("You have chosen to input data manually.")
+        # Launch the questionnaire to determine the number of forms to process
+        print("Booting up filing questionnaire. Please wait...")
+        num_forms = initiate_filing_questionnaire() 
+        # Loop to process each form as per the number specified
+        for _ in range(num_forms):
+            # Gather data manually for each form
+            entity_data = get_data()
+            # Determine and assign residency status based on the domestic state provided
+            print("Determining residency based on data provided...")
+            domestic_state = entity_data['Domestic State']
+            entity_data['Residency'] = determine_residency(domestic_state)
+            print("Residency determined successfully: " + entity_data['Residency'])
+            # Additional steps to process each manually entered 'entity_data' can be done here
+        else:
+        # Handle other cases or raise an error
+            print("Invalid choice. Please choose 'excel' or 'manual'.")
+        return user_choice
+
 # asks for number of forms to fill out in current session
 def ask_quantity_of_filings() -> int:
     while True:
