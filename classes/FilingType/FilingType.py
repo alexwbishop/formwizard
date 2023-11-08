@@ -5,10 +5,7 @@
 # - Methods: Logic specific to the filing type.
 
 # Inherits from Residency (i.e. Domestic or Foreign).
-from enums.residency import Residency as ResidencyStatus
-from classes.Jurisdiction import Jurisdiction
-from classes.BaseForm import BaseForm
-from enums import filing_rules
+from ..BaseForm import BaseForm
 
 # Base class for all filing types
 class BaseFilingType(BaseForm):

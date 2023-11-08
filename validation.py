@@ -19,7 +19,7 @@ from questionnaire import FILING_QUESTIONS
 from datetime import datetime
 from enums.residency import Residency
 from enums.entity_types import EntityType
-import classes.BaseForm.BaseForm
+from classes.BaseForm import BaseForm
 from questionnaire import FormWizard
 import questionnaire
 from user_input import get_user_choice
