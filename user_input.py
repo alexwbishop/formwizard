@@ -7,7 +7,7 @@ from constants.states import VALID_STATES
 from classes.BaseForm import BaseForm
 from enums.residency import determine_residency
 from excel_import import import_from_excel
-from questionnaire import initiate_filing_questionnaire
+from form_wizard import initiate_filing_questionnaire
 import user_input
 from data_preparation import get_data
 

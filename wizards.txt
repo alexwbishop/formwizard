@@ -1,0 +1,46 @@
+SessionWizard & DispatchWizard
+
+Step 4: Use SessionWizard and DispatchWizard in Other Modules
+In other modules, you will use the instances of SessionWizard and DispatchWizard that are passed from main.py to interact with the shared state and to dispatch or listen for events.
+
+For example, in user_choices.py:
+
+python
+Copy code
+# user_choices.py
+
+def handle_user_choices(data):
+    # Handle the user choice event
+    # Update the session data as needed
+    # ...
+
+# This function could be called by DispatchWizard when a certain event is dispatched
+Step 5: Dispatch Events from Modules
+Whenever a module needs to communicate an event (e.g., a user has made a choice), it will use the DispatchWizard to dispatch this event along with any necessary data.
+
+python
+Copy code
+# Somewhere in your application
+dispatch_wizard.dispatch('user_choice_event', {'choice': user_choice})
+Step 6: Listen for Events in Modules
+Modules that need to react to certain events will register themselves as listeners for those events using the DispatchWizard.
+
+python
+Copy code
+# In main.py or any initialization module
+dispatch_wizard.register('user_choice_event', some_module.handle_user_choice)
+Step 7: Update Shared State as Needed
+Modules will update the shared state through SessionWizard when they need to change or add data to the session.
+
+python
+Copy code
+# Somewhere in your application
+session_wizard.update_user_data('username', 'Alex')
+Step 8: Access Shared State as Needed
+Modules can access the shared state data from SessionWizard whenever they need to read session data.
+
+python
+Copy code
+# Somewhere in your application
+username = session_wizard.user_data.get('username')
+By following these steps, you can implement a system where modules communicate through a shared state and messages, reducing direct dependencies and the risk of circular imports.

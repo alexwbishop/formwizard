@@ -15,13 +15,13 @@ from reportlab.pdfgen import canvas
 from constants.name_restrictions import RESTRICTED_WORDS
 from constants.entity_indicators import VALID_ENTITY_INDICATORS
 from constants.name_restrictions import MAX_PURPOSE_LENGTH
-from questionnaire import FILING_QUESTIONS
+from form_wizard import FILING_QUESTIONS
 from datetime import datetime
 from enums.residency import Residency
 from enums.entity_types import EntityType
 from classes.BaseForm import BaseForm
-from questionnaire import FormWizard
-import questionnaire
+from form_wizard import FormWizard
+import form_wizard
 from user_input import get_user_choice
 from user_input import get_confirmation
 from user_input import gather_filing_details
