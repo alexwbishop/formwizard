@@ -21,7 +21,6 @@ class BaseForm:
         residency: Residency status of the entity.
         ...
     """
-
     def __init__(self, jurisdiction_instance, **kwargs):
         self.jurisdiction_instance = jurisdiction_instance 
         self.last_updated_timestamp = datetime.now()  # Set current time when object is created

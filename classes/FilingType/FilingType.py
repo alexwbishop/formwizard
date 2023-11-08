@@ -5,7 +5,7 @@
 # - Methods: Logic specific to the filing type.
 
 # Inherits from Residency (i.e. Domestic or Foreign).
-from ..BaseForm import BaseForm
+from classes.BaseForm.BaseForm import BaseForm
 
 # Base class for all filing types
 class BaseFilingType(BaseForm):
