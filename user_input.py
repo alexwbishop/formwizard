@@ -7,8 +7,6 @@ from constants.states import VALID_STATES
 from classes.BaseForm import BaseForm
 from enums.residency import determine_residency
 from excel_import import import_from_excel
-from form_wizard import initiate_filing_questionnaire
-import user_input
 from data_preparation import get_data
 
 # Load configuration from a JSON file
@@ -24,43 +22,38 @@ except json.JSONDecodeError:
     logging.error("config.json is not a valid JSON file.")
     exit(1)
 
-# Function to handle the data input method chosen by the user
-def get_data_source(user_choice):
+# Uses existing function to ask the user to select number of forms to be filled (up to 10), 
+# and sets the number of forms to be filled.
+# This function now accepts 'num_forms' as a parameter instead of calling 'ask_quantity_of_filings'
+def initiate_filing_questionnaire(user_choice, num_forms):
+    print("Welcome to the Filing Questionnaire Session.")
+    # Use 'num_forms' that was passed as a parameter
+    # Depending on the user_choice, get the data source
+    data_source = get_data_source(user_choice, num_forms)
+
+# This function now also accepts 'num_forms' as a parameter
+def get_data_source(user_choice, num_forms):
     if user_choice == 'excel':
         # Handle the Excel input method
-        import_from_excel()
+        return import_from_excel()
     elif user_choice == 'manual':
         # Handle the manual input method
         print("You have chosen to input data manually.")
-        # Launch the questionnaire to determine the number of forms to process
-        print("Booting up filing questionnaire. Please wait...")
-        num_forms = initiate_filing_questionnaire() 
+        # We no longer need to ask for the number of forms here since it's passed as a parameter
         # Loop to process each form as per the number specified
         for _ in range(num_forms):
             # Gather data manually for each form
-            entity_data = get_data()
+            entity_data = get_data(user_choice)
             # Determine and assign residency status based on the domestic state provided
             print("Determining residency based on data provided...")
             domestic_state = entity_data['Domestic State']
             entity_data['Residency'] = determine_residency(domestic_state)
             print("Residency determined successfully: " + entity_data['Residency'])
             # Additional steps to process each manually entered 'entity_data' can be done here
-        else:
+    else:
         # Handle other cases or raise an error
-            print("Invalid choice. Please choose 'excel' or 'manual'.")
-        return user_choice
-
-# asks for number of forms to fill out in current session
-def ask_quantity_of_filings() -> int:
-    while True:
-        try:
-            num_forms = int(input("How many forms do you want to fill out today? (max 10): "))
-            if 1 <= num_forms <= 10:
-                return num_forms
-            else:
-                print("Please enter a number between 1 and 10.")
-        except ValueError:
-            print("Invalid input. Please enter a valid number.") 
+        print("Invalid choice. Please choose 'excel' or 'manual'.")
+        return None
 
 # Helper function to format confirmation prompts
 def get_confirmation(prompt):

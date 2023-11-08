@@ -41,9 +41,18 @@ def main():
 
     # Start the application flow
     print("Welcome to FormWizard!")
+    # Get the user's choice of data input method
     data_input_method = get_data_input_method()
+    # Store the choice in the SessionWizard
+    session_wizard.update_choices('data_input_method', data_input_method)
     dispatch_wizard.dispatch('data_input_method_chosen', data_input_method)
-    
+    # Later on, when you need to access this choice:
+#data_input_method = session_wizard.choices.get('data_input_method')
+#if data_input_method == 'excel':
+    # Proceed with Excel import
+#elif data_input_method == 'manual':
+    # Proceed with manual data input
+
     # Process any queued events
     dispatch_wizard.process_events()
 
@@ -54,7 +63,7 @@ def main():
     form_wizard = FormWizard(session_wizard.get_entity_data())
     form_wizard.run_session()
     print("Goodbye!")
-    
+
 # Entry point check to prevent code from executing when imported
 if __name__ == "__main__":
     # Initialize the user feedback module

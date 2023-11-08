@@ -1,4 +1,4 @@
-# questionnaire.py
+# form_wizard.py
 
 # Initial Session Questions, Entity & Filing Selection
 import json
@@ -9,7 +9,7 @@ from enums.residency import Residency
 from enums.entity_types import EntityType
 from classes.Jurisdiction import Jurisdiction  
 from classes.BaseForm import BaseForm
-from user_input import ask_quantity_of_filings
+from user_input import ask_quantity_of_filings, get_data_source
 # If you need to use get_user_choice, pass it as a parameter to the functions that need it
 from data_preparation import get_data
 from constants.states import State
@@ -43,13 +43,6 @@ ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 #For the data that is not mutually exclusive, consider creating a dictionary that holds all the form data, 
 # then updating it with data from the Excel file first and subsequently filling in the gaps with user input.
 
-# Uses existing function to ask the user to select number of forms to be filled (up to 10), 
-# and sets the number of forms to be filled. 
-def initiate_filing_questionnaire(user_choice):
-    print("Welcome to the Filing Questionnaire Session.")
-    num_forms = ask_quantity_of_filings()  # This will return an integer
-    return num_forms  # Return the number of forms as an integer
-
 # define the core data collection and form assembly process (FormWizard)
 class FormWizard:
     def __init__(self, user_choice):
@@ -63,6 +56,7 @@ class FormWizard:
     # Use self.user_choice where you need the user's choice.
         for _ in range(ask_quantity_of_filings()):
             entity_data = get_data(self.user_choice)
+            num_forms = get_data_source(self.user_choice)
             # Validate and store entity data
             valid, error_message = self.validate_data(entity_data)
             if not valid:

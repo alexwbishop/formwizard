@@ -1,8 +1,20 @@
 # data_preparation.py
 
 # Functions relating to collecting and preparing data for processing and application to forms
-from user_input import ask_quantity_of_filings, get_manual_input_data
+from user_input import get_manual_input_data
 from classes.ResidencyBase import determine_residency
+
+# asks for number of forms to fill out in current session
+def ask_quantity_of_filings() -> int:
+    while True:
+        try:
+            num_forms = int(input("How many forms do you want to fill out today? (max 10): "))
+            if 1 <= num_forms <= 10:
+                return num_forms
+            else:
+                print("Please enter a number between 1 and 10.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.") 
 
 # Uses existing function to ask the user to provide entity data for the total number of requested forms (not filing data)
 def get_data(user_choice):
@@ -20,6 +32,6 @@ def get_data(user_choice):
     # Now that entity_data is fully populated, determine the residency class
     entity_data['Residency Class'] = determine_residency(entity_data['Domestic State'])
 
-    # entity data is loaded into the session, and the session is ready to begin the filing-specific question phase (FormWizard in questionnaire.py)
+    # entity data is loaded into the session, and the session is ready to begin the filing-specific question phase (FormWizard in form_wizard.py)
     return entity_data
 
