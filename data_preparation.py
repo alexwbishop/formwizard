@@ -1,11 +1,13 @@
 # data_preparation.py
 
 # Functions relating to collecting and preparing data for processing and application to forms
-from user_input import get_data_source
-from classes.ResidencyBase import determine_residency
-from user_input import ask_quantity_of_filings, get_manual_input_data, choice
+from main import get_data_source
+from user_input import ask_quantity_of_filings, get_manual_input_data
+from main import choice
+
 # Uses existing function to ask the user to provide entity data for the total number of requested forms (not filing data)
 def get_data():
+    from classes.ResidencyBase import determine_residency
     print("Welcome to the FormWizard Manual Info Entry Questionnaire!")
     entity_data = get_manual_input_data()
     # Initialize list to store form instances for each entity/form

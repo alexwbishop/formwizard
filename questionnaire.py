@@ -9,7 +9,8 @@ from enums.residency import Residency
 from enums.entity_types import EntityType
 from classes.Jurisdiction import Jurisdiction  
 from classes.BaseForm import BaseForm
-from user_input import ask_quantity_of_filings, get_user_choice
+from user_input import ask_quantity_of_filings
+from main import get_user_choice
 from data_preparation import get_data
 from constants.states import State
 from validation import validate_data
