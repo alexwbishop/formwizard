@@ -132,14 +132,3 @@ def confirm_agent_name(state):
             logging.warning("Invalid input. Please enter a number.")
     logging.info(f"You've selected {agent_name} as the agent.")
     return agent_name  # Optionally return the agent name for future use
-
-# can add a helper function that can be used for both the agent and the address
-def get_manual_input_data():
-    print("Please provide the following info: ")
-    data = {}
-    data['Entity Name'] = input("Enter Entity Name: ")
-    data['Domestic State'] = input("Enter the domestic state: ")
-    #data['Current Registered Agent'] = input("Enter current registered agent: ") # make this into a selection from a list
-    #data['Current Agent Address'] = input("Enter current agent's address: ") # make this into a selection from a list
-
-

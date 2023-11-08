@@ -1,4 +1,4 @@
-# residency.py
+# residencybase.py
 
 #3. Residency: Subclasses for each jurisdiction (Domestic, Foreign) under each EntityType.
 	#- Attributes: Fields specific to the jurisdiction.

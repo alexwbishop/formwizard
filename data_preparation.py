@@ -1,7 +1,6 @@
 # data_preparation.py
 
 # Functions relating to collecting and preparing data for processing and application to forms
-from user_input import get_manual_input_data
 from classes.ResidencyBase import determine_residency
 
 # asks for number of forms to fill out in current session
@@ -15,6 +14,15 @@ def ask_quantity_of_filings() -> int:
                 print("Please enter a number between 1 and 10.")
         except ValueError:
             print("Invalid input. Please enter a valid number.") 
+
+# can add a helper function that can be used for both the agent and the address
+def get_manual_input_data():
+    print("Please provide the following info: ")
+    data = {}
+    data['Entity Name'] = input("Enter Entity Name: ")
+    data['Domestic State'] = input("Enter the domestic state: ")
+    #data['Current Registered Agent'] = input("Enter current registered agent: ") # make this into a selection from a list
+    #data['Current Agent Address'] = input("Enter current agent's address: ") # make this into a selection from a list
 
 # Uses existing function to ask the user to provide entity data for the total number of requested forms (not filing data)
 def get_data(user_choice):
