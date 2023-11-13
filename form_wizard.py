@@ -4,15 +4,15 @@
 import json
 import pandas as pd
 from datetime import datetime
-from enums.filing_rules import FilingType, FILING_QUESTIONS
+from enums.filing_rules import FilingTypes, FILING_QUESTIONS
 from enums.residency import Residency
-from enums.entity_types import EntityType
+from enums.entity_types import EntityTypes
 from classes.Jurisdiction import Jurisdiction  
 from classes.BaseForm import BaseForm
 from user_input import ask_quantity_of_filings, get_data_source
 # If you need to use get_user_choice, pass it as a parameter to the functions that need it
 from data_preparation import get_data
-from constants.states import State
+from constants.states import States
 from validation import validate_data
 from classes.Utilities.ValidationUtils.ValidationUtils import handle_errors
 from enums.residency import determine_residency
@@ -32,7 +32,7 @@ form_instance = BaseForm(
 )
 
 # Create an instance of the Jurisdiction class which allows it to be changed from default (DE)
-current_jurisdiction = Jurisdiction.create_jurisdiction(State.full[State.abbrev])
+current_jurisdiction = Jurisdiction.create_jurisdiction(States.full[States.abbrev])
 de_jurisdiction = Jurisdiction.create_jurisdiction("Delaware", "DE")
 ca_jurisdiction = Jurisdiction.create_jurisdiction("California", "CA")
 
@@ -98,7 +98,7 @@ class FormWizard:
              return False
     def generate_forms(self):
         print("Initiating form generation process...")
-        form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{EntityType}-{Residency}-{FilingType}.pdf"
+        form_template_path = f"StateForms/{Jurisdiction}/{Jurisdiction}-{EntityTypes}-{Residency}-{FilingTypes}.pdf"
         print("Loaded form: ", form_template_path)  
         # USE PDF FUNCTIONS FROM pdf_utils.py - not being used yet?
 

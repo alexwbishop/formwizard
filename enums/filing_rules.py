@@ -3,7 +3,7 @@
 from enum import Enum, auto
 from constants.name_restrictions import RESTRICTED_WORDS
 
-class FilingType(Enum):
+class FilingTypes(Enum):
     CHANGE_OF_AGENT = auto()
     INCORPORATION = auto()
     REGISTRATION = auto()
@@ -27,31 +27,31 @@ class FilingType(Enum):
     # ... other enum values ...
 
 # All filing types
-FILING_TYPES = {filing_type.name: filing_type for filing_type in FilingType}
+FILING_TYPES = {filing_type.name: filing_type for filing_type in FilingTypes}
 
 
 # Supplemental docs that apply to filing type combinations
 # currently only true for filings in DE
 FILING_TYPE_SUPPLEMENTAL_DOCS = {
-    FilingType.REGISTRATION: ['Certificate of Good Standing'],
-    FilingType.QUALIFICATION: ['Certificate of Good Standing'],
-    FilingType.WITHDRAWAL: ['Tax Clearance Certificate'],
-    FilingType.NAME_AMENDMENT: ['Certified Copy of Amendment'],
+    FilingTypes.REGISTRATION: ['Certificate of Good Standing'],
+    FilingTypes.QUALIFICATION: ['Certificate of Good Standing'],
+    FilingTypes.WITHDRAWAL: ['Tax Clearance Certificate'],
+    FilingTypes.NAME_AMENDMENT: ['Certified Copy of Amendment'],
     # ... other mappings
 }
 
 # Checks for supplemental docs
-def get_supplemental_docs(filing_type: FilingType) -> list:
+def get_supplemental_docs(filing_type: FilingTypes) -> list:
     return FILING_TYPE_SUPPLEMENTAL_DOCS.get(filing_type, [])
 
 
 # Questions associated with each filing type - EXAMPLES
 FILING_QUESTIONS = {
-    FilingType.FORMATION: ["General Question 1", "General Question 2"],
-    FilingType.CHANGE_OF_AGENT: ["General Question 1", "General Question 2"],
-    FilingType.AMENDMENT: ["Please enter the new name for the entity:"],
-    FilingType.MERGER: ["Merger-specific Question 1", "Merger-specific Question 2"],
-    FilingType.CONVERSION: ["Conversion-specific Question 1", "Conversion-specific Question 2"],
+    FilingTypes.FORMATION: ["General Question 1", "General Question 2"],
+    FilingTypes.CHANGE_OF_AGENT: ["General Question 1", "General Question 2"],
+    FilingTypes.AMENDMENT: ["Please enter the new name for the entity:"],
+    FilingTypes.MERGER: ["Merger-specific Question 1", "Merger-specific Question 2"],
+    FilingTypes.CONVERSION: ["Conversion-specific Question 1", "Conversion-specific Question 2"],
     # ... add more for other filing types
 }
 

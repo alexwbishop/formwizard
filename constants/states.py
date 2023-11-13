@@ -1,7 +1,7 @@
 # states.py
 #
 from enum import Enum, auto
-class State(Enum):
+class States(Enum):
     DELAWARE = ('DE', 'Delaware')
     CALIFORNIA = ('CA', 'California')
     # currently capable states above
@@ -64,14 +64,14 @@ def __init__(self, abbrev, full):
         self.full = full
 
 # Accessing the values
-#print(State.DELAWARE.abbrev)  # Output: DE
-#print(State.DELAWARE.full)     # Output: Delaware
+#print(States.DELAWARE.abbrev)  # Output: DE
+#print(States.DELAWARE.full)     # Output: Delaware
 
 # ALL STATES
-VALID_STATES = {State.DELAWARE, State.CALIFORNIA, State.ALASKA, State.ARIZONA, State.ARKANSAS, State.COLORADO, State.CONNECTICUT, State.FLORIDA, State.GEORGIA, State.HAWAII, State.IDAHO, State.ILLINOIS, State.INDIANA, State.IOWA, State.KANSAS, State.KENTUCKY, State.LOUISIANA, State.MAINE, State.MARYLAND, State.MASSACHUSETTS, State.MICHIGAN, State.MINNESOTA, State.MISSISSIPPI, State.MISSOURI, State.MONTANA, State.NEBRASKA, State.NEVADA, State.NEW_HAMPSHIRE, State.NEW_JERSEY, State.NEW_MEXICO, State.NEW_YORK, State.NORTH_CAROLINA, State.NORTH_DAKOTA, State.OHIO, State.OKLAHOMA, State.OREGON, State.PENNSYLVANIA, State.RHODE_ISLAND, State.SOUTH_CAROLINA, State.SOUTH_DAKOTA, State.TENNESSEE, State.TEXAS, State.UTAH, State.VERMONT, State.VIRGINIA, State.WASHINGTON, State.WEST_VIRGINIA, State.WISCONSIN, State.WYOMING, State.DISTRICT_OF_COLUMBIA}
+VALID_STATES = {States.DELAWARE, States.CALIFORNIA, States.ALASKA, States.ARIZONA, States.ARKANSAS, States.COLORADO, States.CONNECTICUT, States.FLORIDA, States.GEORGIA, States.HAWAII, States.IDAHO, States.ILLINOIS, States.INDIANA, States.IOWA, States.KANSAS, States.KENTUCKY, States.LOUISIANA, States.MAINE, States.MARYLAND, States.MASSACHUSETTS, States.MICHIGAN, States.MINNESOTA, States.MISSISSIPPI, States.MISSOURI, States.MONTANA, States.NEBRASKA, States.NEVADA, States.NEW_HAMPSHIRE, States.NEW_JERSEY, States.NEW_MEXICO, States.NEW_YORK, States.NORTH_CAROLINA, States.NORTH_DAKOTA, States.OHIO, States.OKLAHOMA, States.OREGON, States.PENNSYLVANIA, States.RHODE_ISLAND, States.SOUTH_CAROLINA, States.SOUTH_DAKOTA, States.TENNESSEE, States.TEXAS, States.UTAH, States.VERMONT, States.VIRGINIA, States.WASHINGTON, States.WEST_VIRGINIA, States.WISCONSIN, States.WYOMING, States.DISTRICT_OF_COLUMBIA}
 
 # Define the currently supported states
-SUPPORTED_STATES = {State.DELAWARE, State.CALIFORNIA}
+SUPPORTED_STATES = {States.DELAWARE, States.CALIFORNIA}
 
 
 # Check if a state is supported
@@ -79,7 +79,7 @@ def is_state_supported(state):
     return state in SUPPORTED_STATES
 
 # Example usage
-#print(is_state_supported(State.DELAWARE))  # Output: True
-#print(is_state_supported(State.TEXAS))     # Output: False (assuming Texas is not in the SUPPORTED_STATES set)
+#print(is_state_supported(States.DELAWARE))  # Output: True
+#print(is_state_supported(States.TEXAS))     # Output: False (assuming Texas is not in the SUPPORTED_STATES set)
 
 # 

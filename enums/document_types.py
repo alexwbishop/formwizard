@@ -1,7 +1,7 @@
 # document_types.py
 #
 from enum import Enum, auto
-class DocumentType(Enum):
+class DocumentTypes(Enum):
     CERTIFICATE_OF_GOOD_STANDING = auto()
     ANNUAL_REPORT = auto()
     CERTIFIED_COPY_OF_EVIDENCE = auto()

@@ -1,7 +1,7 @@
 # entity_types.py
 #
 from enum import Enum, auto
-class EntityType(Enum):
+class EntityTypes(Enum):
     LIMITED_LIABILITY_COMPANY = auto()
     CORPORATION = auto() # for-profit corporation or stock corporation
     LIMITED_PARTNERSHIP = auto()

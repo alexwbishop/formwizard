@@ -6,7 +6,7 @@ import uuid
 import logging
 import datetime
 from constants.config import DEFAULT_PATH
-from constants.states import State
+from constants.states import States
 from BaseForm import DomesticState
 
 # various utility functions for validation and error handling

@@ -18,7 +18,7 @@ from constants.name_restrictions import MAX_PURPOSE_LENGTH
 from form_wizard import FILING_QUESTIONS
 from datetime import datetime
 from enums.residency import Residency
-from enums.entity_types import EntityType
+from enums.entity_types import EntityTypes
 from classes.BaseForm import BaseForm
 from form_wizard import FormWizard
 import form_wizard
