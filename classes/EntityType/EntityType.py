@@ -7,14 +7,14 @@
 # Inherits from BaseForm.
 from ..BaseForm import BaseForm
 
-class EntityType(BaseForm):
+class BaseEntityType(BaseForm):
     pass
 
-class LLC(EntityType):
+class LLC(BaseEntityType):
     pass
 
-class Corporation(EntityType):
+class Corporation(BaseEntityType):
     pass
 
-class LP(EntityType):
+class LP(BaseEntityType):
     pass

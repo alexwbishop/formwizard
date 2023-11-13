@@ -6,7 +6,7 @@
 
 #Inherits from EntityType.
 
-from ..EntityType import EntityType
+from ..EntityType import BaseEntityType
 from enums.residency import Residency as ResidencyStatus  # Renamed import to prevent naming conflicts
 
 # Define 'determine_residency' as a top-level function - because it drives the logic of other class-based functions
@@ -18,7 +18,7 @@ def determine_residency(domestic_state):
         return ResidencyStatus.FOREIGN
 
 # It's advisable to name the class something other than Residency to avoid conflicts
-class ResidencyBase(EntityType):
+class ResidencyBase(BaseEntityType):
     def __init__(self, domestic_state=None):
         self.domestic_state = domestic_state
 
