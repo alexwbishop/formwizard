@@ -1,7 +1,7 @@
 # data_preparation.py
 
 # Functions relating to collecting and preparing data for processing and application to forms
-from classes.ResidencyBase import determine_residency
+from classes.ResidencyBase.ResidencyBase import determine_residency
 
 # asks for number of forms to fill out in current session
 def ask_quantity_of_filings() -> int:
